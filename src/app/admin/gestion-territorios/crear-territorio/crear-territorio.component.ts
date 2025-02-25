@@ -5,11 +5,13 @@ import { TerritoriosService } from '../../../services/territorios.service';
 import { Region, Provincia, Comuna } from '../../../models/ubicacion.model'; // Importamos modelos
 import { RouterModule } from '@angular/router';
 import { ActivatedRoute, Router } from '@angular/router';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
   selector: 'app-crear-territorio',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, MatSelectModule, MatFormFieldModule],
   templateUrl: './crear-territorio.component.html',
   styleUrls: ['./crear-territorio.component.scss'],
 })
@@ -54,16 +56,16 @@ export class CrearTerritorioComponent {
   }
 
   /** 📌 Cambio en selección de regiones */
-  onRegionChange(event: Event) {
-    const selectedOptions = this.extractSelectedOptions(event);
-    this.territorioForm.patchValue({ region_id: selectedOptions });
-
-    if (selectedOptions.length > 0) {
-      this.territorioService.getProvincias(selectedOptions).subscribe({
+  onRegionChange(event: any) {
+    const selectedValues = event.value; 
+    this.territorioForm.patchValue({ region_id: selectedValues });
+  
+    if (selectedValues.length > 0) {
+      this.territorioService.getProvincias(selectedValues).subscribe({
         next: (data) => {
           console.log("✅ Provincias recibidas:", data);
           this.provincias = data;
-          this.comunas = []; // Reiniciar comunas cuando cambian provincias
+          this.comunas = []; 
         },
         error: (err) => console.error("⚠️ Error al cargar provincias:", err),
       });
@@ -72,14 +74,14 @@ export class CrearTerritorioComponent {
       this.comunas = [];
     }
   }
-
+  
   /** 📌 Cambio en selección de provincias */
-  onProvinciaChange(event: Event) {
-    const selectedOptions = this.extractSelectedOptions(event);
-    this.territorioForm.patchValue({ provincia_id: selectedOptions });
-
-    if (selectedOptions.length > 0) {
-      this.territorioService.getComunas(selectedOptions).subscribe({
+  onProvinciaChange(event: any) {
+    const selectedValues = event.value; 
+    this.territorioForm.patchValue({ provincia_id: selectedValues });
+  
+    if (selectedValues.length > 0) {
+      this.territorioService.getComunas(selectedValues).subscribe({
         next: (data) => {
           console.log("✅ Comunas recibidas:", data);
           this.comunas = data;
@@ -90,13 +92,13 @@ export class CrearTerritorioComponent {
       this.comunas = [];
     }
   }
-
+  
   /** 📌 Cambio en selección de comunas */
-  onComunaChange(event: Event) {
-    const selectedOptions = this.extractSelectedOptions(event);
-    this.territorioForm.patchValue({ comuna_id: selectedOptions });
+  onComunaChange(event: any) {
+    const selectedValues = event.value;
+    this.territorioForm.patchValue({ comuna_id: selectedValues });
   }
-
+  
   formatCurrency(field: string, blur: boolean = false) {
     let value = this.territorioForm.get(field)?.value;
     if (!value) return;
