@@ -1,0 +1,96 @@
+<div class="container mt-4">
+  <div class="card">
+    <div class="card-header bg-primary text-white">
+      <h3>Crear Territorio</h3>
+    </div>
+    <div class="card-body">
+      <form [formGroup]="territorioForm" (ngSubmit)="onSubmit()">
+        
+        <!-- Nombre del Territorio -->
+        <div class="form-group">
+          <label for="nombre_territorio" class="form-label">Asignar un nombre</label>
+          <input id="nombre_territorio" type="text" formControlName="nombre_territorio" class="form-control"
+            placeholder="Ingresar nombre">
+        </div>
+
+        <label for="cod_territorio">Código de Territorio</label>
+        <input type="number" id="cod_territorio" formControlName="cod_territorio" class="form-control">
+
+        <!-- Selección Múltiple de Regiones -->
+        <div class="form-group">
+          <label for="region_id">Región</label>
+          <select id="region_id" class="form-control" multiple
+            (change)="onRegionChange($event)">
+            <option *ngFor="let region of regiones" [value]="region.id">{{ region.nombre }}</option>
+          </select>
+        </div>
+
+        <!-- Selección Múltiple de Provincias -->
+        <div class="form-group">
+          <label for="provincia_id">Provincia</label>
+          <select id="provincia_id" class="form-control" multiple
+            (change)="onProvinciaChange($event)">
+            <option *ngFor="let provincia of provincias" [value]="provincia.id">{{ provincia.nombre }}</option>
+          </select>
+        </div>
+
+        <!-- Selección Múltiple de Comunas -->
+        <div class="form-group">
+          <label for="comuna_id">Comuna</label>
+          <select id="comuna_id" class="form-control" multiple
+            (change)="onComunaChange($event)">
+            <option *ngFor="let comuna of comunas" [value]="comuna.id">{{ comuna.nombre }}</option>
+          </select>
+        </div>
+
+        <!-- Plazas -->
+        <div class="form-group">
+          <label for="plazas" class="form-label">Plazas</label>
+          <input id="plazas" type="number" formControlName="plazas" class="form-control" placeholder="Ingresar número de plazas">
+        </div>
+
+        <!-- Línea -->
+        <div class="form-group">
+          <label for="linea" class="form-label">Línea de intervención</label>
+          <select id="linea" class="form-control" formControlName="linea">
+            <option value="">Seleccionar</option>
+            <option value="1">Línea 1</option>
+            <option value="2">Línea 2</option>
+          </select>
+        </div>
+
+        <!-- Cuota 1 
+        <div class="form-group">
+          <label for="cuota_1" class="form-label">Cuota 1</label>
+          <input 
+            id="cuota_1" 
+            type="text" 
+            formControlName="cuota_1" 
+            class="form-control" 
+            placeholder="Ingresar monto"
+            (input)="formatCurrency('cuota_1')">
+        </div>-->
+
+        <!-- Cuota 2 
+        <div class="form-group">
+          <label for="cuota_2" class="form-label">Cuota 2</label>
+          <input 
+            id="cuota_2" 
+            type="text" 
+            formControlName="cuota_2" 
+            class="form-control" 
+            placeholder="Ingresar monto"
+            (input)="formatCurrency('cuota_2')">
+        </div>-->
+
+        <!-- Botón de Envío -->
+        <div class="form-group text-right">
+          <button type="submit" class="btn btn-primary btn-block" [disabled]="territorioForm.invalid">
+            Guardar
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,21 @@
+<div class="sidebar" id="sidebar" [class.open]="isSidebarOpen">
+  <button class="close-btn mobile-only" (click)="closeSidebar()">&times;</button>
+  <nav>
+    <ul>
+      <!-- Territorios -->
+      <li (click)="toggleMenu('territorios')" [class.open]="menuState['territorios']">
+        <i class="fas fa-newspaper"></i>Gestor de Territorios
+        <ul *ngIf="menuState['territorios']">
+          <li><a routerLink="/admin/gestion-territorios/crear">Agregar nuevo territorio</a></li>
+          <li><a routerLink="/admin/gestion-territorios/listar">Ver todos los territorios</a></li>
+        </ul>
+      </li>
+         
+      <!-- Opciones adicionales para móvil -->
+      <li class="mobile-only"><a routerLink="admin/miperfil"><i class="fas fa-user"></i> Mi Perfil</a></li>
+      <li class="mobile-only"><a routerLink="/admin"><i class="fas fa-user"></i> Dashboard Admin</a></li>
+      <li class="mobile-only"><a routerLink="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+    </ul>
+  </nav>
+</div>
+<div class="overlay" *ngIf="isSidebarOpen" (click)="closeSidebar()"></div>

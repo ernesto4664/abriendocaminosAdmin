@@ -1,0 +1,73 @@
+<div class="container mt-4">
+    <div class="card">
+      <div class="card-header bg-primary text-white">
+        <h3>Editar Territorio</h3>
+      </div>
+      <div class="card-body">
+        <form [formGroup]="territorioForm" (ngSubmit)="onSubmit()">
+  
+          <!-- Nombre del Territorio -->
+          <div class="form-group">
+            <label>Nombre del Territorio</label>
+            <input type="text" formControlName="nombre_territorio" class="form-control">
+          </div>
+  
+          <label>Código de Territorio</label>
+          <input type="number" formControlName="cod_territorio" class="form-control">
+  
+          <!-- Selección de Regiones -->
+          <div class="form-group">
+            <label>Región</label>
+            <select class="form-control" formControlName="region_id" multiple (change)="onRegionChange($event)">
+              <option *ngFor="let region of regiones" [value]="region.id" [selected]="territorio?.region_id?.includes(region.id)">
+                {{ region.nombre }}
+              </option>
+            </select>
+          </div>
+  
+          <!-- Selección de Provincias -->
+          <div class="form-group">
+            <label>Provincia</label>
+            <select class="form-control" formControlName="provincia_id" multiple (change)="onProvinciaChange($event)">
+              <option *ngFor="let provincia of provincias" [value]="provincia.id" [selected]="territorio?.provincia_id?.includes(provincia.id)">
+                {{ provincia.nombre }}
+              </option>
+            </select>
+          </div>
+  
+          <!-- Selección de Comunas -->
+          <div class="form-group">
+            <label>Comuna</label>
+            <select class="form-control" formControlName="comuna_id" multiple>
+              <option *ngFor="let comuna of comunas" [value]="comuna.id" [selected]="territorio?.comuna_id?.includes(comuna.id)">
+                {{ comuna.nombre }}
+              </option>
+            </select>
+          </div>
+
+          <!-- Plazas -->
+          <div class="form-group">
+            <label for="plazas" class="form-label">Plazas</label>
+            <input id="plazas" type="number" formControlName="plazas" class="form-control" placeholder="Ingresar número de plazas">
+          </div>
+    
+            <!-- Línea -->
+            <div class="form-group">
+                <label for="linea" class="form-label">Línea de intervención</label>
+                <select id="linea" class="form-control" formControlName="linea">
+                <option value="">Seleccionar</option>
+                <option value="1">Línea 1</option>
+                <option value="2">Línea 2</option>
+                </select>
+            </div>
+  
+              <!-- Botones -->
+              <div class="form-group text-right">
+                <button type="submit" class="btn btn-primary btn-block">Guardar</button>
+                <button type="button" class="btn btn-secondary btn-block ml-2" (click)="volver()">Volver</button>
+            </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  
