@@ -1,0 +1,93 @@
+<div class="container mt-4">
+    <div class="card">
+      <div class="card-header bg-primary text-white">
+        <h3>Editar Plan de Intervención</h3>
+      </div>
+  
+      <div class="card-body">
+        <form [formGroup]="planForm" (ngSubmit)="onSubmit()">
+          
+          <!-- Nombre del Plan -->
+          <div class="form-group">
+            <label for="nombre" class="form-label">Nombre del Plan</label>
+            <input id="nombre" type="text" formControlName="nombre" class="form-control" placeholder="Ingresar nombre">
+          </div>
+  
+          <!-- Línea de Intervención -->
+          <div class="form-group" style="margin-top: 15px; margin-bottom: 15px;">
+            <label for="linea" class="form-label">Línea de Intervención</label>
+            <select id="linea" formControlName="linea" class="form-control">
+              <option value="1">Línea 1</option>
+              <option value="2">Línea 2</option>
+            </select>
+          </div>
+  
+          <!-- Descripción -->
+          <div class="form-group" style="margin-bottom: 20px;">
+            <label for="descripcion" class="form-label">Descripción</label>
+            <textarea id="descripcion" formControlName="descripcion" class="form-control" rows="3"></textarea>
+          </div>
+  
+            <!-- Evaluaciones -->
+            <div formArrayName="evaluaciones">
+                <ng-container *ngFor="let evaluacion of evaluacionesFormArray.controls; let i = index">
+                <div [formGroupName]="i" class="form-control" style="margin-bottom: 15px;" *ngIf="!evaluacion.get('eliminar')?.value"> 
+                    <h4>Evaluación {{ i + 1 }}</h4>
+            
+                    <label>Nombre de la Evaluación</label>
+                    <input type="text" formControlName="nombre" class="form-control" style="margin-top:20px;"/>
+            
+                    <!-- Preguntas -->
+                    <div formArrayName="preguntas">
+                    <div style="margin-top:20px;" class="form-control" 
+                        *ngFor="let pregunta of getPreguntas(i).controls; let j = index" 
+                        [formGroupName]="j">
+                        
+                        <!-- Solo mostramos la pregunta si no está marcada para eliminar -->
+                        <div *ngIf="!pregunta.get('eliminar')?.value">
+                        <label for="pregunta-{{ j }}" style="margin-top:5px;"><strong>Pregunta</strong></label>
+                        <input id="pregunta-{{ j }}" type="text" formControlName="pregunta" class="form-control"/>
+                        
+                        <!-- Botón eliminar pregunta -->
+                        <button type="button" class="btn btn-danger" (click)="confirmarEliminarPregunta(i, j)">
+                            🗑️ Eliminar Pregunta
+                        </button>
+                        </div>
+            
+                    </div>
+                    </div>
+            
+                    <!-- Botón agregar pregunta -->
+                    <button class="btn btn-success" style="margin-top:20px; display: block;" type="button" (click)="agregarPregunta(i)">
+                    Agregar Pregunta
+                    </button>
+            
+                    <!-- Botón eliminar evaluación -->
+                    <button type="button" class="btn btn-danger" (click)="confirmarEliminarEvaluacion(i)">
+                    🗑️ Eliminar Evaluación
+                    </button>
+                </div>
+                </ng-container>
+            </div>
+  
+  
+          <!-- Botón agregar evaluación -->
+          <button style="margin-top: 20px; display: block;" type="button" class="btn btn-info" (click)="agregarEvaluacion()">
+            Agregar Evaluación
+          </button>
+  
+          <!-- Botón actualizar plan -->
+          <button style="margin-top: 20px;" type="submit" class="btn btn-primary">
+            Guardar Cambios
+          </button>
+  
+        </form>
+
+        <!-- Eliminar Plan -->
+        <button type="button" class="btn btn-danger" (click)="eliminarPlan()">
+            🗑️ Eliminar Plan de Intervención
+        </button>
+      </div>
+    </div>
+  </div>
+  

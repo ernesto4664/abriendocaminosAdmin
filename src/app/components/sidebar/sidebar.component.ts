@@ -14,6 +14,7 @@ import { Subscription } from 'rxjs';
 export class SidebarComponent implements OnInit, OnDestroy {
   menuState: { [key: string]: boolean } = {
     territorios: false,
+    plandeintervencion:false,
   };
 
   isSidebarOpen = false;

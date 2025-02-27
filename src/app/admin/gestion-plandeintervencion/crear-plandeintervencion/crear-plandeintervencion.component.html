@@ -1,0 +1,91 @@
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h3>Crear Plan de Intervención</h3>
+        </div>
+
+        <div class="card-body">
+            <form [formGroup]="planForm" (ngSubmit)="onSubmit()">
+                
+                <!-- Nombre del Plan -->
+                <div class="form-group">
+                    <label for="nombre" class="form-label">Nombre del Plan</label>
+                    <input id="nombre" type="text" formControlName="nombre" class="form-control" placeholder="Ingresar nombre">
+                </div>
+
+                <!-- Línea de Intervención -->
+                <div class="form-group" style="margin-top: 15px; margin-bottom: 15px;">
+                    <label for="linea" class="form-label">Línea de Intervención</label>
+                    <select id="linea" formControlName="linea" class="form-control">
+                        <option value="">Seleccionar</option>
+                        <option value="1">Línea 1</option>
+                        <option value="2">Línea 2</option>
+                    </select>
+                </div>
+
+                <!-- Descripción -->
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label for="descripcion" class="form-label">Descripción</label>
+                    <textarea id="descripcion" formControlName="descripcion" class="form-control" rows="3" placeholder="Ingresar descripción"></textarea>
+                </div>
+
+                <!-- Evaluaciones -->
+                <div formArrayName="evaluaciones">
+                    <div style="margin-bottom: 15px;" class="form-control" *ngFor="let evaluacion of evaluacionesFormArray.controls; let i = index; trackBy: trackById"
+                        [formGroupName]="i">
+
+                        <h4>Evaluación {{ i + 1 }}</h4>
+
+                        <!-- Campo para el nombre de la Evaluación -->
+                        <label for="evaluacion-{{ i }}">Nombre de la Evaluación</label>
+                        <input style="margin-top:20px;" id="evaluacion-{{ i }}" type="text"
+                            formControlName="nombre" class="form-control"/>
+
+                        <!-- Preguntas de la Evaluación -->
+                        <div formArrayName="preguntas">
+                            <div *ngFor="let pregunta of getPreguntas(i).controls; let j = index; trackBy: trackById"
+                                [formGroupName]="j">
+                                
+                                <label for="pregunta-{{ j }}" style="margin-top:5px;">Pregunta</label>
+                                <input id="pregunta-{{ j }}" type="text"
+                                    formControlName="pregunta" class="form-control"/>
+
+                                <!-- Botón para eliminar pregunta -->
+                                <button style="margin-top: 15px; margin-bottom:15px;" type="button"
+                                class="btn btn-danger" (click)="confirmarEliminarPregunta(i, j)">
+                                    Eliminar Pregunta
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Botón para agregar pregunta -->
+                        <button style="display: block; margin-top:20px;" type="button"
+                        class="btn btn-secondary" (click)="agregarPregunta(i)">
+                            Agregar Pregunta
+                        </button>
+
+                        <!-- Botón para eliminar evaluación -->
+                        <button style="margin-top: 20px; margin-bottom:20px;" type="button"
+                        class="btn btn-danger" (click)="confirmarEliminarEvaluacion(i)">
+                            Eliminar Evaluación
+                        </button>
+                    </div>
+                </div>
+
+
+                <!-- Botón para agregar Evaluación -->
+                <button style="margin-top: 20px; display: block;" type="button" class="btn btn-info" (click)="agregarEvaluacion()"
+                        aria-label="Agregar nueva evaluación">
+                    Agregar Evaluación
+                </button>
+
+                <!-- Botón de Guardar Plan -->
+                <button style="margin-top: 20px;" type="submit" class="btn btn-primary"
+                    [disabled]="!(puedeGuardar$ | async)">
+                    Guardar Plan
+                </button>
+
+            </form>
+        </div>
+    </div>
+</div>
