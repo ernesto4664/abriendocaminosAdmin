@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { LayoutComponent } from './components/layout/layout.component';
+
 import { GestionTerritoriosComponent } from './admin/gestion-territorios/gestion-territorios.component';
 import { CrearTerritorioComponent } from './admin/gestion-territorios/crear-territorio/crear-territorio.component';
 import { EditarTerritorioComponent } from './admin/gestion-territorios/editar-territorio/editar-territorio.component';
@@ -11,6 +12,12 @@ import { CrearPlandeintervencionComponent } from './admin/gestion-plandeinterven
 import { EditarPlandeintervencionComponent } from './admin/gestion-plandeintervencion/editar-plandeintervencion/editar-plandeintervencion.component';
 import { DetallePlandeintervencionComponent } from './admin/gestion-plandeintervencion/detalle-plandeintervencion/detalle-plandeintervencion.component';
 import { ListarPlandeintervencionComponent } from './admin/gestion-plandeintervencion/listar-plandeintervencion/listar-plandeintervencion.component';
+
+import { GestionInstitucionesejecutorasComponent } from './admin/gestion-institucionesejecutoras/gestion-institucionesejecutoras.component';
+import { CrearInstitucionesejecutorasComponent } from './admin/gestion-institucionesejecutoras/crear-institucionesejecutoras/crear-institucionesejecutoras.component';
+import { EditarInstitucionesejecutorasComponent } from './admin/gestion-institucionesejecutoras/editar-institucionesejecutoras/editar-institucionesejecutoras.component';
+import { DetalleInstitucionesejecutorasComponent } from './admin/gestion-institucionesejecutoras/detalle-institucionesejecutoras/detalle-institucionesejecutoras.component';
+import { ListarInstitucionesejecutorasComponent } from './admin/gestion-institucionesejecutoras/listar-institucionesejecutoras/listar-institucionesejecutoras.component';
 
 export const routes: Routes = [
   {
@@ -28,6 +35,12 @@ export const routes: Routes = [
       { path: 'admin/gestion-plandeintervencion/editar/:id', component: EditarPlandeintervencionComponent },
       { path: 'admin/gestion-plandeintervencion/detalle/:id', component: DetallePlandeintervencionComponent },
       { path: 'admin/gestion-plandeintervencion/listar', component: ListarPlandeintervencionComponent },
+
+      { path: 'admin/gestion-institucionesejecutoras', component: GestionInstitucionesejecutorasComponent },
+      { path: 'admin/gestion-institucionesejecutoras/crear', component: CrearInstitucionesejecutorasComponent },
+      { path: 'admin/gestion-institucionesejecutoras/editar/:id', component: EditarInstitucionesejecutorasComponent },
+      { path: 'admin/gestion-institucionesejecutoras/detalle/:id', component: DetalleInstitucionesejecutorasComponent },
+      { path: 'admin/gestion-institucionesejecutoras/listar', component: ListarInstitucionesejecutorasComponent },
     ]
   }
 ];

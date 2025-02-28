@@ -15,6 +15,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
   menuState: { [key: string]: boolean } = {
     territorios: false,
     plandeintervencion:false,
+    institucionesejecutoras:false,
   };
 
   isSidebarOpen = false;

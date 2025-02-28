@@ -38,4 +38,8 @@ export class PlanesIntervencionService {
   deletePlan(id: number): Observable<any> {
     return this.http.delete(`${this.apiBaseUrl}/${id}`);
   }
+
+  getPlanesPorLinea(linea: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiBaseUrl}?linea=${linea}`);
+  }
 }

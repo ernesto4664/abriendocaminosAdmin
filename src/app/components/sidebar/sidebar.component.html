@@ -19,6 +19,15 @@
           <li><a routerLink="/admin/gestion-plandeintervencion/listar">Ver todos los planes de intervención</a></li>
         </ul>
       </li>
+
+      <!-- Instituciones ejecutoras -->
+      <li (click)="toggleMenu('institucionesejecutoras')" [class.open]="menuState['institucionesejecutoras']">
+        <i class="fas fa-newspaper"></i>Gestor de Instituciones ejecutoras
+        <ul *ngIf="menuState['institucionesejecutoras']">
+          <li><a routerLink="/admin/gestion-institucionesejecutoras/crear">Agregar nueva instituciones ejecutoras</a></li>
+          <li><a routerLink="/admin/gestion-institucionesejecutoras/listar">Ver todas las institucionesejecutoras</a></li>
+        </ul>
+      </li>
          
       <!-- Opciones adicionales para móvil -->
       <li class="mobile-only"><a routerLink="admin/miperfil"><i class="fas fa-user"></i> Mi Perfil</a></li>
