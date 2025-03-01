@@ -20,22 +20,40 @@ export class CrearTerritorioComponent {
   regiones: Region[] = [];
   provincias: Provincia[] = [];
   comunas: Comuna[] = [];
-  
+  lineas: any[] = [];
+
   constructor(private fb: FormBuilder, private territorioService: TerritoriosService, private route: ActivatedRoute,
     private router: Router,) {
-    this.territorioForm = this.fb.group({
-      nombre_territorio: ['', Validators.required],
-      cod_territorio: [''],
-      region_id: [[], Validators.required],  // Almacena array de IDs
-      provincia_id: [[], Validators.required], // Almacena array de IDs
-      comuna_id: [[], Validators.required], // Almacena array de IDs
-      plazas: [''],
-      linea: ['', Validators.required],
-      cuota_1: [''],
-      cuota_2: [''],
-    });
+      this.territorioForm = this.fb.group({
+        nombre_territorio: ['', Validators.required],
+        cod_territorio: [''],
+        region_id: [[], Validators.required],
+        provincia_id: [[], Validators.required],
+        comuna_id: [[], Validators.required],
+        plazas: [''],
+        linea_id: ['', Validators.required], // ✅ Asegurar que sea `linea_id`
+        cuota_1: [''],
+        cuota_2: [''],
+      });
 
     this.loadRegiones();
+  }
+
+  ngOnInit() {
+    this.loadLineas();
+  }
+  
+  loadLineas() {
+    this.territorioService.getLineas().subscribe({
+      next: (data) => {
+        console.log("✅ Líneas cargadas:", data);
+        this.lineas = data;
+      },
+      error: (err) => {
+        console.error("⚠️ Error al cargar líneas:", err);
+        alert("⚠️ Error al cargar las líneas de intervención. Revisa la consola.");
+      }
+    });
   }
 
   /** 📌 Cargar todas las regiones */

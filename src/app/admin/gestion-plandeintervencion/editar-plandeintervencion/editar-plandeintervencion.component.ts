@@ -3,12 +3,15 @@ import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule } fr
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PlanesIntervencionService } from '../../../services/plan-intervencion.service';
+import { TerritoriosService } from '../../../services/territorios.service';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
 import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-editar-plandeintervencion',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule,MatSelectModule, MatFormFieldModule],
   templateUrl: './editar-plandeintervencion.component.html',
   styleUrl: './editar-plandeintervencion.component.scss'
 })
@@ -20,12 +23,31 @@ export class EditarPlandeintervencionComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   planId!: number;
-evaluacion: any;
+  evaluacion: any;
+  lineas: any[] = [];
+
+  constructor( private territorioService: TerritoriosService) {
+       
+  }
 
   ngOnInit() {
     this.planId = Number(this.route.snapshot.paramMap.get('id'));
     this.inicializarFormulario();
     this.cargarDatosPlan();
+    this.loadLineas();
+  }
+
+  loadLineas() {
+    this.territorioService.getLineas().subscribe({
+      next: (data) => {
+        console.log("✅ Líneas cargadas:", data);
+        this.lineas = data;
+      },
+      error: (err) => {
+        console.error("⚠️ Error al cargar líneas:", err);
+        alert("⚠️ Error al cargar las líneas de intervención. Revisa la consola.");
+      }
+    });
   }
 
   /** 📌 Inicializa el formulario vacío */
@@ -33,7 +55,7 @@ evaluacion: any;
     this.planForm = this.fb.group({
       id: [''],
       nombre: ['', Validators.required],
-      linea: ['', Validators.required],
+      linea_id: ['', Validators.required],
       descripcion: [''],
       evaluaciones: this.fb.array([])
     });
@@ -55,7 +77,7 @@ evaluacion: any;
         this.planForm.patchValue({
           id: plan.id,
           nombre: plan.nombre,
-          linea: plan.linea,
+          linea_id: plan.linea_nombre,
           descripcion: plan.descripcion
         });
 

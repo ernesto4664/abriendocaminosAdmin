@@ -17,6 +17,7 @@ export class EditarTerritorioComponent implements OnInit {
   territorioForm!: FormGroup;
   regiones: any[] = [];
   provincias: any[] = [];
+  lineas: any[] = []; 
   comunas: any[] = [];
   territorio: any = null;
 
@@ -35,8 +36,10 @@ export class EditarTerritorioComponent implements OnInit {
       provincia_id: [[]],
       comuna_id: [[]],
       plazas: [''],
-      linea: ['']
+      linea_id: ['']
     });
+
+    this.loadLineas();
 
     const id = Number(this.route.snapshot.paramMap.get('id'));
 
@@ -53,7 +56,7 @@ export class EditarTerritorioComponent implements OnInit {
             provincia_id: data.provincia_id || [],
             comuna_id: data.comuna_id || [],
             plazas: data.plazas || '',
-            linea: data.linea || ''
+            linea_id: data.linea_id || ''
           });
 
           this.territoriosService.getRegiones().subscribe({
@@ -79,6 +82,17 @@ export class EditarTerritorioComponent implements OnInit {
       });
     }
   }
+
+    /** 📌 Cargar todas las líneas de intervención */
+    loadLineas() {
+      this.territoriosService.getLineas().subscribe({
+        next: (data) => {
+          this.lineas = data;
+          console.log("✅ Líneas de intervención cargadas:", data);
+        },
+        error: (err) => console.error("⚠️ Error al cargar líneas:", err)
+      });
+    }
 
   onRegionChange(event: any) {
     this.territorioForm.get('region_id')?.setValue(event.value);

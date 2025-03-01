@@ -9,6 +9,7 @@ import { Region, Provincia, Comuna } from '../models/ubicacion.model'; // Import
 })
 export class TerritoriosService {
   private apiBaseUrl = `${environment.apiBaseUrl}/territorios`;
+  private apiLineaUrl =`${environment.apiLineaUrl}`;
   private apiUbicacionUrl = `${environment.apiBaseUrl}`; // Base URL para ubicaciones
   private http = inject(HttpClient);
 
@@ -20,7 +21,11 @@ export class TerritoriosService {
       headers: { 'Content-Type': 'application/json' }
     });
   }
-  
+
+  getLineas(): Observable<any> {
+    return this.http.get<any>('http://127.0.0.1:8000/api/v1/lineas');
+  }
+
   /** 📌 Obtener todas las regiones */
   getRegiones(): Observable<Region[]> {
     return this.http.get<Region[]>(`${this.apiUbicacionUrl}/regiones`);

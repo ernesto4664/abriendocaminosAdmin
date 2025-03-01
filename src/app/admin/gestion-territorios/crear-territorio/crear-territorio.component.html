@@ -50,12 +50,12 @@
         </div>
 
         <!-- Línea -->
-        <mat-form-field appearance="outline" style="margin-top: 35px;">
-          <mat-label>Asignar Planes de Intervención</mat-label>
-          <mat-select formControlName="linea">
-            <mat-option value="">Seleccionar</mat-option>
-            <mat-option value="1">Línea 1</mat-option>
-            <mat-option value="2">Línea 2</mat-option>
+        <mat-form-field style="margin-top: 15px;" appearance="outline">
+          <mat-label>Seleccionar Línea</mat-label>
+          <mat-select formControlName="linea_id">
+            <mat-option *ngFor="let linea of lineas" [value]="linea.id">
+              {{ linea.nombre }}
+            </mat-option>
           </mat-select>
         </mat-form-field>
 

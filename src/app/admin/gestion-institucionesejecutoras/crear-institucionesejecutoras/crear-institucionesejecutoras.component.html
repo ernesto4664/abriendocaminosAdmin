@@ -52,23 +52,16 @@
             </mat-select>
             </mat-form-field>
 
-            <!-- Plazas (se autocompleta según el territorio seleccionado) -->
-            <label for="plazas">Plazas</label>
-            <input id="plazas" type="number" formControlName="plazas" class="form-control" readonly>
+          <!-- Plazas (se autocompleta según el territorio seleccionado) -->
+          <label for="plazas">Plazas</label>
+          <input id="plazas" type="number" formControlName="plazas" class="form-control" readonly>
 
-            <!-- Selección de Plan de Intervención -->
-            <label style="margin-top: 20px;" for="planesdeintervencion_id">Seleccionar Plan de Intervención</label>
-            <mat-form-field appearance="outline">
-            <mat-label>Seleccionar Plan</mat-label>
-            <mat-select formControlName="planesdeintervencion_id">
-                <mat-option *ngFor="let plan of planesIntervencion" [value]="plan.id">
-                {{ plan.nombre }}
-                </mat-option>
-            </mat-select>
-            </mat-form-field>
-  
+          <!-- Plan de Intervención (autocompletado según el territorio seleccionado) -->
+          <label style="margin-top: 20px;" for="plan_intervencion">Plan de Intervención</label>
+          <input id="plan_intervencion" type="text" formControlName="planesdeintervencion_id" class="form-control" readonly>
+    
           <!-- Período de Registro Desde -->
-          <div class="form-group mt-3">
+          <div class="form-group" style="margin-top:20px;">
             <label for="periodo_registro_desde" class="form-label">Período de Registro (Desde)</label>
             <input id="periodo_registro_desde" type="date" formControlName="periodo_registro_desde"
               class="form-control">

@@ -40,13 +40,15 @@ export class CrearInstitucionesejecutorasComponent implements OnInit {
       telefono: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       territorio_id: ['', Validators.required],
-      plazas: [{ value: '', disabled: true }, [Validators.required, Validators.min(1)]], // 🔥 Campo autocompletado
-      planesdeintervencion_id: ['', Validators.required], // 🔥 Campo agregado
+      plazas: [{ value: '', disabled: true }, [Validators.required, Validators.min(1)]], // Campo autocompletado
+      planesdeintervencion_id: [''], // 🔥 Guardará el ID del plan de intervención
+      planesdeintervencion_nombre: [{ value: '', disabled: true }], // 🔥 Guardará el nombre y será readonly
       periodo_registro_desde: ['', Validators.required],
       periodo_registro_hasta: ['', Validators.required],
       periodo_seguimiento_desde: ['', Validators.required],
       periodo_seguimiento_hasta: ['', Validators.required]
     });
+    
   }
 
   /** 📌 Carga la lista de territorios */
@@ -67,22 +69,55 @@ export class CrearInstitucionesejecutorasComponent implements OnInit {
   /** 📌 Al seleccionar un territorio, se autocompletan las plazas y se cargan los planes de intervención */
   onTerritorioChange(event: any) {
     const territorioSeleccionado = this.territorios.find(t => t.id === event.value);
-    
-    if (territorioSeleccionado) {
-      // Autocompletar el campo de plazas
-      this.institucionForm.patchValue({ plazas: territorioSeleccionado.plazas });
-
-      // 🔥 Cargar los planes de intervención según la línea del territorio
-      this.planesService.getPlanesPorLinea(territorioSeleccionado.linea).subscribe({
-        next: (planes) => {
-          this.planesIntervencion = planes;
-          console.log(`📌 Planes de intervención cargados para Línea ${territorioSeleccionado.linea}:`, this.planesIntervencion);
-        },
-        error: (err) => console.error('❌ Error al cargar planes:', err)
-      });
+  
+    if (!territorioSeleccionado) {
+      console.warn("⚠ Territorio no encontrado.");
+      return;
     }
+  
+    // Autocompletar plazas
+    this.institucionForm.patchValue({ plazas: territorioSeleccionado.plazas });
+  
+    // Obtener línea de intervención del territorio
+    const lineaTerritorio = Number(territorioSeleccionado.linea_id); // Asegurar que sea número
+  
+    if (!lineaTerritorio) {
+      console.warn("⚠ El territorio no tiene una línea de intervención.");
+      this.institucionForm.patchValue({ planesdeintervencion_id: '' });
+      return;
+    }
+  
+    console.log(`🔍 Línea de intervención del territorio seleccionada: ${lineaTerritorio}`);
+  
+    // Buscar planes de intervención que coincidan con la línea seleccionada
+    this.planesService.getPlanesPorLinea(lineaTerritorio).subscribe({
+      next: (response) => {
+        if (response.success) {
+          const planes = response.planes;
+          console.log(`📌 Planes de intervención encontrados para Línea ${lineaTerritorio}:`, planes);
+  
+          if (planes.length > 0) {
+            // Seleccionar automáticamente el primer plan disponible
+            const planSeleccionado = planes[0];
+  
+            this.institucionForm.patchValue({ planesdeintervencion_id: planSeleccionado.nombre });
+            console.log("✅ Plan de intervención asignado correctamente:", planSeleccionado);
+          } else {
+            console.warn("⚠ No se encontraron planes de intervención.");
+            this.institucionForm.patchValue({ planesdeintervencion_id: '' });
+          }
+        } else {
+          console.warn("⚠ No se encontraron planes de intervención.");
+          this.institucionForm.patchValue({ planesdeintervencion_id: '' });
+        }
+      },
+      error: (err) => {
+        console.error("❌ Error al cargar planes:", err);
+        this.institucionForm.patchValue({ planesdeintervencion_id: '' });
+      }
+    });
   }
-
+  
   /** 📌 Enviar formulario */
   onSubmit() {
     if (this.institucionForm.valid) {

@@ -1,58 +1,58 @@
 <div class="container">
-    <h2 class="titulo">Planes de Intervención</h2>
-    <p>Administra los planes de intervención y sus evaluaciones.</p>
-  
-    <div class="search-box">
+  <h2 class="titulo">Planes de Intervención</h2>
+  <p>Administra los planes de intervención y sus evaluaciones.</p>
+
+  <div class="search-box">
       <input [(ngModel)]="searchText" (input)="filtrarPlanes()" type="text" placeholder="Buscar plan..." />
-  
+
       <select [(ngModel)]="selectedLinea" (change)="filtrarPlanes()">
-        <option value="">Todas las líneas</option>
-        <option value="1">Línea 1</option>
-        <option value="2">Línea 2</option>
+          <option value="">Todas las líneas</option>
+          <option *ngFor="let linea of lineas" [value]="linea.id">{{ linea.nombre }}</option>
       </select>
-  
-      <button (click)="filtrarPlanes()"><span>Buscar</span> <i class="icono-buscar">➕</i></button>
-    </div>
-  
-    <div *ngFor="let plan of filteredPlanes" class="plan">
+
+      <button (click)="filtrarPlanes()">
+          <span>Buscar</span> <i class="icono-buscar">➕</i>
+      </button>
+  </div>
+
+  <div *ngFor="let plan of filteredPlanes" class="plan">
       <div class="plan-header">
-        <div class="mispan" style="display: grid;">
-          <span class="titulo">{{ plan.nombre }}</span>
-          <span>Línea de intervención - <strong>{{ plan.linea == '1' ? 'Línea 1' : 'Línea 2' }}</strong></span>
-        </div>
-        <div class="menu">
-          <button (mouseenter)="toggleMenu(plan.id)" class="btn-menu">⚙</button>
-          <div *ngIf="activeMenuId === plan.id" class="menu-opciones">
-            <button *ngIf="expandedId !== plan.id" (click)="expandirPlan(plan.id)">Expandir</button>
-            <button *ngIf="expandedId === plan.id" (click)="minimizarPlan()">Minimizar</button>
-            <button *ngIf="expandedId === plan.id" (click)="editarPlan(plan.id)">Editar</button>
-            <button *ngIf="expandedId === plan.id" (click)="refrescar()">Refrescar</button>
+          <div class="mispan" style="display: grid;">
+              <span class="titulo">{{ plan.nombre }}</span>
+              <span>Línea de intervención - <strong>{{ getLineaNombre(plan.linea_id) }}</strong></span>
           </div>
-        </div>
+          <div class="menu">
+              <button (mouseenter)="toggleMenu(plan.id)" class="btn-menu">⚙</button>
+              <div *ngIf="activeMenuId === plan.id" class="menu-opciones">
+                  <button *ngIf="expandedId !== plan.id" (click)="expandirPlan(plan.id)">Expandir</button>
+                  <button *ngIf="expandedId === plan.id" (click)="minimizarPlan()">Minimizar</button>
+                  <button *ngIf="expandedId === plan.id" (click)="editarPlan(plan.id)">Editar</button>
+                  <button *ngIf="expandedId === plan.id" (click)="refrescar()">Refrescar</button>
+              </div>
+          </div>
       </div>
-  
+
       <div *ngIf="expandedId === plan.id" class="detalles">
-        <p><strong>Descripción:</strong> {{ plan.descripcion }}</p>
-  
-        <h4>Evaluaciones</h4>
-        <ul>
-          <li *ngFor="let evaluacion of plan.evaluaciones">
-            <strong>{{ evaluacion.nombre }}</strong>
-            <ul>
-              <li *ngFor="let pregunta of evaluacion.preguntas">
-                - {{ pregunta.pregunta }}
+          <p><strong>Descripción:</strong> {{ plan.descripcion }}</p>
+
+          <h4>Evaluaciones</h4>
+          <ul>
+              <li *ngFor="let evaluacion of plan.evaluaciones">
+                  <strong>{{ evaluacion.nombre }}</strong>
+                  <ul>
+                      <li *ngFor="let pregunta of evaluacion.preguntas">
+                          - {{ pregunta.pregunta }}
+                      </li>
+                  </ul>
               </li>
-            </ul>
-          </li>
-        </ul>
+          </ul>
       </div>
-    </div>
-  
-    <!-- 📌 Paginación -->
-    <div class="pagination">
+  </div>
+
+  <!-- 📌 Paginación -->
+  <div class="pagination">
       <button class="volver" (click)="irAPagina(currentPage - 1)" [disabled]="currentPage === 1">Anterior</button>
       <span>Página {{ currentPage }} de {{ totalPages }}</span>
       <button class="ir" (click)="irAPagina(currentPage + 1)" [disabled]="currentPage === totalPages">Siguiente</button>
-    </div>
   </div>
-  
+</div>

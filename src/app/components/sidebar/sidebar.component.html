@@ -2,6 +2,15 @@
   <button class="close-btn mobile-only" (click)="closeSidebar()">&times;</button>
   <nav>
     <ul>
+      <!-- lineas -->
+      <li (click)="toggleMenu('lineas')" [class.open]="menuState['lineas']">
+        <i class="fas fa-newspaper"></i>Lineas de intervención
+        <ul *ngIf="menuState['lineas']">
+          <li><a routerLink="/admin/gestion-lineas/crear">Crear linea de intervención</a></li>
+          <li><a routerLink="/admin/gestion-lineas/listar">Ver todas las lineas de intervención</a></li>
+        </ul>
+      </li>
+
       <!-- Territorios -->
       <li (click)="toggleMenu('territorios')" [class.open]="menuState['territorios']">
         <i class="fas fa-newspaper"></i>Gestor de Territorios

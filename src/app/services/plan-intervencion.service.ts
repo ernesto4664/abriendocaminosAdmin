@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { ApiResponse } from '../models/plan-intervencion.model';
 import { environment } from '../../environments/environment';
 
 @Injectable({
@@ -39,7 +40,12 @@ export class PlanesIntervencionService {
     return this.http.delete(`${this.apiBaseUrl}/${id}`);
   }
 
-  getPlanesPorLinea(linea: string): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiBaseUrl}?linea=${linea}`);
+  getPlanesPorLinea(lineaId: number): Observable<ApiResponse> {
+    return this.http.get<ApiResponse>(`${this.apiBaseUrl}/por-linea/${lineaId}`);
   }
+  
+  getPlanPorTerritorio(territorioId: number): Observable<any> {
+    return this.http.get<any>(`${this.apiBaseUrl}/territorio/${territorioId}`);
+  }
+     
 }

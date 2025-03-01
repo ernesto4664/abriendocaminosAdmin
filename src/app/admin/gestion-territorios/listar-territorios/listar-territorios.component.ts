@@ -14,6 +14,7 @@ import { TerritoriosService } from '../../../services/territorios.service';
 export class ListarTerritoriosComponent implements OnInit {
   territorios: any[] = [];
   filteredTerritorios: any[] = [];
+  lineas: any[] = [];
   expandedId: number | null = null;
   activeMenuId: number | null = null;
   searchText: string = '';
@@ -34,11 +35,25 @@ export class ListarTerritoriosComponent implements OnInit {
           region_nombres: this.obtenerNombresString(territorio.regiones),
           provincia_nombres: this.obtenerNombresString(territorio.provincias),
           comuna_nombres: this.obtenerNombresString(territorio.comunas),
+          linea_nombre: territorio.linea_nombre || 'Sin asignar' // ✅ Mostrar nombre de la línea
         }));
-  
-        this.aplicarFiltros(); // Llamar método para filtrar y paginar
+
+        this.aplicarFiltros(); // Aplicar filtros después de cargar
       },
       error: (err) => console.error("❌ Error al obtener territorios:", err)
+    });
+
+    this.loadLineas(); // ✅ Cargar líneas de intervención
+  }
+
+  /** 📌 Cargar todas las líneas de intervención */
+  loadLineas() {
+    this.territoriosService.getLineas().subscribe({
+      next: (data) => {
+        this.lineas = data;
+        console.log("✅ Líneas de intervención cargadas:", data);
+      },
+      error: (err) => console.error("⚠️ Error al cargar líneas:", err)
     });
   }
 
@@ -52,9 +67,9 @@ export class ListarTerritoriosComponent implements OnInit {
       );
     }
   
-    // Aplicar filtro por Línea 1 o Línea 2
+    // Aplicar filtro por línea de intervención usando `linea_id`
     if (this.selectedLinea) {
-      resultado = resultado.filter(t => t.linea === this.selectedLinea);
+      resultado = resultado.filter(t => t.linea_id === parseInt(this.selectedLinea));
     }
   
     // Calcular paginación
@@ -101,19 +116,4 @@ export class ListarTerritoriosComponent implements OnInit {
       this.aplicarFiltros();
     }
   }
-  
-  paginaAnterior() {
-    if (this.currentPage > 1) {
-      this.currentPage--;
-      this.aplicarFiltros();
-    }
-  }
-  
-  paginaSiguiente() {
-    if (this.currentPage < this.totalPages) {
-      this.currentPage++;
-      this.aplicarFiltros();
-    }
-  }
-  
 }

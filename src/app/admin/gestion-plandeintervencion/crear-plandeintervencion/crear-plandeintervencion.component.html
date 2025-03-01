@@ -14,14 +14,14 @@
                 </div>
 
                 <!-- Línea de Intervención -->
-                <div class="form-group" style="margin-top: 15px; margin-bottom: 15px;">
-                    <label for="linea" class="form-label">Línea de Intervención</label>
-                    <select id="linea" formControlName="linea" class="form-control">
-                        <option value="">Seleccionar</option>
-                        <option value="1">Línea 1</option>
-                        <option value="2">Línea 2</option>
-                    </select>
-                </div>
+                <mat-form-field style="margin-top: 15px;" appearance="outline">
+                    <mat-label>Seleccionar Línea</mat-label>
+                    <mat-select formControlName="linea_id">
+                      <mat-option *ngFor="let linea of lineas" [value]="linea.id">
+                        {{ linea.nombre }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
 
                 <!-- Descripción -->
                 <div class="form-group" style="margin-bottom: 20px;">

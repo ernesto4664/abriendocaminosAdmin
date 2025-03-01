@@ -1,6 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormArray, ReactiveFormsModule } from '@angular/forms';
 import { PlanesIntervencionService } from '../../../services/plan-intervencion.service';
+import { TerritoriosService } from '../../../services/territorios.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -20,11 +21,30 @@ export class CrearPlandeintervencionComponent implements OnInit {
   private fb = inject(FormBuilder);
   private planService = inject(PlanesIntervencionService);
   private router = inject(Router);
+  lineas: any[] = [];
+
+    constructor( private territorioService: TerritoriosService) {
+       
+    }
 
   ngOnInit() {
     this.inicializarFormulario();
     this.planForm.valueChanges.pipe(distinctUntilChanged()).subscribe(() => {
       this.verificarPuedeGuardar();
+    });
+    this.loadLineas();
+  }
+
+  loadLineas() {
+    this.territorioService.getLineas().subscribe({
+      next: (data) => {
+        console.log("✅ Líneas cargadas:", data);
+        this.lineas = data;
+      },
+      error: (err) => {
+        console.error("⚠️ Error al cargar líneas:", err);
+        alert("⚠️ Error al cargar las líneas de intervención. Revisa la consola.");
+      }
     });
   }
 
@@ -33,7 +53,7 @@ export class CrearPlandeintervencionComponent implements OnInit {
     this.planForm = this.fb.group({
       id: this.generarId(),
       nombre: ['', Validators.required],
-      linea: ['', Validators.required],
+      linea_id: ['', Validators.required],
       descripcion: [''],
       evaluaciones: this.fb.array([])  // 🛠 Se deja vacío para respetar lo que tienes
     });

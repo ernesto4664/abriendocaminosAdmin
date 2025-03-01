@@ -7,6 +7,12 @@ import { EditarTerritorioComponent } from './admin/gestion-territorios/editar-te
 import { DetalleTerritorioComponent } from './admin/gestion-territorios/detalle-territorio/detalle-territorio.component';
 import { ListarTerritoriosComponent } from './admin/gestion-territorios/listar-territorios/listar-territorios.component';
 
+import { GestionLineasComponent } from './admin/gestion-lineas/gestion-lineas.component';
+import { CrearLineasComponent } from './admin/gestion-lineas/crear-lineas/crear-lineas.component';
+import { EditarLineasComponent } from './admin/gestion-lineas/editar-lineas/editar-lineas.component';
+import { DetalleLineasComponent } from './admin/gestion-lineas/detalle-lineas/detalle-lineas.component';
+import { ListarLineasComponent } from './admin/gestion-lineas/listar-lineas/listar-lineas.component';
+
 import { GestionPlandeintervencionComponent } from './admin/gestion-plandeintervencion/gestion-plandeintervencion.component';
 import { CrearPlandeintervencionComponent } from './admin/gestion-plandeintervencion/crear-plandeintervencion/crear-plandeintervencion.component';
 import { EditarPlandeintervencionComponent } from './admin/gestion-plandeintervencion/editar-plandeintervencion/editar-plandeintervencion.component';
@@ -29,6 +35,12 @@ export const routes: Routes = [
       { path: 'admin/gestion-territorios/editar/:id', component: EditarTerritorioComponent },
       { path: 'admin/gestion-territorios/detalle/:id', component: DetalleTerritorioComponent },
       { path: 'admin/gestion-territorios/listar', component: ListarTerritoriosComponent },
+
+      { path: 'admin/gestion-lineas', component: GestionLineasComponent },
+      { path: 'admin/gestion-lineas/crear', component: CrearLineasComponent },
+      { path: 'admin/gestion-lineas/editar/:id', component: EditarLineasComponent },
+      { path: 'admin/gestion-lineas/detalle/:id', component: DetalleLineasComponent },
+      { path: 'admin/gestion-lineas/listar', component: ListarLineasComponent },
 
       { path: 'admin/gestion-plandeintervencion', component: GestionPlandeintervencionComponent },
       { path: 'admin/gestion-plandeintervencion/crear', component: CrearPlandeintervencionComponent },

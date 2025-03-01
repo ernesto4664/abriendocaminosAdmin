@@ -58,12 +58,12 @@
 
         <!-- Línea -->
         <div class="form-group" style="margin-top: 15px;">
-          <label for="linea" class="form-label">Línea de intervención</label>
+          <label for="linea_id" class="form-label">Línea de Intervención</label>
           <mat-form-field appearance="outline" class="full-width">
-            <mat-select formControlName="linea">
-              <mat-option value="">Seleccionar</mat-option>
-              <mat-option value="1">Línea 1</mat-option>
-              <mat-option value="2">Línea 2</mat-option>
+            <mat-select formControlName="linea_id">
+              <mat-option *ngFor="let linea of lineas" [value]="linea.id">
+                {{ linea.nombre }}
+              </mat-option>
             </mat-select>
           </mat-form-field>
         </div>

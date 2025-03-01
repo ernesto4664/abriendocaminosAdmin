@@ -1,0 +1,28 @@
+<div class="container">
+    <h2 class="titulo">Listado de Líneas de Intervención</h2>
+    <p>Administración de las líneas de intervención disponibles en el sistema.</p>
+  
+    <div *ngFor="let linea of lineas" class="territorio">
+      <div class="territorio-header">
+        <div class="mispan" style="display: grid;">
+          <span class="titulo">{{ linea.nombre }}</span>
+          <span>Descripción: <strong>{{ linea.descripcion }}</strong></span>
+        </div>
+        <div class="menu">
+          <button (mouseenter)="toggleMenu(linea.id)" class="btn-menu">⚙</button>
+          <div *ngIf="activeMenuId === linea.id" class="menu-opciones">
+            <button (click)="editarLinea(linea.id)">Editar</button>
+            <button (click)="eliminarLinea(linea.id)">Eliminar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Paginación -->
+    <div class="pagination">
+      <button class="volver" (click)="irAPagina(currentPage - 1)" [disabled]="currentPage === 1">Anterior</button>
+      <span>Página {{ currentPage }} de {{ totalPages }}</span>
+      <button class="ir" (click)="irAPagina(currentPage + 1)" [disabled]="currentPage === totalPages">Siguiente</button>
+    </div>
+  </div>
+  
