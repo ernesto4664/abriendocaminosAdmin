@@ -21,6 +21,8 @@ export class CrearInstitucionesejecutorasComponent implements OnInit {
   institucionForm!: FormGroup;
   territorios: any[] = [];
   planesIntervencion: any[] = [];
+  nombrePlan: string = ''; // ✅ Se muestra en el input readonly
+  idPlanIntervencion: number | null = null; // ✅ Se enviará al backend
 
   private fb = inject(FormBuilder);
   private router = inject(Router);
@@ -42,15 +44,14 @@ export class CrearInstitucionesejecutorasComponent implements OnInit {
       telefono: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       territorio_id: ['', Validators.required],
-      plazas: [{ value: '', disabled: true }, [Validators.required, Validators.min(1)]], // Campo autocompletado
-      planesdeintervencion_id: [''], // 🔥 Guardará el ID del plan de intervención
-      planesdeintervencion_nombre: [{ value: '', disabled: true }], // 🔥 Guardará el nombre y será readonly
+      plazas: [{ value: '', disabled: true }, [Validators.required, Validators.min(1)]], 
+      planesdeintervencion_id: [''], // ✅ Se enviará el ID al backend
+      planesdeintervencion_nombre: [{ value: '', disabled: true }], // ✅ Solo muestra el nombre
       periodo_registro_desde: ['', Validators.required],
       periodo_registro_hasta: ['', Validators.required],
       periodo_seguimiento_desde: ['', Validators.required],
       periodo_seguimiento_hasta: ['', Validators.required]
     });
-    
   }
 
   /** 📌 Carga la lista de territorios */
@@ -68,7 +69,7 @@ export class CrearInstitucionesejecutorasComponent implements OnInit {
     });
   }
 
-  /** 📌 Al seleccionar un territorio, se autocompletan las plazas y se cargan los planes de intervención */
+  /** 📌 Al seleccionar un territorio, se autocompletan las plazas y el plan de intervención */
   onTerritorioChange(event: any) {
     const territorioSeleccionado = this.territorios.find(t => t.id === event.value);
   
@@ -77,53 +78,59 @@ export class CrearInstitucionesejecutorasComponent implements OnInit {
       return;
     }
   
-    // Autocompletar plazas
-    this.institucionForm.patchValue({ plazas: territorioSeleccionado.plazas });
+    console.log(`📌 Territorio seleccionado: ${territorioSeleccionado.nombre_territorio}`);
   
-    // Obtener línea de intervención del territorio
-    const lineaTerritorio = Number(territorioSeleccionado.linea_id); // Asegurar que sea número
+    // ✅ Autocompletar plazas
+    this.institucionForm.patchValue({ plazas: territorioSeleccionado.plazas || 0 });
+  
+    // ✅ Verificar línea de intervención
+    const lineaTerritorio = Number(territorioSeleccionado.linea_id);
   
     if (!lineaTerritorio) {
       console.warn("⚠ El territorio no tiene una línea de intervención.");
-      this.institucionForm.patchValue({ planesdeintervencion_id: '' });
+      this.institucionForm.patchValue({
+        planesdeintervencion_id: '',
+        planesdeintervencion_nombre: 'Sin plan de intervención'
+      });
       return;
     }
   
-    console.log(`🔍 Línea de intervención del territorio seleccionada: ${lineaTerritorio}`);
+    console.log(`🔍 Línea de intervención seleccionada: ${lineaTerritorio}`);
   
-    // Buscar planes de intervención que coincidan con la línea seleccionada
+    // ✅ Buscar el plan de intervención correcto
     this.planesService.getPlanesPorLinea(lineaTerritorio).subscribe({
       next: (response) => {
-        if (response.success) {
-          const planes = response.planes;
-          console.log(`📌 Planes de intervención encontrados para Línea ${lineaTerritorio}:`, planes);
+        if (response?.success && response.planes.length > 0) {
+          const planSeleccionado = response.planes[0];
   
-          if (planes.length > 0) {
-            // Seleccionar automáticamente el primer plan disponible
-            const planSeleccionado = planes[0];
+          this.institucionForm.patchValue({
+            planesdeintervencion_id: planSeleccionado.id, // ✅ Se envía al backend
+            planesdeintervencion_nombre: planSeleccionado.nombre // ✅ Visible al usuario
+          });
   
-            this.institucionForm.patchValue({ planesdeintervencion_id: planSeleccionado.nombre });
-            console.log("✅ Plan de intervención asignado correctamente:", planSeleccionado);
-          } else {
-            console.warn("⚠ No se encontraron planes de intervención.");
-            this.institucionForm.patchValue({ planesdeintervencion_id: '' });
-          }
+          console.log("✅ Plan de intervención asignado:", planSeleccionado);
         } else {
           console.warn("⚠ No se encontraron planes de intervención.");
-          this.institucionForm.patchValue({ planesdeintervencion_id: '' });
+          this.institucionForm.patchValue({
+            planesdeintervencion_id: '',
+            planesdeintervencion_nombre: 'Sin plan de intervención'
+          });
         }
       },
       error: (err) => {
         console.error("❌ Error al cargar planes:", err);
-        this.institucionForm.patchValue({ planesdeintervencion_id: '' });
+        this.institucionForm.patchValue({
+          planesdeintervencion_id: '',
+          planesdeintervencion_nombre: 'Error al cargar plan'
+        });
       }
     });
-  }
-  
+  }  
+
   /** 📌 Enviar formulario */
   onSubmit() {
     if (this.institucionForm.valid) {
-      const formData = this.institucionForm.getRawValue(); // 🔥 Obtiene los valores incluso de los campos deshabilitados
+      const formData = this.institucionForm.getRawValue(); 
       console.log('📤 Enviando datos:', formData);
 
       this.institucionesService.crearInstitucion(formData).subscribe({

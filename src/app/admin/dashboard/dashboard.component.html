@@ -1,0 +1,91 @@
+<div class="dashboard-container">
+    <h2 class="dashboard-title">User Dashboard</h2>
+  
+    <!-- 🔹 Estadísticas en tarjetas first road -->
+    <div class="stats-container">
+      <div class="stat-card news">
+        <h3>🏢 Instituciones Ejecutoras</h3>
+        <p></p>
+        <button routerLink="/admin/noticias" class="btn-primary">Ver todas las Instituciones</button>
+        <button routerLink="/admin/noticias/add" class="btn-secondary">Crear nueva</button>
+      </div>
+  
+      <div class="stat-card benefits">
+        <h3>🧒 NNA registrados</h3>
+        <p></p>
+        <button routerLink="/admin/gestiondebeneficios" class="btn-primary">Ver todos los NNA registrados</button>
+        <button routerLink="/admin/gestiondebeneficios/add" class="btn-secondary"></button>
+      </div>
+  
+      <div class="stat-card users">
+        <h3>👥 Usuarios</h3>
+        <p>Registrados en el sistema: 5,432</p>
+        <button routerLink="/admin/usuariosapp" class="btn-primary">Ver todos los usuarios</button>
+      </div>
+  
+      <div class="stat-card notifications">
+        <h3>📊 Planes de intervención</h3>
+        <p></p>
+        <button routerLink="/admin/gestiondenotificaciones" class="btn-primary">Ver todos los planes</button>
+        <button routerLink="/admin/gestiondenotificaciones/add" class="btn-secondary">Crear plan de intervención</button>
+      </div>
+    </div>
+
+    <!-- 🔹 Estadísticas en tarjetas second road -->
+    <div style="margin-top: 30px;" class="stats-container">
+      <div class="stat-card news">
+        <h3>🏢 Instituciones Ejecutoras</h3>
+        <p></p>
+        <button routerLink="/admin/noticias" class="btn-primary">Ver todas las Instituciones</button>
+        <button routerLink="/admin/noticias/add" class="btn-secondary">Crear nueva</button>
+      </div>
+  
+      <div class="stat-card benefits">
+        <h3>🧒 NNA registrados</h3>
+        <p></p>
+        <button routerLink="/admin/gestiondebeneficios" class="btn-primary">Ver todos los NNA registrados</button>
+        <button routerLink="/admin/gestiondebeneficios/add" class="btn-secondary"></button>
+      </div>
+  
+      <div class="stat-card users">
+        <h3>👥 Usuarios</h3>
+        <p>Registrados en el sistema: 5,432</p>
+        <button routerLink="/admin/usuariosapp" class="btn-primary">Ver todos los usuarios</button>
+      </div>
+  
+      <div class="stat-card notifications">
+        <h3>📊 Planes de intervención</h3>
+        <p></p>
+        <button routerLink="/admin/gestiondenotificaciones" class="btn-primary">Ver todos los planes</button>
+        <button routerLink="/admin/gestiondenotificaciones/add" class="btn-secondary">Crear plan de intervención</button>
+      </div>
+    </div>
+    <!-- 🔹 Últimas Noticias 
+    <div class="latest-news">
+      <h3>Últimas Noticias</h3>
+      <div class="news-grid">
+        <div class="news-card" *ngFor="let noticia of noticias">
+          <h4>{{ noticia.titulo }}</h4>
+          <p>{{ noticia.descripcion }}</p>
+          <button class="btn-primary">Leer más</button>
+        </div>
+      </div>
+    </div>
+  
+     🔹 Notificaciones Programadas 
+    <div class="scheduled-notifications">
+      <h3>Notificaciones Programadas</h3>
+      <ul>
+        <li *ngFor="let notificacion of notificaciones">
+          <span>{{ notificacion.mensaje }} - <strong>{{ notificacion.fecha }}</strong></span>
+          <button class="btn-cancel">Cancelar</button>
+        </li>
+      </ul>
+    </div>-->
+  
+    <!-- 🔹 Gráfico de Estadísticas -->
+    <div class="chart-container">
+      <canvas id="statsChart"></canvas>
+    </div>
+  </div>
+  

@@ -17,7 +17,7 @@
     <div class="territorio-header">
       <div class="mispan" style="display: grid;">
         <span class="titulo">{{ territorio.nombre_territorio }}</span>
-        <span>Línea de intervención - <strong>{{ territorio.linea ? territorio.linea : 'Sin asignar' }}</strong></span>
+        <p><strong>Línea de intervención:</strong>{{ territorio.linea?.nombre }}</p>
       </div>
       <div class="menu">
         <button (mouseenter)="toggleMenu(territorio.id)" class="btn-menu">⚙</button>
@@ -34,7 +34,7 @@
       <p><strong>Región:</strong> {{ territorio.region_nombres }}</p>
       <p><strong>Provincia:</strong> {{ territorio.provincia_nombres }}</p>
       <p><strong>Comuna(s):</strong> {{ territorio.comuna_nombres }}</p>
-      <p><strong>Línea de intervención:</strong>{{ territorio.linea ? territorio.linea : 'Sin asignar' }}</p>
+      <span>Línea de intervención - <strong>{{ territorio.linea?.nombre ?? 'Sin asignar' }}</strong></span>
       <p><strong>Plazas:</strong> {{ territorio.plazas }} </p>
     </div>
   </div>

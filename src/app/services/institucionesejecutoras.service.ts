@@ -34,4 +34,9 @@ export class InstitucionesEjecutorasService {
   deleteInstitucion(id: number): Observable<any> {
     return this.http.delete<any>(`${this.apiBaseUrl}/${id}`);
   }
+
+  getInstitucionesPorRegion(regionId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiBaseUrl}?region_id=${regionId}`);
+  }
+  
 }
