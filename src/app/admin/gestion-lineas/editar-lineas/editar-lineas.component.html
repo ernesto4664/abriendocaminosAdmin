@@ -1,7 +1,7 @@
 <div class="container mt-4">
     <div class="card">
-      <div class="card-header bg-warning text-white">
-        <h3>Editar Línea de Intervención</h3>
+      <div class="card-header text-white">
+        <h3 class="titulo">Editar Línea de Intervención</h3>
       </div>
       <div class="card-body">
         <form [formGroup]="lineaForm" (ngSubmit)="onSubmit()">
@@ -19,13 +19,15 @@
             <textarea id="descripcion" formControlName="descripcion" class="form-control" rows="3"
               placeholder="Ingresar descripción"></textarea>
           </div>
-  
-          <!-- Botón de Envío -->
-          <div class="form-group text-right">
-            <button type="submit" class="btn btn-success btn-block" [disabled]="lineaForm.invalid">
-              Guardar Cambios
-            </button>
-          </div>
+
+          <!-- Botones -->
+<div class="button-container">
+  <button type="button" class="btn btn-secondary" (click)="volver()">Volver</button>
+  <button type="submit" class="custom-button"  [disabled]="lineaForm.invalid">
+    Guardar
+    <mat-icon class="icon">add_circle_outline</mat-icon>
+  </button>
+</div>
   
         </form>
       </div>

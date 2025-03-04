@@ -1,7 +1,7 @@
 <div class="container mt-4">
     <div class="card">
-      <div class="card-header bg-primary text-white">
-        <h3>Crear Línea de Intervención</h3>
+      <div class="card-header text-white">
+        <h3 class="titulo">Crear Línea de Intervención</h3>
       </div>
       <div class="card-body">
         <form [formGroup]="lineaForm" (ngSubmit)="onSubmit()">
@@ -21,12 +21,12 @@
           </div>
   
           <!-- Botón de Envío -->
-          <div class="form-group text-right">
-            <button type="submit" class="btn btn-primary btn-block" [disabled]="lineaForm.invalid">
+          <div class="button-container">
+            <button mat-button1 class="custom-button" [disabled]="lineaForm.invalid">
               Guardar
+              <mat-icon class="icon">add_circle_outline</mat-icon>
             </button>
           </div>
-  
         </form>
       </div>
     </div>

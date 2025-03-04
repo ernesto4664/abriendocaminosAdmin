@@ -1,7 +1,7 @@
 <div class="container mt-4">
   <div class="card">
-    <div class="card-header bg-primary text-white">
-      <h3>Crear Territorio</h3>
+    <div class="card-header bg-territorio text-white ">
+      <h3 class="titulo">Crear Territorio</h3>
     </div>
     <div class="card-body">
       <form [formGroup]="territorioForm" (ngSubmit)="onSubmit()">
@@ -12,36 +12,41 @@
           <input id="nombre_territorio" type="text" formControlName="nombre_territorio" class="form-control"
             placeholder="Ingresar nombre">
         </div>
-
-        <label for="cod_territorio" style="margin-top: 15px;">Código de Territorio</label>
-        <input type="number" id="cod_territorio" formControlName="cod_territorio" class="form-control">
-
-        <!-- Selección Múltiple de Regiones con Angular Material -->
-        <label for="region" style="margin-top: 15px;">Región</label>
-        <mat-form-field appearance="outline" style="margin-top: 5px;">
-          <mat-label>Seleccionar</mat-label>
-          <mat-select formControlName="region_id" multiple (selectionChange)="onRegionChange($event)">
-            <mat-option *ngFor="let region of regiones" [value]="region.id">{{ region.nombre }}</mat-option>
-          </mat-select>
-        </mat-form-field>        
-
-        <!-- Selección Múltiple de Provincias con Angular Material -->
-        <label for="region">Provincia</label>
-        <mat-form-field appearance="outline">
-          <mat-label>Seleccionar</mat-label>
-          <mat-select formControlName="provincia_id" multiple (selectionChange)="onProvinciaChange($event)">
-            <mat-option *ngFor="let provincia of provincias" [value]="provincia.id">{{ provincia.nombre }}</mat-option>
-          </mat-select>
-        </mat-form-field>
-
+        <div class="form-group">
+          <label for="cod_territorio"  class="form-label">Código de Territorio</label>
+          <input type="number" id="cod_territorio" formControlName="cod_territorio" class="form-control"
+          placeholder="Código de Territorio">
+        </div>
+        <div class="fform-group mb-0">
+          <!-- Selección Múltiple de Regiones con Angular Material -->
+          <label for="region"  class="form-label">Región</label>
+          <mat-form-field appearance="outline" style="margin-top: 5px;">
+            <mat-label>Seleccionar</mat-label>
+            <mat-select formControlName="region_id" multiple (selectionChange)="onRegionChange($event)">
+              <mat-option *ngFor="let region of regiones" [value]="region.id">{{ region.nombre }}</mat-option>
+            </mat-select>
+          </mat-form-field> 
+        </div> 
+        <div class="form-group mb-0">
+          <!-- Selección Múltiple de Provincias con Angular Material -->
+          <label for="region"  class="form-label">Provincia</label>
+          <mat-form-field appearance="outline">
+            <mat-label>Seleccionar</mat-label>
+            <mat-select formControlName="provincia_id" multiple (selectionChange)="onProvinciaChange($event)">
+              <mat-option *ngFor="let provincia of provincias" [value]="provincia.id">{{ provincia.nombre }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>   
+        <div class="form-group mb-0">   
         <!-- Selección Múltiple de Comunas con Angular Material -->
-        <label for="region">Comuna</label>
+        <label for="region" class="form-label">Comuna</label>
         <mat-form-field appearance="outline">
           <mat-label>Seleccionar</mat-label>
           <mat-select formControlName="comuna_id" multiple (selectionChange)="onComunaChange($event)">
             <mat-option *ngFor="let comuna of comunas" [value]="comuna.id">{{ comuna.nombre }}</mat-option>
           </mat-select>
         </mat-form-field>
+        </div>
 
         <!-- Plazas -->
         <div class="form-group">
@@ -50,14 +55,18 @@
         </div>
 
         <!-- Línea -->
-        <mat-form-field style="margin-top: 15px;" appearance="outline">
-          <mat-label>Seleccionar Línea</mat-label>
-          <mat-select formControlName="linea_id">
-            <mat-option *ngFor="let linea of lineas" [value]="linea.id">
-              {{ linea.nombre }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+        <div class="form-group">
+          <label for="plazas" class="form-label">Línea de Intervención
+          </label>
+          <mat-form-field  appearance="outline">
+            <mat-label>Seleccionar Línea</mat-label>
+            <mat-select formControlName="linea_id">
+              <mat-option *ngFor="let linea of lineas" [value]="linea.id">
+                {{ linea.nombre }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+      </div>
 
         <!-- Cuota 1 
         <div class="form-group">
@@ -84,11 +93,18 @@
         </div>-->
 
         <!-- Botón de Envío -->
-        <div class="form-group text-right">
-          <button type="submit" class="btn btn-primary btn-block" [disabled]="territorioForm.invalid">
+        <!--<div class="form-group text-right">
+          <button type="submit" class="btn btn-primary btn-block" >
             Guardar
           </button>
+        </div> -->
+        <div class="button-container">
+          <button mat-button1 class="custom-button" [disabled]="territorioForm.invalid">
+            Guardar
+            <mat-icon class="icon">add_circle_outline</mat-icon>
+          </button>
         </div>
+        
 
       </form>
     </div>

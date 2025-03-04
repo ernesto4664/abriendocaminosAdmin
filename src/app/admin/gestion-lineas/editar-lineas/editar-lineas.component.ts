@@ -3,11 +3,12 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 import { LineasService } from '../../../services/lineas.service';
-
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 @Component({
   selector: 'app-editar-lineas',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, MatButtonModule, MatIconModule],
   templateUrl: './editar-lineas.component.html',
   styleUrl: './editar-lineas.component.scss'
 })
@@ -62,5 +63,8 @@ export class EditarLineasComponent implements OnInit {
         });
       }
     }
+  }
+  volver() {
+    this.router.navigate(['/admin/gestion-lineas/listar']);
   }
 }
