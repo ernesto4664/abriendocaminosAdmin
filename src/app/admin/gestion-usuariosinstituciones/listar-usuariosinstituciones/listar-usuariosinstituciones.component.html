@@ -1,0 +1,33 @@
+<div class="container mt-4">
+  <h3>Usuarios Institucionales</h3>
+
+  <div *ngFor="let institucion of usuariosPorInstitucion | keyvalue">
+    <h4 class="mt-4">{{ institucion.key }}</h4> <!-- Nombre de la institución -->
+
+    <table class="table table-striped mt-2">
+      <thead class="table-dark">
+        <tr>
+          <th>Nombre</th>
+          <th>Email</th>
+          <th>Rol</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let usuario of institucion.value">
+          <td>{{ usuario.nombres }} {{ usuario.apellidos }}</td>
+          <td>{{ usuario.email }}</td>
+          <td>{{ usuario.rol }}</td>
+          <td>
+            <button class="btn btn-primary btn-sm me-2" (click)="editarUsuario(usuario.id)">
+              Editar
+            </button>
+            <button class="btn btn-danger btn-sm" (click)="eliminarUsuario(usuario.id)">
+              Eliminar
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

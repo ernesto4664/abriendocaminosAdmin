@@ -1,0 +1,67 @@
+<div class="container mt-4">
+    <h3>Editar Usuario de Institución</h3>
+
+    <div *ngIf="cargando" class="alert alert-info">Cargando usuario...</div>
+
+    <div *ngIf="!cargando">
+        <form [formGroup]="usuarioForm" (ngSubmit)="onSubmit()">
+            
+            <!-- Nombres -->
+            <div class="form-group">
+                <label for="nombres" class="form-label">Nombres</label>
+                <input id="nombres" type="text" formControlName="nombres" class="form-control">
+            </div>
+
+            <!-- Apellidos -->
+            <div class="form-group mt-3">
+                <label for="apellidos" class="form-label">Apellidos</label>
+                <input id="apellidos" type="text" formControlName="apellidos" class="form-control">
+            </div>
+
+            <!-- RUT -->
+            <div class="form-group mt-3">
+                <label for="rut" class="form-label">RUT</label>
+                <input id="rut" type="text" formControlName="rut" class="form-control">
+            </div>
+
+            <!-- Sexo -->
+            <mat-form-field class="w-100 mt-3">
+                <mat-label>Seleccionar Sexo</mat-label>
+                <mat-select formControlName="sexo">
+                    <mat-option value="M">Masculino</mat-option>
+                    <mat-option value="F">Femenino</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <!-- Fecha de Nacimiento -->
+            <div class="form-group mt-3">
+                <label for="fecha_nacimiento" class="form-label">Fecha de Nacimiento</label>
+                <input id="fecha_nacimiento" type="date" formControlName="fecha_nacimiento" class="form-control">
+            </div>
+
+            <!-- Profesión -->
+            <div class="form-group mt-3">
+                <label for="profesion" class="form-label">Profesión</label>
+                <textarea id="profesion" formControlName="profesion" class="form-control" rows="2"></textarea>
+            </div>
+
+            <!-- Email -->
+            <div class="form-group mt-3">
+                <label for="email" class="form-label">Correo Electrónico</label>
+                <input id="email" type="email" formControlName="email" class="form-control">
+            </div>
+
+            <!-- Contraseña (Opcional) -->
+            <div class="form-group mt-3">
+                <label for="password" class="form-label">Contraseña (Opcional)</label>
+                <input id="password" type="password" formControlName="password" class="form-control">
+            </div>
+
+            <!-- Botones -->
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary">Guardar</button>
+                <button type="button" class="btn btn-secondary ms-2" (click)="volver()">Volver</button>
+            </div>
+        </form>
+    </div>
+</div>
