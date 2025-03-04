@@ -1,7 +1,7 @@
 <div class="container mt-4">
     <div class="card">
-      <div class="card-header bg-primary text-white">
-        <h3>Crear Institución Ejecutora</h3>
+      <div class="card-header text-white">
+        <h3 class="titulo">Crear Institución Ejecutora</h3>
       </div>
       <div class="card-body">
         <form [formGroup]="institucionForm" (ngSubmit)="onSubmit()">
@@ -91,9 +91,10 @@
           </div>
   
           <!-- Botón de Envío -->
-          <div class="form-group text-right mt-4">
-            <button type="submit" class="btn btn-primary btn-block" [disabled]="institucionForm.invalid">
+          <div class="button-container">
+            <button mat-button1 class="custom-button" [disabled]="institucionForm.invalid">
               Guardar
+              <mat-icon class="icon">add_circle_outline</mat-icon>
             </button>
           </div>
   

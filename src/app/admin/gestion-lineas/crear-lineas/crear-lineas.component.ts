@@ -5,11 +5,12 @@ import { Router } from '@angular/router';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { LineasService } from '../../../services/lineas.service';
-
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 @Component({
   selector: 'app-crear-lineas',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatSelectModule, MatFormFieldModule],
+  imports: [CommonModule, ReactiveFormsModule, MatSelectModule, MatFormFieldModule, MatButtonModule, MatIconModule],
   templateUrl: './crear-lineas.component.html',
   styleUrl: './crear-lineas.component.scss'
 })

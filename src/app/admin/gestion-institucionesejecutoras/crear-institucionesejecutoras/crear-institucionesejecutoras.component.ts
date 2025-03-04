@@ -7,11 +7,13 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { InstitucionesEjecutorasService } from '../../../services/institucionesejecutoras.service';
 import { TerritoriosService } from '../../../services/territorios.service';
 import { PlanesIntervencionService } from '../../../services/plan-intervencion.service';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-crear-institucionesejecutoras',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatSelectModule, MatFormFieldModule],
+  imports: [CommonModule, ReactiveFormsModule, MatSelectModule, MatFormFieldModule, MatButtonModule, MatIconModule],
   templateUrl: './crear-institucionesejecutoras.component.html',
   styleUrl: './crear-institucionesejecutoras.component.scss'
 })

@@ -1,22 +1,23 @@
 <div class="container mt-4">
   <div class="card">
-    <div class="card-header bg-primary text-white">
-      <h3>Editar Territorio</h3>
+    <div class="card-header bg-territorio  text-white ">
+      <h3 class="titulo">Editar Territorio</h3>
     </div>
     <div class="card-body">
       <form [formGroup]="territorioForm" (ngSubmit)="onSubmit()">
         <!-- Nombre del Territorio -->
         <div class="form-group">
-          <label>Nombre del Territorio</label>
+          <label for="nombre_territorio" class="form-label">Nombre del Territorio</label>
           <input type="text" formControlName="nombre_territorio" class="form-control">
         </div>
-
-        <label style="margin-top: 15px;">Código de Territorio</label>
-        <input type="number" formControlName="cod_territorio" class="form-control">
+        <div class="form-group">
+          <label  for="nombre_territorio" class="form-label">Código de Territorio</label>
+          <input type="number" formControlName="cod_territorio" class="form-control">
+        </div>
 
         <!-- Selección de Regiones -->
-        <div class="form-group">
-          <label style="margin-top: 15px;">Región</label>
+        <div class="form-group mb-0">
+          <label  for="nombre_territorio" class="form-label">Región</label>
           <mat-form-field appearance="outline" class="full-width">
             <mat-select formControlName="region_id" multiple (selectionChange)="onRegionChange($event)">
               <mat-option *ngFor="let region of regiones" [value]="region.id">
@@ -27,8 +28,8 @@
         </div>
 
         <!-- Selección de Provincias -->
-        <div class="form-group">
-          <label>Provincia</label>
+        <div class="form-group mb-0">
+          <label for="nombre_territorio" class="form-label">Provincia</label>
           <mat-form-field appearance="outline" class="full-width">
             <mat-select formControlName="provincia_id" multiple (selectionChange)="onProvinciaChange($event)">
               <mat-option *ngFor="let provincia of provincias" [value]="provincia.id">
@@ -39,8 +40,8 @@
         </div>
 
         <!-- Selección de Comunas -->
-        <div class="form-group">
-          <label>Comuna</label>
+        <div class="form-group mb-0">
+          <label for="nombre_territorio" class="form-label">Comuna</label>
           <mat-form-field appearance="outline" class="full-width">
             <mat-select formControlName="comuna_id" multiple>
               <mat-option *ngFor="let comuna of comunas" [value]="comuna.id">
@@ -57,7 +58,7 @@
         </div>
 
         <!-- Línea -->
-        <div class="form-group" style="margin-top: 15px;">
+        <div class="form-group" >
           <label for="linea_id" class="form-label">Línea de Intervención</label>
           <mat-form-field appearance="outline" class="full-width">
             <mat-select formControlName="linea_id">
@@ -68,11 +69,15 @@
           </mat-form-field>
         </div>
 
-        <!-- Botones -->
-        <div class="form-group text-right">
-          <button type="submit" class="btn btn-primary btn-block">Guardar</button>
-          <button type="button" class="btn btn-secondary btn-block ml-2" (click)="volver()">Volver</button>
-        </div>
+<!-- Botones -->
+<div class="form-group button-container">
+  <button type="button" class="btn btn-secondary" (click)="volver()">Volver</button>
+  <button type="submit" class="custom-button">
+    Guardar
+    <mat-icon class="icon">add_circle_outline</mat-icon>
+  </button>
+</div>
+
       </form>
     </div>
   </div>
