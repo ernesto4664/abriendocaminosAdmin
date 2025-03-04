@@ -1,5 +1,7 @@
 import { Routes } from '@angular/router';
 import { LayoutComponent } from './components/layout/layout.component';
+import { DashboardComponent } from './admin/dashboard/dashboard.component';
+import { MiperfilComponent } from './admin/miperfil/miperfil.component';
 
 import { GestionTerritoriosComponent } from './admin/gestion-territorios/gestion-territorios.component';
 import { CrearTerritorioComponent } from './admin/gestion-territorios/crear-territorio/crear-territorio.component';
@@ -25,11 +27,19 @@ import { EditarInstitucionesejecutorasComponent } from './admin/gestion-instituc
 import { DetalleInstitucionesejecutorasComponent } from './admin/gestion-institucionesejecutoras/detalle-institucionesejecutoras/detalle-institucionesejecutoras.component';
 import { ListarInstitucionesejecutorasComponent } from './admin/gestion-institucionesejecutoras/listar-institucionesejecutoras/listar-institucionesejecutoras.component';
 
+import { GestionUsuariosinstitucionesComponent } from './admin/gestion-usuariosinstituciones/gestion-usuariosinstituciones.component';
+import { CrearUsuariosinstitucionesComponent } from './admin/gestion-usuariosinstituciones/crear-usuariosinstituciones/crear-usuariosinstituciones.component';
+import { EditarUsuariosinstitucionesComponent } from './admin/gestion-usuariosinstituciones/editar-usuariosinstituciones/editar-usuariosinstituciones.component';
+import { DetalleUsuariosinstitucionesComponent } from './admin/gestion-usuariosinstituciones/detalle-usuariosinstituciones/detalle-usuariosinstituciones.component';
+import { ListarUsuariosinstitucionesComponent } from './admin/gestion-usuariosinstituciones/listar-usuariosinstituciones/listar-usuariosinstituciones.component';
+
 export const routes: Routes = [
   {
     path: '',
     component: LayoutComponent, // Aquí aseguramos que el layout se aplique a todas las rutas hijas
     children: [
+      { path: 'admin', component: DashboardComponent },
+      { path: 'admin/miperfil', component: MiperfilComponent },
       { path: 'admin/gestion-territorios', component: GestionTerritoriosComponent },
       { path: 'admin/gestion-territorios/crear', component: CrearTerritorioComponent },
       { path: 'admin/gestion-territorios/editar/:id', component: EditarTerritorioComponent },
@@ -53,6 +63,12 @@ export const routes: Routes = [
       { path: 'admin/gestion-institucionesejecutoras/editar/:id', component: EditarInstitucionesejecutorasComponent },
       { path: 'admin/gestion-institucionesejecutoras/detalle/:id', component: DetalleInstitucionesejecutorasComponent },
       { path: 'admin/gestion-institucionesejecutoras/listar', component: ListarInstitucionesejecutorasComponent },
+
+      { path: 'admin/gestion-usuariosinstituciones', component: GestionUsuariosinstitucionesComponent },
+      { path: 'admin/gestion-usuariosinstituciones/crear', component: CrearUsuariosinstitucionesComponent },
+      { path: 'admin/gestion-usuariosinstituciones/editar/:id', component: EditarUsuariosinstitucionesComponent },
+      { path: 'admin/gestion-usuariosinstituciones/detalle/:id', component: DetalleUsuariosinstitucionesComponent },
+      { path: 'admin/gestion-usuariosinstituciones/listar', component: ListarUsuariosinstitucionesComponent },
     ]
   }
 ];

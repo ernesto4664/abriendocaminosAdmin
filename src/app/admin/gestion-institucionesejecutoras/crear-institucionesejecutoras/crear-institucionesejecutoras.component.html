@@ -46,9 +46,9 @@
             <mat-form-field appearance="outline">
             <mat-label>Seleccionar Territorio</mat-label>
             <mat-select formControlName="territorio_id" (selectionChange)="onTerritorioChange($event)">
-                <mat-option *ngFor="let territorio of territorios" [value]="territorio.id">
-                {{ territorio.nombre_territorio }} - Línea {{ territorio.linea }}
-                </mat-option>
+              <mat-option *ngFor="let territorio of territorios" [value]="territorio.id">
+                {{ territorio.nombre_territorio }} - Línea {{ territorio.linea?.nombre || 'Sin asignar' }}
+              </mat-option>              
             </mat-select>
             </mat-form-field>
 
@@ -59,7 +59,9 @@
           <!-- Plan de Intervención (autocompletado según el territorio seleccionado) -->
           <label style="margin-top: 20px;" for="plan_intervencion">Plan de Intervención</label>
           <input id="plan_intervencion" type="text" formControlName="planesdeintervencion_id" class="form-control" readonly>
-    
+          <!-- Campo oculto que contiene el ID del plan y se envía al backend -->
+          <input type="hidden" formControlName="planesdeintervencion_id">
+
           <!-- Período de Registro Desde -->
           <div class="form-group" style="margin-top:20px;">
             <label for="periodo_registro_desde" class="form-label">Período de Registro (Desde)</label>
