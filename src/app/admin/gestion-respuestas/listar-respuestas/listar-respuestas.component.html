@@ -1,0 +1,32 @@
+<div class="container">
+    <h3>Respuestas por Evaluación</h3>
+  
+    <div *ngFor="let evaluacion of respuestasPorEvaluacion | keyvalue">
+      <h4 class="mt-4">{{ evaluacion.key }}</h4> <!-- Nombre de la evaluación -->
+  
+      <table class="table table-striped mt-2">
+        <thead class="table-dark">
+          <tr>
+            <th>Pregunta</th>
+            <th>Respuesta</th>
+            <th>Tipo</th>
+            <th>Observaciones</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let respuesta of evaluacion.value">
+            <td>{{ respuesta.pregunta.pregunta }}</td>
+            <td>{{ respuesta.respuesta }}</td>
+            <td>{{ respuesta.tipo || 'Texto' }}</td>
+            <td>{{ respuesta.observaciones || 'Sin observaciones' }}</td>
+            <td>
+              <button class="btn btn-primary btn-sm me-2" (click)="editarRespuesta(respuesta.id)">Editar</button>
+              <button class="btn btn-danger btn-sm" (click)="eliminarRespuesta(respuesta.id)">Eliminar</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  

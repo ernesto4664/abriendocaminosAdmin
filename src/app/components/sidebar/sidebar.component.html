@@ -20,7 +20,7 @@
         </ul>
       </li>
 
-      <!-- Planes de intervencion -->
+      <!-- Planes de intervencion y respuestas -->
       <li (click)="toggleMenu('plandeintervencion')" [class.open]="menuState['plandeintervencion']">
         <i class="fas fa-newspaper"></i>Gestor de planes de intervención
         <ul *ngIf="menuState['plandeintervencion']">
@@ -29,12 +29,21 @@
         </ul>
       </li>
 
+      <!-- Nuevo menú para la gestión de respuestas -->
+      <li (click)="toggleMenu('gestionRespuestas')" [class.open]="menuState['gestionRespuestas']">
+        <i class="fas fa-reply"></i>Gestión de Respuestas
+        <ul *ngIf="menuState['gestionRespuestas']">
+          <li><a routerLink="/admin/gestion-respuestas/crear">Agregar nueva planilla de respuestas</a></li>
+          <li><a routerLink="/admin/gestion-respuestas/listar">Ver todas las planillas de respuestas</a></li>
+        </ul>
+      </li>
+  
       <!-- Instituciones ejecutoras -->
       <li (click)="toggleMenu('institucionesejecutoras')" [class.open]="menuState['institucionesejecutoras']">
         <i class="fas fa-newspaper"></i>Gestor de Instituciones ejecutoras
         <ul *ngIf="menuState['institucionesejecutoras']">
-          <li><a routerLink="/admin/gestion-institucionesejecutoras/crear">Agregar nueva instituciones ejecutoras</a></li>
-          <li><a routerLink="/admin/gestion-institucionesejecutoras/listar">Ver todas las institucionesejecutoras</a></li>
+          <li><a routerLink="/admin/gestion-institucionesejecutoras/crear">Agregar nueva institucion</a></li>
+          <li><a routerLink="/admin/gestion-institucionesejecutoras/listar">Ver todas las instituciones</a></li>
         </ul>
       </li>
 
@@ -42,7 +51,7 @@
       <li (click)="toggleMenu('usuariosinstituciones')" [class.open]="menuState['usuariosinstituciones']">
         <i class="fas fa-newspaper"></i>Usuarios instituciones
         <ul *ngIf="menuState['usuariosinstituciones']">
-          <li><a routerLink="/admin/gestion-usuariosinstituciones/crear">Agregar nueva usuario</a></li>
+          <li><a routerLink="/admin/gestion-usuariosinstituciones/crear">Agregar nuevo usuario</a></li>
           <li><a routerLink="/admin/gestion-usuariosinstituciones/listar">Ver todos los usuarios</a></li>
         </ul>
       </li>

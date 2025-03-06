@@ -17,6 +17,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
     lineas: false,
     plandeintervencion:false,
     institucionesejecutoras:false,
+
   };
 
   isSidebarOpen = false;

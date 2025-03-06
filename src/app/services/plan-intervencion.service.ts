@@ -47,5 +47,10 @@ export class PlanesIntervencionService {
   getPlanPorTerritorio(territorioId: number): Observable<any> {
     return this.http.get<any>(`${this.apiBaseUrl}/territorio/${territorioId}`);
   }
+
+  /** 📌 Obtener evaluaciones con preguntas por plan de intervención */
+  getEvaluacionesConPreguntas(planId: number): Observable<any> {
+    return this.http.get<any>(`${this.apiBaseUrl}/${planId}/evaluaciones`);
+  }
      
 }
