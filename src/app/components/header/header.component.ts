@@ -1,22 +1,26 @@
 import { Component } from '@angular/core';
-import { SidebarService } from '../../services/sidebar.service'; // Importa tu servicio
-//import { AuthService } from '../../services/auth.service';
-
+import { SidebarService } from '../../services/sidebar.service';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 @Component({
   selector: 'app-header',
   standalone: true,
   templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss']
+  styleUrls: ['./header.component.scss'],
+  imports: [MatIconModule, MatButtonModule] 
 })
 export class HeaderComponent {
-  constructor(private sidebarService: SidebarService,) {}
+
+  constructor(private sidebarService: SidebarService) {}
 
   toggleSidebar(): void {
-    console.log('Toggle Sidebar clicked'); // Asegúrate de que este mensaje aparezca en la consola
+    console.log('Toggle Sidebar clicked');
     this.sidebarService.toggleSidebar(); // Llama al servicio para abrir/cerrar el sidebar
   }
+  
 
   logout() {
-   // this.authService.logout();
+    // Llama aquí tu método de logout si lo deseas
+    // this.authService.logout();
   }
 }

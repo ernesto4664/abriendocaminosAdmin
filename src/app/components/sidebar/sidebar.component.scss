@@ -1,96 +1,131 @@
-/* Contenedor general */
-.layout-container {
-  display: flex;
-  min-height: 100vh;
-  overflow: hidden;
+
+.sidenav-container {
+  height: 100vh; /* Ocupa todo el alto de la pantalla */
 }
 
-/* Sidebar fijo */
-.sidebar {
-  font-family: "Prompt", sans-serif;
+.sidenav {
+  font-family: 'Roboto', sans-serif;
   background-color: #092039;
   color: white;
   width: 250px;
-  height: calc(100vh - 60px); /* Ajuste para no montarse en el header */
+  height: calc(100vh - 60px);
   padding: 20px;
   position: fixed;
-  top: 80px; /* Deja espacio para el header */
+  top: 59px;
   left: 0;
   overflow-y: auto;
   z-index: 1000;
 }
 
-/* Ajustar el contenido para que no se monte en el sidebar */
-.content {
-  flex: 1;
-  margin-left: 250px; /* Ahora sí separa correctamente el contenido */
-  padding: 20px;
-  overflow-x: hidden;
+.sidebar-header {
+  text-align: center;
+  padding: 15px 0;
 }
 
-/* Footer fijo abajo */
-app-footer {
-  width: 100%;
-  position: relative;
-  bottom: 0;
+.sidebar-title {
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
 }
 
-/* Móvil: Sidebar oculto y se despliega con el botón */
-@media (max-width: 1024px) {
-  .sidebar {
-    position: fixed;
-    left: -250px;
-    height: 100%;
-    transition: left 0.3s ease-in-out;
-  }
-
-  .sidebar.open {
-    left: 0;
-  }
-
-  .content {
-    margin-left: 0;
-  }
-  
-  .mobile-only {
-    display: none !important;
-  }
-
-}
-
-/* Estilos del menú desplegable en el sidebar */
-nav ul {
-  list-style: none;
-  padding: 0;
+mat-expansion-panel {
+  background: transparent;
+  color: #fff;
+  border: none;
+  box-shadow: none;
   margin: 0;
 }
 
-nav ul li {
-  padding: 15px;
+mat-expansion-panel-header {
+  padding: 0 8px;
+  .panel-icon {
+    margin-right: 10px;
+  }
+}
+
+/* Submenú dentro de un expansion panel */
+.submenu {
+  display: flex;
+  flex-direction: column;
+  margin-left: 10px; /* sangría */
+}
+
+.nested-panel {
+  margin-left: 20px; /* sangría extra para panel anidado */
+}
+
+button[mat-button] {
+  color: #fff;
+  text-align: left;
+  justify-content: flex-start;
+  padding-left: 0;
+  margin: 2px 0;
+
+  mat-icon {
+    margin-right: 10px;
+  }
+
+  &:hover {
+    background-color: rgba(255,255,255,0.1);
+  }
+}
+
+/* Botón de cerrar sesión */
+.logout-btn {
+  margin-top: 20px;
+  width: 100%;
+  color: #ff4444;
+
+  mat-icon {
+    margin-right: 5px;
+  }
+}
+.mat-expansion-panel-header-title {
+  color: rgb(255 255 255 / 87%);
+}
+::ng-deep .mat-expansion-indicator::after{
+  color: rgb(255 255 255) !important;
+}
+::ng-deep .mat-expansion-panel-body {
+  padding: 0 7px 16px !important;
+}
+ ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+ul li {
+  margin: 5px 0;
+}
+
+/* Estilos para los enlaces */
+ ul li a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 14px;
+  padding: 5px 0;
   display: block;
-  font-size: 1rem;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+  font-weight: 400;
+}
+/* Estilos para los enlaces en el submenu */
+ul li a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 14px;
+  padding: 5px 0;
+  display: block;
+  border-radius: 4px;
   transition: background-color 0.3s;
 }
 
-nav ul li:hover {
-  background-color: #092039;
+/* Estilo para el enlace activo */
+ul li a.active,ul li a:hover {
+  background-color: #007bff; /* Puedes elegir cualquier color */
+  color: #fff;
+  padding: 5px 10px; /* Ajusta el padding si lo deseas */
 }
 
-nav ul li a {
-  color: white;
-  text-decoration: none;
-}
-
-nav ul li ul {
-  list-style: none;
-  padding-left: 20px;
-  display: none;
-}
-
-nav ul li.open > ul {
-  display: block;
-}
-nav.navbar {
-  height: 80px;
-}
 
