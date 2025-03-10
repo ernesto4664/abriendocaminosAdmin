@@ -1,57 +1,112 @@
-<div class="sidebar" id="sidebar" [class.open]="isSidebarOpen">
-  <button class="close-btn mobile-only" (click)="closeSidebar()">&times;</button>
-  <nav>
+<mat-sidenav-container class="sidenav-container">
+  <!-- SIDENAV: Menú lateral -->
+  <mat-sidenav
+    [mode]="isMobile ? 'over' : 'side'"
+    [opened]="isMobile ? isSidebarOpen : true"
+    class="sidenav">
+    <mat-accordion>
+      <!-- MÓDULO DE REGISTRO GENERAL -->
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <img width="32px" src="assets/images/assignment.png" alt="panel-icon" class="panel-icon" />
+            Lineas de intervención
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="submenu">
+          <ul>
+            <li><a routerLink="/admin/gestion-lineas/crear" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Crear línea de intervención</a></li>
+            <li><a routerLink="/admin/gestion-lineas/listar" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Ver todas las líneas de intervención</a></li>
+          </ul>
+        </div>
+      </mat-expansion-panel>
+
+      <!-- MÓDULO PLAN DE INTERVENCIÓN -->
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <img width="32px" src="assets/images/assignment.png" alt="panel-icon" class="panel-icon" />
+            Gestor de Territorios
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="submenu">
+          <ul>
+            <li><a routerLink="/admin/gestion-territorios/crear" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Agregar nuevo territorio</a></li>
+            <li><a routerLink="/admin/gestion-territorios/listar" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Ver todos los territorios</a></li>
+          </ul>
+        </div>
+      </mat-expansion-panel>
+
+      <!-- MÓDULO EVALUACIÓN -->
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <img width="32px" src="assets/images/assignment.png" alt="panel-icon" class="panel-icon" />
+            Gestor de planes de intervención
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="submenu">
+          <ul>
+            <li><a routerLink="/admin/gestion-plandeintervencion/crear" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Agregar nuevo plan de intervención</a></li>
+            <li><a routerLink="/admin/gestion-plandeintervencion/listar" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Ver todos los planes de intervención</a></li>
+          </ul>
+        </div>
+      </mat-expansion-panel>
+
+      <!-- MÓDULO DE CIERRE -->
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <img width="32px" src="assets/images/assignment.png" alt="panel-icon" class="panel-icon" />
+            Gestión de Respuestas
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="submenu">
+          <ul>
+            <li><a routerLink="/admin/gestion-respuestas/crear" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Agregar nueva planilla de respuestas</a></li>
+            <li><a routerLink="/admin/gestion-respuestas/listar" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Ver todas las planillas de respuestas</a></li>
+          </ul>
+        </div>
+      </mat-expansion-panel>
+
+      <!-- MÓDULO BITÁCORA -->
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <img width="32px" src="assets/images/assignment.png" alt="panel-icon" class="panel-icon" />
+            Gestor de Instituciones ejecutoras
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="submenu">
+          <ul>
+            <li><a routerLink="/admin/gestion-institucionesejecutoras/crear" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Agregar nueva institución</a></li>
+            <li><a routerLink="/admin/gestion-institucionesejecutoras/listar" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Ver todas las instituciones</a></li>
+          </ul>
+        </div>
+      </mat-expansion-panel>
+
+      <!-- MÓDULO GRÁFICOS -->
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <img width="32px" src="assets/images/assignment.png" alt="panel-icon" class="panel-icon" />
+            Usuarios instituciones
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="submenu">
+          <ul>
+            <li><a routerLink="/admin/gestion-usuariosinstituciones/crear" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Agregar nuevo usuario</a></li>
+            <li><a routerLink="/admin/gestion-usuariosinstituciones/listar" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Ver todos los usuarios</a></li>
+          </ul>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+
+    <!-- Opciones adicionales para móvil -->
     <ul>
-      <!-- lineas -->
-      <li (click)="toggleMenu('lineas')" [class.open]="menuState['lineas']">
-        <i class="fas fa-newspaper"></i>Lineas de intervención
-        <ul *ngIf="menuState['lineas']">
-          <li><a routerLink="/admin/gestion-lineas/crear">Crear linea de intervención</a></li>
-          <li><a routerLink="/admin/gestion-lineas/listar">Ver todas las lineas de intervención</a></li>
-        </ul>
-      </li>
-
-      <!-- Territorios -->
-      <li (click)="toggleMenu('territorios')" [class.open]="menuState['territorios']">
-        <i class="fas fa-newspaper"></i>Gestor de Territorios
-        <ul *ngIf="menuState['territorios']">
-          <li><a routerLink="/admin/gestion-territorios/crear">Agregar nuevo territorio</a></li>
-          <li><a routerLink="/admin/gestion-territorios/listar">Ver todos los territorios</a></li>
-        </ul>
-      </li>
-
-      <!-- Planes de intervencion -->
-      <li (click)="toggleMenu('plandeintervencion')" [class.open]="menuState['plandeintervencion']">
-        <i class="fas fa-newspaper"></i>Gestor de planes de intervención
-        <ul *ngIf="menuState['plandeintervencion']">
-          <li><a routerLink="/admin/gestion-plandeintervencion/crear">Agregar nuevo plan de intervención</a></li>
-          <li><a routerLink="/admin/gestion-plandeintervencion/listar">Ver todos los planes de intervención</a></li>
-        </ul>
-      </li>
-
-      <!-- Instituciones ejecutoras -->
-      <li (click)="toggleMenu('institucionesejecutoras')" [class.open]="menuState['institucionesejecutoras']">
-        <i class="fas fa-newspaper"></i>Gestor de Instituciones ejecutoras
-        <ul *ngIf="menuState['institucionesejecutoras']">
-          <li><a routerLink="/admin/gestion-institucionesejecutoras/crear">Agregar nueva instituciones ejecutoras</a></li>
-          <li><a routerLink="/admin/gestion-institucionesejecutoras/listar">Ver todas las institucionesejecutoras</a></li>
-        </ul>
-      </li>
-
-      <!-- Usuarios instituciones -->
-      <li (click)="toggleMenu('usuariosinstituciones')" [class.open]="menuState['usuariosinstituciones']">
-        <i class="fas fa-newspaper"></i>Usuarios instituciones
-        <ul *ngIf="menuState['usuariosinstituciones']">
-          <li><a routerLink="/admin/gestion-usuariosinstituciones/crear">Agregar nueva usuario</a></li>
-          <li><a routerLink="/admin/gestion-usuariosinstituciones/listar">Ver todos los usuarios</a></li>
-        </ul>
-      </li>
-         
-      <!-- Opciones adicionales para móvil -->
-      <li class="mobile-only"><a routerLink="admin/miperfil"><i class="fas fa-user"></i> Mi Perfil</a></li>
-      <li class="mobile-only"><a routerLink="/admin"><i class="fas fa-user"></i> Dashboard User</a></li>
-      <li class="mobile-only"><a routerLink="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+      <li class="mobile-only"><a routerLink="/admin/miperfil" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"><img width="32px" src="assets/images/assignment.png" alt="panel-icon" class="panel-icon" /> Mi Perfil</a></li>
+      <li class="mobile-only"><a routerLink="/admin" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"><img width="32px" src="assets/images/home.png" alt="panel-icon" class="panel-icon" /> Dashboard User</a></li>
+      <li class="mobile-only"><a routerLink="/logout"><img width="32px" src="assets/images/logout.png" alt="panel-icon" class="panel-icon" /> Logout</a></li>
     </ul>
-  </nav>
-</div>
-<div class="overlay" *ngIf="isSidebarOpen" (click)="closeSidebar()"></div>
+  </mat-sidenav>
+</mat-sidenav-container>

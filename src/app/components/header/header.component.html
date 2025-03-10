@@ -1,15 +1,18 @@
-<nav class="navbar">
-  <div class="navbar-brand">
-    <a href="/admin">
-      <img src="assets/images/caminos.jpg" alt="Logo" class="navbar-logo">
-      <!--<span class="navbar-title">Dashboard User</span>-->
+<header class="header">
+  <div class="title">
+    <a routerLink="/admin">
+      <img width="150px" src="assets/images/caminos.jpg" alt="Logo" class="navbar-logo" />
+      <!-- <span class="navbar-title">Dashboard User</span> -->
     </a>
   </div>
-  <div class="navbar-right desktop-only">
-    <!--<a href="admin/miperfil">Mi Perfil</a>-->
-    <button (click)="logout()">Cerrar Sesión</button>
+  <div class="user-menu">
+    <img src="assets/images/user.png" alt="Usuario" class="user-icon">
+    <span class="user-name">Nombre de usuario</span>
   </div>
-  <div class="navbar-menu mobile-only">
-    <i class="fas fa-bars" (click)="toggleSidebar()"></i>
-  </div>
-</nav>
+    <!-- Botón hamburguesa visible solo en móvil -->
+    <div class="mobile-menu">
+      <button mat-icon-button (click)="toggleSidebar()">
+        <mat-icon>menu</mat-icon>
+      </button>
+    </div>
+</header>

@@ -3,68 +3,54 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { SidebarService } from '../../services/sidebar.service';
 import { Subscription } from 'rxjs';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   standalone: true,
   selector: 'app-sidebar',
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.scss'],
-  imports: [CommonModule, RouterModule]
+  imports: [CommonModule, RouterModule, MatSidenavModule, MatExpansionModule, MatIconModule, MatButtonModule]
 })
 export class SidebarComponent implements OnInit, OnDestroy {
-  menuState: { [key: string]: boolean } = {
-    territorios: false,
-    lineas: false,
-    plandeintervencion:false,
-    institucionesejecutoras:false,
-  };
-
+  // ... tu código de menú
   isSidebarOpen = false;
+  isMobile = false;
   private sidebarSubscription: Subscription | null = null;
+  private breakpointSubscription: Subscription | null = null;
 
   constructor(
     private eRef: ElementRef,
-    private sidebarService: SidebarService
+    private sidebarService: SidebarService,
+    private breakpointObserver: BreakpointObserver
   ) {}
 
   ngOnInit(): void {
     this.sidebarSubscription = this.sidebarService.sidebarStatus$.subscribe(isOpen => {
+      console.log('SidebarComponent: isSidebarOpen =', isOpen);
       this.isSidebarOpen = isOpen;
     });
+
+    this.breakpointSubscription = this.breakpointObserver
+      .observe([Breakpoints.Handset])
+      .subscribe(result => {
+        this.isMobile = result.matches;
+        if (!this.isMobile) {
+          this.isSidebarOpen = true; // En escritorio, siempre abierto
+        }
+      });
   }
 
   ngOnDestroy(): void {
-    if (this.sidebarSubscription) {
-      this.sidebarSubscription.unsubscribe();
-    }
+    this.sidebarSubscription?.unsubscribe();
+    this.breakpointSubscription?.unsubscribe();
   }
 
-  toggleMenu(menu: string): void {
-    this.menuState[menu] = !this.menuState[menu];
-  }
-
-  @HostListener('document:click', ['$event'])
-  onDocumentClick(event: MouseEvent): void {
-    const clickedElement = event.target as HTMLElement;
-
-    if (!this.eRef.nativeElement.contains(clickedElement) && 
-        !clickedElement.closest('.navbar-menu') && 
-        this.isSidebarOpen) {
-      this.closeSidebar();
-    }
-  }
-
-  @HostListener('window:resize')
-  onResize(): void {
-    if (window.innerWidth > 1024) {
-      this.closeSidebar();
-    }
-  }
-
-  toggleSidebar(): void {
-    this.sidebarService.toggleSidebar();
-  }
-
+  // Otros métodos (toggleMenu, closeSidebar, etc.)...
   closeSidebar(): void {
     this.sidebarService.closeSidebar();
   }
