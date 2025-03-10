@@ -24,8 +24,10 @@ export class RespuestasService {
 
   /** 📌 Crear nueva respuesta */
   createRespuesta(data: any): Observable<any> {
+    console.log('📤 Enviando datos a la API:', data); // 👀 Verificar datos antes de enviarlos
     return this.http.post(this.apiUrl, data);
   }
+
 
   /** 📌 Editar respuesta */
   updateRespuesta(id: number, data: any): Observable<any> {
@@ -35,5 +37,9 @@ export class RespuestasService {
   /** 📌 Eliminar respuesta */
   deleteRespuesta(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}`);
+  }
+
+  guardarRespuestas(data: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}`, data);
   }
 }

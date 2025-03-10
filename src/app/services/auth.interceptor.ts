@@ -1,11 +1,16 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 import { HttpRequest, HttpHandlerFn } from '@angular/common/http';
+import { inject } from '@angular/core';
+
+import { environment } from '../../environments/environment';
 
 export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<unknown>, next: HttpHandlerFn) => {
-  const apiToken = 'BASEAPISYSTEMDocker'; // Token de seguridad
+  const apiToken = 'BASEAPISYSTEMDocker';
 
-  // Clonamos la solicitud agregando el header del token
+  console.log('Interceptor ejecutado para:', req.url);
+
   const authReq = req.clone({
+    withCredentials: true, // 🔹 Permitir envío de cookies
     setHeaders: {
       'Api-Token': apiToken
     }
@@ -13,3 +18,5 @@ export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<unknown>, ne
 
   return next(authReq);
 };
+
+

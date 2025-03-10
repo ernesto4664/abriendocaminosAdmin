@@ -34,10 +34,10 @@
                     <div style="margin-bottom: 15px;" class="form-control" *ngFor="let evaluacion of evaluacionesFormArray.controls; let i = index; trackBy: trackById"
                         [formGroupName]="i">
 
-                        <h4>Evaluación {{ i + 1 }}</h4>
+                        <h4>Instrumento {{ i + 1 }}</h4>
 
                         <!-- Campo para el nombre de la Evaluación -->
-                        <label for="evaluacion-{{ i }}">Nombre de la Evaluación</label>
+                        <label for="evaluacion-{{ i }}">Nombre del instrumento</label>
                         <input style="margin-top:20px;" id="evaluacion-{{ i }}" type="text"
                             formControlName="nombre" class="form-control"/>
 
@@ -67,7 +67,7 @@
                         <!-- Botón para eliminar evaluación -->
                         <button style="margin-top: 20px; margin-bottom:20px;" type="button"
                         class="btn btn-danger" (click)="confirmarEliminarEvaluacion(i)">
-                            Eliminar Evaluación
+                            Eliminar Instrumento
                         </button>
                     </div>
                 </div>
@@ -76,7 +76,7 @@
                 <!-- Botón para agregar Evaluación -->
                 <button style="margin-top: 20px; display: block;" type="button" class="btn btn-info" (click)="agregarEvaluacion()"
                         aria-label="Agregar nueva evaluación">
-                    Agregar Evaluación
+                    Agregar Instrumento
                 </button>
 
                 <!-- Botón de Guardar Plan -->

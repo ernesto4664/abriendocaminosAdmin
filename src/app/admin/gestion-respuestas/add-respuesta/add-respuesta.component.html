@@ -1,7 +1,7 @@
 <div class="container mt-4">
   <div class="card">
     <div class="card-header bg-primary text-white">
-      <h3>Agregar Respuesta</h3>
+      <h3>Agregar Respuestas a instrumentos</h3>
     </div>
 
     <div class="card-body">
@@ -9,7 +9,7 @@
       <form [formGroup]="miFormulario">
         <!-- Seleccionar Plan de Intervención -->
         <mat-form-field class="w-100 mt-3" appearance="outline">
-          <mat-label>Seleccionar Plan</mat-label>
+          <mat-label>Seleccionar Plan de intervencion</mat-label>
           <mat-select formControlName="plan_id" (selectionChange)="cargarEvaluaciones($event.value)">
             <mat-option *ngFor="let plan of planes" [value]="plan.id">
               {{ plan.nombre }}
@@ -19,7 +19,7 @@
 
         <!-- Seleccionar Evaluación -->
         <mat-form-field class="w-100 mt-3" appearance="outline">
-          <mat-label>Seleccionar Evaluación</mat-label>
+          <mat-label>Seleccionar Instrumento</mat-label>
           <mat-select formControlName="evaluacion_id" (selectionChange)="cargarPreguntas($event.value)">
             <mat-option *ngFor="let evaluacion of evaluaciones" [value]="evaluacion.id">
               {{ evaluacion.nombre }}
@@ -30,6 +30,9 @@
 
       <!-- Listado de Preguntas -->
       <div *ngFor="let pregunta of preguntas" class="mt-4 p-3 border rounded shadow-sm">
+        <!-- ✅ Campo oculto para enviar el ID de la pregunta -->
+        <input type="hidden" [(ngModel)]="pregunta.id" [attr.name]="'pregunta_id_' + pregunta.id">
+
         <h5 class="fw-bold">{{ pregunta.pregunta }}</h5>
 
         <!-- Botones para agregar diferentes tipos de respuestas -->
@@ -49,6 +52,9 @@
           <button class="btn btn-primary" (click)="agregarOpcionSiNoNoEstoySeguro(pregunta.id)">
             Agregar "Sí / No / No estoy seguro"
           </button>
+          <button class="btn btn-primary" (click)="agregarOpcion5emojis(pregunta.id)">
+            Agregar "Emoji 1 hasta Emoji 5"
+          </button>
           <button class="btn btn-dark" (click)="agregarInputNumerico(pregunta.id)">
             Agregar Input Numérico
           </button>
@@ -56,6 +62,8 @@
 
         <!-- Respuestas agregadas -->
         <div *ngFor="let respuesta of respuestas[pregunta.id]" class="mt-3 p-3 border rounded bg-light">
+            <!-- ✅ Campo oculto en cada respuesta -->
+            <input type="hidden" [(ngModel)]="pregunta.id" [attr.name]="'pregunta_id_' + pregunta.id">
           <!-- Escala Likert Editable -->
           <div *ngIf="respuesta.tipo === 'likert'" class="mt-3 p-2 border">
             <strong>Escala Likert:</strong>
@@ -124,10 +132,23 @@
             </mat-radio-group>
           </div>
 
+          <!-- Opción Agregar "Emoji 1 hasta Emoji 5" -->
+          <div *ngIf="respuesta.tipo === '5emojis'" class="mt-3">
+            <label class="form-label">Opciónes Emoji 1 hasta Emoji 5:</label>
+            <mat-radio-group style="display: grid;" [(ngModel)]="respuesta.valor">
+              <mat-radio-button *ngFor="let opcion of respuesta.opciones" [value]="opcion.value">
+                {{ opcion.label }}
+              </mat-radio-button>
+            </mat-radio-group>
+          </div>
+
           <!-- Barra de Satisfacción -->
           <div *ngIf="respuesta.tipo === 'barra_satisfaccion'">
             <label class="form-label">Nivel de Satisfacción:</label>
-            <mat-slider min="0" max="10" step="1" [(ngModel)]="respuesta.valor" class="w-100"></mat-slider>
+            <mat-slider min="0" max="10" step="1" class="w-100">
+              <input matSliderStartThumb [(ngModel)]="respuesta.valor">
+              <input matSliderEndThumb>
+            </mat-slider>            
             <small class="text-muted">0: Nada satisfecho - 10: Completamente satisfecho</small>
           </div>
 
