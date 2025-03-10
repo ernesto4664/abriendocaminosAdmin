@@ -7,11 +7,13 @@ import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { BehaviorSubject, distinctUntilChanged } from 'rxjs';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-crear-plandeintervencion',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatSelectModule, MatFormFieldModule],
+  imports: [CommonModule, ReactiveFormsModule, MatSelectModule, MatFormFieldModule, MatButtonModule, MatIconModule],
   templateUrl: './crear-plandeintervencion.component.html',
   styleUrl: './crear-plandeintervencion.component.scss'
 })
@@ -159,5 +161,8 @@ export class CrearPlandeintervencionComponent implements OnInit {
   /** 📌 `trackBy` en *ngFor para optimización */
   trackById(index: number, item: any): string {
     return item.id;
+  }
+  volver() {
+    this.router.navigate(['/admin/gestion-territorios/listar']);
   }
 }
