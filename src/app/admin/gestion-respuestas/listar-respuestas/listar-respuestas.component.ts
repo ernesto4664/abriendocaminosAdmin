@@ -24,16 +24,24 @@ export class ListarRespuestasComponent implements OnInit {
     this.respuestasService.getRespuestas().subscribe({
       next: (respuestas) => {
         this.respuestasPorEvaluacion = respuestas.reduce((acc, respuesta) => {
-          const evaluacionNombre = respuesta.pregunta.evaluacion.nombre || 'Sin evaluación';
-          acc[evaluacionNombre] = acc[evaluacionNombre] || [];
+          // ✅ Verifica si la evaluación existe en la pregunta
+          const evaluacionNombre = respuesta.pregunta?.evaluacion?.nombre || 'Sin evaluación';
+  
+          // ✅ Si la evaluación ya existe en el objeto, agrega la nueva respuesta
+          if (!acc[evaluacionNombre]) {
+            acc[evaluacionNombre] = [];
+          }
+  
           acc[evaluacionNombre].push(respuesta);
           return acc;
         }, {});
+  
         console.log('✅ Respuestas agrupadas por evaluación:', this.respuestasPorEvaluacion);
       },
       error: (err) => console.error('❌ Error al obtener respuestas:', err)
     });
   }
+  
 
   eliminarRespuesta(id: number) {
     if (confirm('¿Estás seguro de eliminar esta respuesta?')) {
