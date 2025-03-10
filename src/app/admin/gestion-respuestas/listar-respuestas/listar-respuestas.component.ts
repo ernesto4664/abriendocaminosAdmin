@@ -14,7 +14,9 @@ export class ListarRespuestasComponent implements OnInit {
   respuestasPorEvaluacion: { [key: string]: any[] } = {};
   private respuestasService = inject(RespuestasService);
   private router = inject(Router);
-  
+  expandedId: string | null = null;
+  activeMenuId: string | null = null;
+
   ngOnInit() {
     this.cargarRespuestas();
   }
@@ -24,39 +26,37 @@ export class ListarRespuestasComponent implements OnInit {
     this.respuestasService.getRespuestas().subscribe({
       next: (respuestas) => {
         this.respuestasPorEvaluacion = respuestas.reduce((acc, respuesta) => {
-          // ✅ Verifica si la evaluación existe en la pregunta
           const evaluacionNombre = respuesta.pregunta?.evaluacion?.nombre || 'Sin evaluación';
-  
-          // ✅ Si la evaluación ya existe en el objeto, agrega la nueva respuesta
+
           if (!acc[evaluacionNombre]) {
             acc[evaluacionNombre] = [];
           }
-  
+
           acc[evaluacionNombre].push(respuesta);
           return acc;
         }, {});
-  
+
         console.log('✅ Respuestas agrupadas por evaluación:', this.respuestasPorEvaluacion);
       },
       error: (err) => console.error('❌ Error al obtener respuestas:', err)
     });
   }
-  
 
-  eliminarRespuesta(id: number) {
-    if (confirm('¿Estás seguro de eliminar esta respuesta?')) {
-      this.respuestasService.deleteRespuesta(id).subscribe({
-        next: () => {
-          alert('✅ Respuesta eliminada con éxito');
-          this.cargarRespuestas();
-        },
-        error: (err) => console.error('❌ Error al eliminar respuesta:', err)
-      });
-    }
+  /** 📌 Expandir evaluación para ver preguntas y respuestas */
+  expandirEvaluacion(id: string) {
+    this.expandedId = id;
   }
 
-  editarRespuesta(id: number) {
-    this.router.navigate(['/admin/gestion-respuestas/editar', id]);
+  minimizarEvaluacion() {
+    this.expandedId = null;
   }
-  
+
+  toggleMenu(id: string) {
+    this.activeMenuId = this.activeMenuId === id ? null : id;
+  }
+
+  /** 📌 Editar todas las respuestas de la evaluación seleccionada */
+  editarEvaluacion(evaluacionId: number) {
+    this.router.navigate(['/admin/gestion-respuestas/editar', evaluacionId]);
+  }
 }

@@ -1,9 +1,25 @@
 <div class="container">
-    <h3>Respuestas por Evaluación</h3>
-  
-    <div *ngFor="let evaluacion of respuestasPorEvaluacion | keyvalue">
-      <h4 class="mt-4">{{ evaluacion.key }}</h4> <!-- Nombre de la evaluación -->
-  
+  <h2 class="titulo">Respuestas por Evaluación</h2>
+  <p>Aquí puedes visualizar y gestionar las respuestas agrupadas por evaluación.</p>
+
+  <div *ngFor="let evaluacion of respuestasPorEvaluacion | keyvalue" class="evaluacion">
+    <div class="evaluacion-header">
+      <div class="mispan" style="display: grid;">
+        <span class="titulo">{{ evaluacion.key }}</span>
+        <p><strong>Total de Preguntas:</strong> {{ evaluacion.value.length }}</p>
+      </div>
+      <div class="menu">
+        <button (mouseenter)="toggleMenu(evaluacion.key)" class="btn-menu">⚙</button>
+        <div *ngIf="activeMenuId === evaluacion.key" class="menu-opciones">
+          <button *ngIf="expandedId !== evaluacion.key" (click)="expandirEvaluacion(evaluacion.key)">Expandir</button>
+          <button *ngIf="expandedId === evaluacion.key" (click)="minimizarEvaluacion()">Minimizar</button>
+          <button *ngIf="expandedId === evaluacion.key" (click)="editarEvaluacion(evaluacion.value[0].pregunta.evaluacion_id)">Editar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ✅ Si se expande, mostrar preguntas con respuestas -->
+    <div *ngIf="expandedId === evaluacion.key" class="detalles">
       <table class="table table-striped mt-2">
         <thead class="table-dark">
           <tr>
@@ -11,22 +27,17 @@
             <th>Respuesta</th>
             <th>Tipo</th>
             <th>Observaciones</th>
-            <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let respuesta of evaluacion.value">
             <td>{{ respuesta.pregunta.pregunta }}</td>
-            <td>{{ respuesta.respuesta }}</td>
+            <td>{{ respuesta.respuesta || 'Sin respuesta' }}</td>
             <td>{{ respuesta.tipo || 'Texto' }}</td>
             <td>{{ respuesta.observaciones || 'Sin observaciones' }}</td>
-            <td>
-              <button class="btn btn-primary btn-sm me-2" (click)="editarRespuesta(respuesta.id)">Editar</button>
-              <button class="btn btn-danger btn-sm" (click)="eliminarRespuesta(respuesta.id)">Eliminar</button>
-            </td>
           </tr>
         </tbody>
       </table>
     </div>
   </div>
-  
+</div>
