@@ -1,18 +1,25 @@
 <header class="header">
-  <div class="title">
-    <a routerLink="/admin">
-      <img width="150px" src="assets/images/caminos.jpg" alt="Logo" class="navbar-logo" />
-      <!-- <span class="navbar-title">Dashboard User</span> -->
+  <!-- Izquierda: Logo -->
+  <div class="header-left">
+    <a routerLink="/admin" class="logo-link">
+      <img src="assets/images/caminos.jpg" alt="Logo" class="navbar-logo" width="150" />
     </a>
   </div>
-  <div class="user-menu">
-    <img src="assets/images/user.png" alt="Usuario" class="user-icon">
-    <span class="user-name">Nombre de usuario</span>
-  </div>
-    <!-- Botón hamburguesa visible solo en móvil -->
+
+  <!-- Derecha: Menú de usuario y botón hamburguesa -->
+  <div class="header-right">
+    <div class="user-menu">
+      <img src="assets/images/user.png" alt="Usuario" class="user-icon" />
+      <span class="user-name">Nombre de usuario</span>
+    </div>
+    <!-- Botón hamburguesa, visible solo en móvil -->
     <div class="mobile-menu">
       <button mat-icon-button (click)="toggleSidebar()">
-        <mat-icon>menu</mat-icon>
+        <mat-icon *ngIf="(sidebarService.sidebarStatus$ | async); else menuIcon">close</mat-icon>
+        <ng-template #menuIcon>
+          <mat-icon>menu</mat-icon>
+        </ng-template>
       </button>
     </div>
+  </div>
 </header>

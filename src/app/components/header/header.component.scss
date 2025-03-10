@@ -2,67 +2,69 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 20px;
   background-color: #092039;
-  position: fixed; /* Fija el header en la parte superior */
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 60px; /* Altura fija para el header */
-  z-index: 1000; /* Asegura que el header esté sobre el sidebar */
-
-  .title {
-    font-size: 18px;
-  }
-
-  .user-menu {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-
-    .user-name {
-      font-size: 14px;
-      color: #fff;
-    }
-
-    .user-icon {
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      background-color: #1d3249; /* Simulación de imagen */
-    }
-  }
-}
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #092039;
-  color: white;
   padding: 10px 20px;
+  color: #fff;
 }
 
-.title {
+.header-left {
   display: flex;
   align-items: center;
 }
 
+.logo-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
 
+.navbar-logo {
+  display: block;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
 
 .user-menu {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 
-/* El contenedor del botón hamburguesa se oculta en escritorio */
+.user-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.user-name {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+/* Botón hamburguesa oculto en escritorio */
 .mobile-menu {
   display: none;
 }
 
-/* Muestra el botón hamburguesa solo en dispositivos móviles */
+/* En móviles (máximo 768px) */
 @media (max-width: 768px) {
   .mobile-menu {
-    display: block;
+    display: inline-flex;
   }
+  /* Opcional: Si deseas ocultar el menú de usuario en móvil, descomenta la siguiente línea */
+  // .user-menu { display: none; }
+}
+.mat-mdc-icon-button.mat-mdc-button-base {
+  cursor: pointer !important;
+}
+::ng-deep .mat-expansion-panel-header{
+  padding: 0px !important;
+}
+::ng-deep .mat-expansion-panel-header .panel-icon {
+  margin-right: 7px !important;
 }
