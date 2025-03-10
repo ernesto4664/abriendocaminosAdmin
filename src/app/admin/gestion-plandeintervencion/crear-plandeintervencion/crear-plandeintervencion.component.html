@@ -31,14 +31,14 @@
 
                 <!-- Evaluaciones -->
                 <div formArrayName="evaluaciones">
-                    <div style="margin-bottom: 15px;" class="form-control" *ngFor="let evaluacion of evaluacionesFormArray.controls; let i = index; trackBy: trackById"
+                    <div style="margin-bottom: 15px;padding-top: 15px;" class="form-control" *ngFor="let evaluacion of evaluacionesFormArray.controls; let i = index; trackBy: trackById"
                         [formGroupName]="i">
 
                         <h4>Instrumento {{ i + 1 }}</h4>
 
                         <!-- Campo para el nombre de la Evaluación -->
-                        <label for="evaluacion-{{ i }}">Nombre del instrumento</label>
-                        <input style="margin-top:20px;" id="evaluacion-{{ i }}" type="text"
+                        <label for="evaluacion-{{ i }}" class="form-label">Nombre del instrumento</label>
+                        <input  id="evaluacion-{{ i }}" type="text"
                             formControlName="nombre" class="form-control"/>
 
                         <!-- Preguntas de la Evaluación -->
@@ -46,44 +46,45 @@
                             <div *ngFor="let pregunta of getPreguntas(i).controls; let j = index; trackBy: trackById"
                                 [formGroupName]="j">
                                 
-                                <label for="pregunta-{{ j }}" style="margin-top:5px;">Pregunta</label>
+                                <label for="pregunta-{{ j }}" style="margin-top:5px;" class="form-label">Pregunta</label>
                                 <input id="pregunta-{{ j }}" type="text"
                                     formControlName="pregunta" class="form-control"/>
-
-                                <!-- Botón para eliminar pregunta -->
-                                <button style="margin-top: 15px; margin-bottom:15px;" type="button"
-                                class="btn btn-danger" (click)="confirmarEliminarPregunta(i, j)">
-                                    Eliminar Pregunta
-                                </button>
+                                    <div class="button-container2">    
+                                        <!-- Botón para eliminar pregunta -->
+                                        <button style="margin-top: 15px; margin-bottom:15px;" type="button"
+                                        class="btn custom-align rojo" (click)="confirmarEliminarPregunta(i, j)">
+                                            Eliminar Pregunta <mat-icon class="icon">add_circle_outline</mat-icon>
+                                        </button>
+                                    </div>
                             </div>
                         </div>
 
-                        <!-- Botón para agregar pregunta -->
-                        <button style="display: block; margin-top:20px;" type="button"
-                        class="btn btn-secondary" (click)="agregarPregunta(i)">
-                            Agregar Pregunta
-                        </button>
-
-                        <!-- Botón para eliminar evaluación -->
-                        <button style="margin-top: 20px; margin-bottom:20px;" type="button"
-                        class="btn btn-danger" (click)="confirmarEliminarEvaluacion(i)">
-                            Eliminar Instrumento
-                        </button>
+                        <div class="mt-4 mb-4 form-group button-container2">
+                            <!-- Botón para agregar pregunta -->
+                            <button  type="button"
+                            class="btn custom-align azul" (click)="agregarPregunta(i)">
+                                Agregar Pregunta <mat-icon class="icon">add_circle_outline</mat-icon>
+                            </button>
+                            <!-- Botón para eliminar evaluación -->
+                            <button  type="button"
+                            class="btn custom-align rojo" (click)="confirmarEliminarEvaluacion(i)">
+                                Eliminar Instrumento <mat-icon class="icon">add_circle_outline</mat-icon>
+                            </button>
+                        </div>
                     </div>
                 </div>
-
-
-                <!-- Botón para agregar Evaluación -->
-                <button style="margin-top: 20px; display: block;" type="button" class="btn btn-info" (click)="agregarEvaluacion()"
+                <div class="form-group button-container">
+                    <!-- Botón para agregar Evaluación -->
+                <button style="margin-top: 20px;display: flex;align-items: center;" type="button" class="custom-button" (click)="agregarEvaluacion()"
                         aria-label="Agregar nueva evaluación">
-                    Agregar Instrumento
+                    Agregar Instrumento <mat-icon class="icon">add_circle_outline</mat-icon>
                 </button>
-
-                <!-- Botón de Guardar Plan -->
-                <button style="margin-top: 20px;" type="submit" class="btn btn-primary"
+                    <!-- Botón de Guardar Plan -->
+                <button style="margin-top: 20px;display: flex;align-items: center;" type="submit" class="custom-button"
                     [disabled]="!(puedeGuardar$ | async)">
-                    Guardar Plan
+                    Guardar <mat-icon class="icon">add_circle_outline</mat-icon>
                 </button>
+                </div>
 
             </form>
         </div>

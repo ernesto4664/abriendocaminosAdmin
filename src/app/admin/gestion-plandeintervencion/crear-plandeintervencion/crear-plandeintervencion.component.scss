@@ -59,7 +59,7 @@
 }
 .button-container {
   display: flex;
-  justify-content: end; /* Distribuye los botones en extremos opuestos */
+  justify-content: space-between; /* Distribuye los botones en extremos opuestos */
   align-items: center;
   margin-top: 20px;
 }
@@ -83,7 +83,30 @@
   background: #0051A8 !important;
   color: white;
 }
-
+.custom-align{
+  display: flex;
+  align-items: center;
+}
+.azul {
+  color: #0051A8;
+  font-weight: 500;
+}
+.rojo {
+  color: #ff0000;
+  font-weight: 500;
+}
+.button-container2 {
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    margin-top: 20px;
+}
+.button-container3 {
+  display: flex;
+  justify-content: right;
+  align-items: center;
+  margin-top: 20px;
+}
 .icon {
   font-size: 20px;
 }
