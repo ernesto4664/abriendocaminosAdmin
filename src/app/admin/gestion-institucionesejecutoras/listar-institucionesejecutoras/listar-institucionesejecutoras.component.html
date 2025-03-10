@@ -1,59 +1,70 @@
 <div class="container">
-    <h2 class="titulo">Instituciones Ejecutoras</h2>
-    <p>Administra las instituciones ejecutoras y su información.</p>
-  
-    <!-- 🔹 Barra de búsqueda y filtro de regiones -->
-    <div class="search-box">
+  <h2 class="titulo">Instituciones Ejecutoras</h2>
+  <p>Administra las instituciones ejecutoras y su información.</p>
+
+  <!-- 🔹 Barra de búsqueda y filtro de regiones -->
+  <div class="search-box">
       <input [(ngModel)]="searchText" (input)="buscarInstituciones()" (keyup.enter)="buscarInstituciones()" type="text" placeholder="Buscar institución..." />
-  
+
       <select [(ngModel)]="selectedRegion" (change)="buscarInstituciones()">
-        <option value="">Todas las regiones</option>
-        <option *ngFor="let region of regiones" [value]="region.id">{{ region.nombre }}</option>
-      </select>  
-  
+          <option value="">Todas las regiones</option>
+          <option *ngFor="let region of regiones" [value]="region.id">{{ region.nombre }}</option>
+      </select>
+
       <button (click)="buscarInstituciones()">
-        <span>Buscar</span> 
-        <i class="icono-buscar">🔍</i>
+          <span>Buscar</span>
+          <i class="icono-buscar">🔍</i>
       </button>
-    </div>
-  
-    <!-- 🔹 Listado de instituciones -->
-    <div *ngFor="let institucion of filteredInstituciones" class="institucion">
+  </div>
+
+  <!-- 🔹 Listado de instituciones -->
+  <div *ngFor="let institucion of filteredInstituciones" class="institucion">
       <div class="institucion-header">
-        <div class="mispan" style="display: grid;">
-          <span class="titulo">
-            {{ institucion.nombre_fantasia }} - {{ getRegionNombre(institucion.territorio) }}
-          </span>
-          <p><strong>RUT:</strong> {{ institucion.rut }}</p>
-          <p><strong>Región: </strong> <span class="region-text">{{ getRegionNombre(institucion.territorio) }}</span></p>
-        </div>
-  
-        <div class="menu">
-          <button (mouseenter)="toggleMenu(institucion.id)" class="btn-menu">⚙</button>
-          <div *ngIf="activeMenuId === institucion.id" class="menu-opciones">
-            <button *ngIf="expandedId !== institucion.id" (click)="expandirInstitucion(institucion.id)">Expandir</button>
-            <button *ngIf="expandedId === institucion.id" (click)="minimizarInstitucion()">Minimizar</button>
-            <button *ngIf="expandedId === institucion.id" (click)="editarInstitucion(institucion.id)">Editar</button>
-            <button *ngIf="expandedId === institucion.id" (click)="refrescar()">Refrescar</button>
+          <div class="mispan" style="display: grid;">
+              <span class="titulo">
+                  {{ institucion.nombre_fantasia }} - {{ getRegionNombre(institucion.territorio) }}
+              </span>
+              <p><strong>RUT:</strong> {{ institucion.rut }}</p>
+              <p><strong>Región:</strong> <span class="region-text">{{ getRegionNombre(institucion.territorio) }}</span></p>
           </div>
-        </div>
+
+          <div class="menu">
+              <button (mouseenter)="toggleMenu(institucion.id)" class="btn-menu">⚙</button>
+              <div *ngIf="activeMenuId === institucion.id" class="menu-opciones">
+                  <button *ngIf="expandedId !== institucion.id" (click)="expandirInstitucion(institucion.id)">Expandir</button>
+                  <button *ngIf="expandedId === institucion.id" (click)="minimizarInstitucion()">Minimizar</button>
+                  <button *ngIf="expandedId === institucion.id" (click)="editarInstitucion(institucion.id)">Editar</button>
+                  <button *ngIf="expandedId === institucion.id" (click)="refrescar()">Refrescar</button>
+              </div>
+          </div>
       </div>
-  
+
+      <!-- 🔹 Sección expandida con más detalles -->
       <div *ngIf="expandedId === institucion.id" class="detalles">
-        <p><strong>Código territorio:</strong> {{ institucion.territorio?.cod_territorio }}</p>
-        <p><strong>Región:</strong> {{ getRegionNombre(institucion.territorio) }}</p>
-        <p><strong>Provincia:</strong> {{ institucion.territorio?.provincia_nombres }}</p>
-        <p><strong>Comuna(s):</strong> {{ institucion.territorio?.comuna_nombres }}</p>
-        <p><strong>Línea de intervención:</strong> {{ institucion.territorio?.linea?.nombre || 'Sin asignar' }}</p>
-        <p><strong>Plazas:</strong> {{ institucion.plazas }}</p>
+          <p><strong>Código territorio:</strong> {{ institucion.territorio?.cod_territorio }}</p>
+          <p><strong>Región:</strong> {{ getRegionNombre(institucion.territorio) }}</p>
+          <p><strong>Provincia:</strong> {{ getProvincias(institucion.territorio) }}</p>
+          <p><strong>Comuna(s):</strong> {{ getComunas(institucion.territorio) }}</p>
+
+          <!-- 🟢 Línea de Intervención -->
+          <p><strong>Línea de intervención:</strong> 
+              {{ institucion.plan_de_intervencion?.linea_id ? 'Línea ' + institucion.plan_de_intervencion.linea_id : 'Sin asignar' }}
+          </p>
+
+          <!-- 🟢 Plan de Intervención -->
+          <p><strong>Plan de Intervención:</strong> 
+              {{ institucion.plan_de_intervencion?.nombre || 'Sin plan asignado' }}
+          </p>
+
+          <!-- 🔹 Plazas -->
+          <p><strong>Plazas:</strong> {{ institucion.plazas }}</p>
       </div>
-    </div>
-  
-    <!-- 🔹 Paginación -->
-    <div class="pagination">
+  </div>
+
+  <!-- 🔹 Paginación -->
+  <div class="pagination">
       <button class="volver" (click)="irAPagina(currentPage - 1)" [disabled]="currentPage === 1">Anterior</button>
       <span>Página {{ currentPage }} de {{ totalPages }}</span>
       <button class="ir" (click)="irAPagina(currentPage + 1)" [disabled]="currentPage === totalPages">Siguiente</button>
-    </div>
   </div>
-  
+</div>

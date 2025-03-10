@@ -82,10 +82,21 @@ export class ListarInstitucionesejecutorasComponent implements OnInit {
     console.log("✅ Instituciones filtradas:", this.filteredInstituciones);
   }
   
+  /** 📌 Obtener el nombre de la región */
   getRegionNombre(territorio: any): string {
-    return territorio?.regiones?.length ? territorio.regiones[0].nombre : 'Desconocido';
+    return territorio?.regiones?.length ? territorio.regiones[0].nombre : 'No asignada';
   }
-  
+
+  /** 📌 Obtener la lista de provincias */
+  getProvincias(territorio: any): string {
+    return territorio?.provincias?.length ? territorio.provincias.map((p: { nombre: any; }) => p.nombre).join(', ') : 'No asignadas';
+  }
+
+  /** 📌 Obtener la lista de comunas */
+  getComunas(territorio: any): string {
+    return territorio?.comunas?.length ? territorio.comunas.map((c: { nombre: any; }) => c.nombre).join(', ') : 'No asignadas';
+  }
+
   toggleMenu(id: number) {
     this.activeMenuId = this.activeMenuId === id ? null : id;
   }

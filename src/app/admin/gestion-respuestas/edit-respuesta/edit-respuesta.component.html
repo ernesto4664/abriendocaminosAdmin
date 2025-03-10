@@ -1,0 +1,43 @@
+<div class="container mt-4">
+    <div class="card">
+      <div class="card-header bg-warning text-white">
+        <h3>Editar Respuesta</h3>
+      </div>
+  
+      <div class="card-body">
+        <form [formGroup]="respuestaForm" (ngSubmit)="onSubmit()">
+          
+          <!-- Respuesta -->
+          <div class="form-group mt-3">
+            <label for="respuesta" class="form-label">Respuesta</label>
+            <input id="respuesta" type="text" formControlName="respuesta" class="form-control" placeholder="Ingresar respuesta">
+          </div>
+  
+          <!-- Tipo de Respuesta -->
+          <mat-form-field class="w-100 mt-3" appearance="outline">
+            <mat-label>Tipo de Respuesta</mat-label>
+            <mat-select formControlName="tipo">
+              <mat-option value="texto">Texto</mat-option>
+              <mat-option value="barra_satisfaccion">Barra de Satisfacción</mat-option>
+            </mat-select>
+          </mat-form-field>
+  
+          <!-- Observaciones -->
+          <div class="form-group mt-3">
+            <label for="observaciones" class="form-label">Observaciones</label>
+            <textarea id="observaciones" formControlName="observaciones" class="form-control" rows="2" placeholder="Ingresar observaciones"></textarea>
+          </div>
+  
+          <!-- Botón de Guardar -->
+          <button style="margin-top: 20px;" type="submit" class="btn btn-success" [disabled]="respuestaForm.invalid">
+            Guardar Cambios
+          </button>
+          <button style="margin-top: 20px; margin-left: 10px;" type="button" class="btn btn-secondary" (click)="router.navigate(['/admin/gestion-respuestas'])">
+            Cancelar
+          </button>
+  
+        </form>
+      </div>
+    </div>
+  </div>
+  

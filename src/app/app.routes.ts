@@ -33,6 +33,10 @@ import { EditarUsuariosinstitucionesComponent } from './admin/gestion-usuariosin
 import { DetalleUsuariosinstitucionesComponent } from './admin/gestion-usuariosinstituciones/detalle-usuariosinstituciones/detalle-usuariosinstituciones.component';
 import { ListarUsuariosinstitucionesComponent } from './admin/gestion-usuariosinstituciones/listar-usuariosinstituciones/listar-usuariosinstituciones.component';
 
+import { ListarRespuestasComponent } from './admin/gestion-respuestas/listar-respuestas/listar-respuestas.component';
+import { AddRespuestaComponent } from './admin/gestion-respuestas/add-respuesta/add-respuesta.component';
+import { EditRespuestaComponent } from './admin/gestion-respuestas/edit-respuesta/edit-respuesta.component';
+
 export const routes: Routes = [
   {
     path: '',
@@ -69,6 +73,10 @@ export const routes: Routes = [
       { path: 'admin/gestion-usuariosinstituciones/editar/:id', component: EditarUsuariosinstitucionesComponent },
       { path: 'admin/gestion-usuariosinstituciones/detalle/:id', component: DetalleUsuariosinstitucionesComponent },
       { path: 'admin/gestion-usuariosinstituciones/listar', component: ListarUsuariosinstitucionesComponent },
+
+      { path: 'admin/gestion-respuestas/crear', component: AddRespuestaComponent },
+      { path: 'admin/gestion-respuestas/editar/:id', component: EditRespuestaComponent },
+      { path: 'admin/gestion-respuestas/listar', component: ListarRespuestasComponent },
     ]
   }
 ];
