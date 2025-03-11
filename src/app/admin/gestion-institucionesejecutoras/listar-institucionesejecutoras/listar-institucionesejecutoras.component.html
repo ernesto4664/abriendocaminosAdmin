@@ -11,7 +11,7 @@
           <option *ngFor="let region of regiones" [value]="region.id">{{ region.nombre }}</option>
       </select>
 
-      <button (click)="buscarInstituciones()">
+      <button (click)="buscarInstituciones()" class="buscador">
           <span>Buscar</span>
           <i class="icono-buscar">🔍</i>
       </button>

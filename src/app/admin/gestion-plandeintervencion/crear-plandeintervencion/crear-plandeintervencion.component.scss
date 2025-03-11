@@ -12,7 +12,7 @@
 
 .form-control {
   border: 1px solid #333333DE;
-  border-radius: 4px;
+  border-radius: 0px;
   padding: 0px 16px;
   font-size: 16px; 
   transition: border-color 0.3s ease-in-out;
@@ -29,7 +29,7 @@
   border-color: #007bff;
   padding: 10px 15px;
   font-size: 16px;
-  border-radius: 5px;
+  border-radius: 0px;
   width: 100%; /* Hace que el botón ocupe todo el ancho */
   
   &:hover {
@@ -66,13 +66,14 @@
 
 
 .custom-button {
+  line-height: normal;
   border: 1px solid #0051A8;
   color: #0051A8;
   background: transparent;
   padding: 8px 16px;
   font-size: 16px;
   font-weight: 500;
-  border-radius: 5px;
+  border-radius: 0px;
   display: flex;
   align-items: center;
   gap: 5px; /* Espacio entre el texto y el icono */
@@ -86,14 +87,17 @@
 .custom-align{
   display: flex;
   align-items: center;
+  line-height: normal;
 }
 .azul {
   color: #0051A8;
   font-weight: 500;
+  padding: 0px;
 }
 .rojo {
   color: #ff0000;
   font-weight: 500;
+  padding: 0px;
 }
 .button-container2 {
     display: flex;
