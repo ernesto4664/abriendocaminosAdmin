@@ -8,6 +8,7 @@ import { environment } from '../../environments/environment';
 })
 export class RespuestasService {
   private apiUrl = `${environment.apiBaseUrl}/respuestas`;
+  private apiUrlR = `http://127.0.0.1:8000/api/v1`;
   private http = inject(HttpClient);
 
   constructor() {}
@@ -19,7 +20,11 @@ export class RespuestasService {
 
   /** 📌 Obtener respuestas por evaluación */
   getRespuestasPorEvaluacion(evaluacionId: number): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/evaluacion/${evaluacionId}`);
+    return this.http.get(`${this.apiUrlR}/evaluacion/${evaluacionId}`);
+  }
+  
+  getEvaluacionCompleta(evaluacionId: number): Observable<any> {
+    return this.http.get(`${this.apiUrlR}/evaluaciones/${evaluacionId}/completa`);
   }
 
   /** 📌 Crear nueva respuesta */

@@ -57,23 +57,23 @@ export class EditRespuestaComponent implements OnInit {
 
   /** 📌 Cargar preguntas y respuestas existentes */
   cargarPreguntasYRespuestas() {
-    this.respuestasService.getRespuestasPorEvaluacion(this.evaluacionId).subscribe({
+    this.respuestasService.getEvaluacionCompleta(this.evaluacionId).subscribe({
       next: (data) => {
         this.preguntas = data.preguntas || [];
         this.respuestas = {};
         this.observaciones = {};
-
+  
         this.preguntas.forEach(pregunta => {
-          // Si la pregunta tiene respuestas, las carga; si no, inicializa vacías
-          this.respuestas[pregunta.id] = pregunta.respuestas?.length ? [...pregunta.respuestas] : [];
+          this.respuestas[pregunta.id] = pregunta.respuestas.length ? [...pregunta.respuestas] : [];
           this.observaciones[pregunta.id] = new FormControl(pregunta.observaciones || '');
         });
-
-        console.log('✅ Preguntas y respuestas cargadas:', this.preguntas);
+  
+        console.log('✅ Evaluación completa cargada:', this.preguntas);
       },
-      error: (err) => console.error('❌ Error al cargar preguntas y respuestas:', err)
+      error: (err) => console.error('❌ Error al cargar evaluación completa:', err)
     });
   }
+  
 
   /** 📌 Agregar una nueva respuesta de texto */
   agregarRespuestaTexto(preguntaId: number) {
