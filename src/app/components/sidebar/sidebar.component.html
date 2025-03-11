@@ -25,7 +25,7 @@
       <mat-expansion-panel>
         <mat-expansion-panel-header>
           <mat-panel-title>
-            <img width="32px" src="assets/images/assignment.png" alt="panel-icon" class="panel-icon" />
+            <img width="24px" src="assets/images/territorio.png" alt="panel-icon" class="panel-icon" />
             Gestor de Territorios
           </mat-panel-title>
         </mat-expansion-panel-header>
@@ -41,7 +41,7 @@
       <mat-expansion-panel>
         <mat-expansion-panel-header>
           <mat-panel-title>
-            <img width="32px" src="assets/images/assignment.png" alt="panel-icon" class="panel-icon" />
+            <img width="26px" src="assets/images/intervencion.png" alt="panel-icon" class="panel-icon" />
             Gestor de planes de intervención
           </mat-panel-title>
         </mat-expansion-panel-header>
@@ -57,8 +57,8 @@
       <mat-expansion-panel>
         <mat-expansion-panel-header>
           <mat-panel-title>
-            <img width="32px" src="assets/images/assignment.png" alt="panel-icon" class="panel-icon" />
-            Gestión de Respuestas
+            <img width="32px" src="assets/images/help_outline.png" alt="panel-icon" class="panel-icon" />
+            Gestor de Respuestas
           </mat-panel-title>
         </mat-expansion-panel-header>
         <div class="submenu">
@@ -73,7 +73,7 @@
       <mat-expansion-panel>
         <mat-expansion-panel-header>
           <mat-panel-title>
-            <img width="32px" src="assets/images/assignment.png" alt="panel-icon" class="panel-icon" />
+            <img width="32px" src="assets/images/home.png" alt="panel-icon" class="panel-icon" />
             Gestor de Instituciones ejecutoras
           </mat-panel-title>
         </mat-expansion-panel-header>
@@ -89,7 +89,7 @@
       <mat-expansion-panel>
         <mat-expansion-panel-header>
           <mat-panel-title>
-            <img width="32px" src="assets/images/assignment.png" alt="panel-icon" class="panel-icon" />
+            <img width="32px" src="assets/images/archive.png" alt="panel-icon" class="panel-icon" />
             Usuarios instituciones
           </mat-panel-title>
         </mat-expansion-panel-header>
@@ -100,6 +100,35 @@
           </ul>
         </div>
       </mat-expansion-panel>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <img width="32px" src="assets/images/notifications_active.png" alt="panel-icon" class="panel-icon" />
+            Gestor de convocatorias
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="submenu">
+          <ul>
+            <li><a routerLink="/admin/gestion-usuariosinstituciones/crear" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Agregar</a></li>
+            <li><a routerLink="/admin/gestion-usuariosinstituciones/listar" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Ver</a></li>
+          </ul>
+        </div>
+      </mat-expansion-panel>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <img width="32px" src="assets/images/settings.png" alt="panel-icon" class="panel-icon" />
+            Registros NNA
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="submenu">
+          <ul>
+            <li><a routerLink="/admin/gestion-usuariosinstituciones/crear" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Agregar</a></li>
+            <li><a routerLink="/admin/gestion-usuariosinstituciones/listar" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Ver</a></li>
+          </ul>
+        </div>
+      </mat-expansion-panel>
+      
     </mat-accordion>
 
     <!-- Opciones adicionales para móvil -->
