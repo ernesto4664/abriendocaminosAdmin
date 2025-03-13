@@ -227,26 +227,26 @@ cargarEvaluaciones(planId: number) {
     /** 📌 Guardar respuestas */
     guardarRespuestas() {
       const requestBody = {
-        evaluacion_id: this.miFormulario.get('evaluacion_id')?.value 
-          ? Number(this.miFormulario.get('evaluacion_id')?.value) 
+        evaluacion_id: this.miFormulario.get('evaluacion_id')?.value
+          ? Number(this.miFormulario.get('evaluacion_id')?.value)
           : null,
-      
-        respuestas: this.preguntas.map(pregunta => {
+    
+        respuestas: this.preguntas.map((pregunta) => {
           const respuesta = this.respuestas[pregunta.id]?.[0];
-      
+    
           return {
             pregunta_id: pregunta.id ? Number(pregunta.id) : null,  // ✅ Asegurar `pregunta_id`
             tipo: respuesta?.tipo ?? null,
-            respuesta: respuesta?.valor !== undefined && respuesta?.valor !== null 
-              ? String(respuesta.valor)  
+            respuesta: respuesta?.valor !== undefined && respuesta?.valor !== null
+              ? String(respuesta.valor)
               : null,
             observaciones: respuesta?.observaciones ?? null,
             opciones: respuesta?.opciones?.length ? respuesta.opciones : null,
             subpreguntas: respuesta?.subpreguntas?.length ? respuesta.subpreguntas : null
           };
-        }).filter(r => r.pregunta_id !== null && r.tipo !== null) // ✅ Filtrar respuestas inválidas
+        }).filter((r) => r.pregunta_id !== null && r.tipo !== null) // ✅ Filtrar respuestas inválidas
       };
-      
+    
       console.log("📤 Enviando datos a la API:", JSON.stringify(requestBody, null, 2));
     
       if (!requestBody.evaluacion_id) {
@@ -259,16 +259,21 @@ cargarEvaluaciones(planId: number) {
         return;
       }
     
-      this.respuestaService.guardarRespuestas(requestBody).subscribe({
-        next: (response: any) => {  
+      // Asegurarte de pasar las respuestas de manera adecuada:
+      // Cambia esto si 'this.respuestas' no es un array.
+      const respuestasFormateadas = Object.values(this.respuestas).flat(); // Convertir en un array plano
+    
+      this.respuestaService.guardarRespuestas(requestBody, respuestasFormateadas).subscribe({
+        next: (response: any) => {
           console.log("✅ Respuestas guardadas con éxito", response);
           this.router.navigate(['admin/gestion-respuestas/listar']); // ✅ Redirección después de éxito
         },
-        error: (error: any) => {  
+        error: (error: any) => {
           console.error("❌ Error al guardar respuestas:", error);
         }
       });
     }
+    
      
     /** 📌 Agregar Respuesta de Texto */
     agregarRespuestaTexto(preguntaId: number) {

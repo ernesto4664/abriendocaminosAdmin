@@ -13,31 +13,52 @@
         <div *ngIf="activeMenuId === evaluacion.key" class="menu-opciones">
           <button *ngIf="expandedId !== evaluacion.key" (click)="expandirEvaluacion(evaluacion.key)">Expandir</button>
           <button *ngIf="expandedId === evaluacion.key" (click)="minimizarEvaluacion()">Minimizar</button>
-          <button *ngIf="expandedId === evaluacion.key" (click)="editarEvaluacion(evaluacion.value[0].pregunta.evaluacion_id)">Editar</button>
+          <button (click)="editarEvaluacion(evaluacion.value[0]?.id)">Editar</button>
+
         </div>
       </div>
     </div>
-
-    <!-- ✅ Si se expande, mostrar preguntas con respuestas -->
+  
     <div *ngIf="expandedId === evaluacion.key" class="detalles">
-      <table class="table table-striped mt-2">
-        <thead class="table-dark">
-          <tr>
-            <th>Pregunta</th>
-            <th>Respuesta</th>
-            <th>Tipo</th>
-            <th>Observaciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let respuesta of evaluacion.value">
-            <td>{{ respuesta.pregunta.pregunta }}</td>
-            <td>{{ respuesta.respuesta || 'Sin respuesta' }}</td>
-            <td>{{ respuesta.tipo || 'Texto' }}</td>
-            <td>{{ respuesta.observaciones || 'Sin observaciones' }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+      <div *ngFor="let respuesta of evaluacion.value">
+        <p><strong>Pregunta:</strong> {{ respuesta.pregunta }}</p>
+  
+        <!-- Respuesta -->
+        <p><strong>Posibles opciones de respuestas:</strong>
+          {{ respuesta.respuestas.length > 0 ? respuesta.respuestas[0]?.respuesta : 'No se le han grabado posibles respuestas a esta pregunta.' }}
+        </p>
+  
+        <!-- Opciones (si existen) -->
+        <div *ngIf="respuesta.respuestas[0]?.opciones?.length > 0">
+          <p><strong>Opciones:</strong></p>
+          <ul>
+            <li *ngFor="let opcion of respuesta.respuestas[0].opciones">
+              {{ opcion.label }}
+            </li>
+          </ul>
+        </div>
+  
+        <!-- Otras opciones -->
+        <div *ngIf="respuesta.respuestas[0]?.tipo === 'si_no_noestoyseguro'">
+          <p><strong>Opciones:</strong></p>
+          <ul>
+            <li *ngFor="let opcion of respuesta.respuestas[0].opciones">
+              <label>
+                <input type="radio" [value]="opcion.label" />
+                {{ opcion.label }}
+              </label>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>    
+  </div>
+  
+
+  <!-- Paginación -->
+  <div class="pagination">
+    <button class="volver" (click)="irAPagina(currentPage - 1)" [disabled]="currentPage === 1">Anterior</button>
+    <span>Página {{ currentPage }} de {{ totalPages }}</span>
+    <button class="ir" (click)="irAPagina(currentPage + 1)" [disabled]="currentPage === totalPages">Siguiente</button>
   </div>
 </div>

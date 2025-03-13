@@ -7,26 +7,29 @@ import { environment } from '../../environments/environment';
   providedIn: 'root'
 })
 export class RespuestasService {
+  obtenerEvaluaciones() {
+    throw new Error('Method not implemented.');
+  }
   private apiUrl = `${environment.apiBaseUrl}/respuestas`;
   private apiUrlR = `http://127.0.0.1:8000/api/v1`;
   private http = inject(HttpClient);
 
   constructor() {}
 
-  /** 📌 Obtener todas las respuestas */
-  getRespuestas(): Observable<any[]> {
-    return this.http.get<any[]>(this.apiUrl);
-  }
+  
+  getRespuesta(): Observable<any> {
+    return this.http.get<any>(`${this.apiUrlR}/respuestas`);
+}
 
   /** 📌 Obtener respuestas por evaluación */
   getRespuestasPorEvaluacion(evaluacionId: number): Observable<any> {
-    return this.http.get(`${this.apiUrlR}/evaluacion/${evaluacionId}`);
+    return this.http.get<any>(`${this.apiUrlR}/respuestas/por-evaluacion/${evaluacionId}`);
   }
-  
+
   getEvaluacionCompleta(evaluacionId: number): Observable<any> {
     return this.http.get(`${this.apiUrlR}/evaluaciones/${evaluacionId}/completa`);
   }
-
+  
   /** 📌 Crear nueva respuesta */
   createRespuesta(data: any): Observable<any> {
     console.log('📤 Enviando datos a la API:', data); // 👀 Verificar datos antes de enviarlos
@@ -36,15 +39,26 @@ export class RespuestasService {
 
   /** 📌 Editar respuesta */
   updateRespuesta(id: number, data: any): Observable<any> {
+    console.log(`📡 Enviando actualización para ID: ${id}`, data);
     return this.http.put(`${this.apiUrl}/${id}`, data);
+}
+
+  /** 📌 Método en el servicio para eliminar una respuesta */
+  eliminarRespuesta(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrlR}/respuestas/${id}`);
   }
 
-  /** 📌 Eliminar respuesta */
-  deleteRespuesta(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${id}`);
-  }
-
-  guardarRespuestas(data: any): Observable<any> {
+  guardarRespuestas(data: any, respuestas: { [preguntaId: number]: any[]; length: number; forEach(arg0: (respuesta: any) => void): unknown; }): Observable<any> {
     return this.http.post(`${this.apiUrl}`, data);
   }
+
+  getRespuestaById(id: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrlR}/respuestas/${id}`);
+  }
+  
+  actualizarRespuesta(id: number, data: any): Observable<any> {
+    return this.http.put<any>(`${this.apiUrlR}/respuestas/${id}`, data);
+  }
+  
+
 }
