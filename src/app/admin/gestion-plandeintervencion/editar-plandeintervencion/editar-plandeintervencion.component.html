@@ -1,7 +1,7 @@
-<div class="container mt-4">
+<div class="container mt-4 p-0">
     <div class="card">
-      <div class="card-header bg-primary text-white">
-        <h3>Editar Plan de Intervención</h3>
+      <div class="card-header text-white">
+        <h3 class="titulo">Editar Plan de Intervención</h3>
       </div>
   
       <div class="card-body">
@@ -32,7 +32,7 @@
             <!-- Evaluaciones -->
             <div formArrayName="evaluaciones">
                 <ng-container *ngFor="let evaluacion of evaluacionesFormArray.controls; let i = index">
-                <div [formGroupName]="i" class="form-control" style="margin-bottom: 15px;" *ngIf="!evaluacion.get('eliminar')?.value"> 
+                <div [formGroupName]="i" class="form-control"  style="margin-bottom: 15px;padding-top: 15px;" *ngIf="!evaluacion.get('eliminar')?.value"> 
                     <h4>Evaluación {{ i + 1 }}</h4>
             
                     <label>Nombre de la Evaluación</label>
@@ -50,43 +50,47 @@
                         <input id="pregunta-{{ j }}" type="text" formControlName="pregunta" class="form-control"/>
                         
                         <!-- Botón eliminar pregunta -->
-                        <button type="button" class="btn btn-danger" (click)="confirmarEliminarPregunta(i, j)">
-                            🗑️ Eliminar Pregunta
+                        <button style="margin-top: 15px; margin-bottom:15px;" type="button"
+                        class="btn custom-align rojo" (click)="confirmarEliminarPregunta(i, j)">
+                          Eliminar Pregunta <mat-icon class="icon">add_circle_outline</mat-icon>
                         </button>
                         </div>
             
                     </div>
                     </div>
-            
-                    <!-- Botón agregar pregunta -->
-                    <button class="btn btn-success" style="margin-top:20px; display: block;" type="button" (click)="agregarPregunta(i)">
-                    Agregar Pregunta
-                    </button>
-            
-                    <!-- Botón eliminar evaluación -->
-                    <button type="button" class="btn btn-danger" (click)="confirmarEliminarEvaluacion(i)">
-                    🗑️ Eliminar Evaluación
-                    </button>
+                    <div class="mt-4 mb-4 form-group button-container2">
+                          <!-- Botón agregar pregunta -->
+                          <button   type="button" class="btn custom-align azul"  (click)="agregarPregunta(i)">
+                          Agregar Pregunta <mat-icon class="icon">add_circle_outline</mat-icon>
+                          </button>
+                  
+                          <!-- Botón eliminar evaluación -->
+                          <button  type="button"
+                          class="btn custom-align rojo" (click)="confirmarEliminarEvaluacion(i)">
+                          Eliminar Evaluación <mat-icon class="icon">add_circle_outline</mat-icon>
+                          </button>
+                    </div>
                 </div>
                 </ng-container>
             </div>
-  
-  
-          <!-- Botón agregar evaluación -->
-          <button style="margin-top: 20px; display: block;" type="button" class="btn btn-info" (click)="agregarEvaluacion()">
-            Agregar Evaluación
-          </button>
-  
-          <!-- Botón actualizar plan -->
-          <button style="margin-top: 20px;" type="submit" class="btn btn-primary">
-            Guardar Cambios
-          </button>
+            <div class="form-group button-container">
+              <!-- Botón agregar evaluación -->
+              <button  style="margin-top: 20px;display: flex;align-items: center;" type="button" class="custom-button"  (click)="agregarEvaluacion()">
+                Agregar Evaluación <mat-icon class="icon">add_circle_outline</mat-icon>
+              </button>
+      
+              <!-- Botón actualizar plan -->
+              <button  style="margin-top: 20px;display: flex;align-items: center;" type="submit" class="custom-button">
+                Guardar <mat-icon class="icon">add_circle_outline</mat-icon>
+              </button>
+            </div>
   
         </form>
 
         <!-- Eliminar Plan -->
-        <button type="button" class="btn btn-danger" (click)="eliminarPlan()">
-            🗑️ Eliminar Plan de Intervención
+        <button  type="button"
+        class="btn custom-align rojo" (click)="eliminarPlan()">
+            Eliminar Plan de Intervención <mat-icon class="icon">add_circle_outline</mat-icon>
         </button>
       </div>
     </div>

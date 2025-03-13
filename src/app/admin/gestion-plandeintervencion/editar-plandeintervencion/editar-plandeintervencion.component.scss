@@ -1,26 +1,174 @@
-.container {
-    margin: auto;
-    padding: 20px;
+.form-label {
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: #333333DE;
+  margin-bottom: 5px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-control {
+  border: 1px solid #333333DE;
+  border-radius: 0px;
+  padding: 0px 16px;
+  font-size: 16px; 
+  transition: border-color 0.3s ease-in-out;
+
+  &:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.2);
   }
+}
+
+.btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+  padding: 10px 15px;
+  font-size: 16px;
+  border-radius: 0px;
+  width: 100%; /* Hace que el botón ocupe todo el ancho */
   
-  .card {
-    border-radius: 8px;
+  &:hover {
+    background-color: #0056b3;
   }
-  
-  .card-header {
-    font-size: 20px;
-    font-weight: bold;
-  }
-  
-  .form-group {
-    margin-bottom: 15px;
-  }
-  
-  button {
-    margin-top: 10px;
-  }
-  
-  .mat-mdc-form-field {
-    display: block;
- 
-  }
+}
+
+.mat-mdc-form-field {
+  display: block;
+  width: 100%;
+}
+
+.mat-form-field {
+  margin-top: 15px;
+}
+
+.titulo {
+  background-color: #ffffff;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+  font-size: 20px !important;
+  line-height: 30px;
+  letter-spacing: 0px;
+  color: #404040;
+  margin: 0px;
+
+}
+.button-container {
+  display: flex;
+  justify-content: space-between; /* Distribuye los botones en extremos opuestos */
+  align-items: center;
+  margin-top: 20px;
+}
+
+
+.custom-button {
+  line-height: normal;
+  border: 1px solid #0051A8;
+  color: #0051A8;
+  background: transparent;
+  padding: 8px 16px;
+  font-size: 16px;
+  font-weight: 500;
+  border-radius: 0px;
+  display: flex;
+  align-items: center;
+  gap: 5px; /* Espacio entre el texto y el icono */
+  transition: all 0.3s ease-in-out;
+}
+
+.custom-button:hover {
+  background: #0051A8 !important;
+  color: white;
+}
+.custom-align{
+  display: flex;
+  align-items: center;
+  line-height: normal;
+}
+.azul {
+  color: #0051A8;
+  font-weight: 500;
+  padding: 0px;
+}
+.rojo {
+  color: #ff0000;
+  font-weight: 500;
+  padding: 0px;
+}
+.button-container2 {
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    margin-top: 20px;
+}
+.button-container3 {
+  display: flex;
+  justify-content: right;
+  align-items: center;
+  margin-top: 20px;
+}
+.icon {
+  font-size: 20px;
+}
+.mat-mdc-button[disabled], .mat-mdc-button.mat-mdc-button-disabled,.mat-mdc-button {
+  cursor: default;
+  pointer-events: none;
+  color: #0051A8;
+  border: 1px solid var(--Primario-Darken-1, #0051A8);
+}
+.mdc-button .mdc-button__label {
+  color: #0051A8;
+}
+button, input, optgroup, select {
+  margin: 0;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  height: 40px;
+}
+.card-header:first-child{
+  border-bottom: 0.5px solid #404040;
+  background: #fff;
+}
+.card {
+  border: 0px;
+  box-shadow: 0px 4px 4px 0px #0000001A;
+}
+.content{
+  background: #f5f5f5;
+}
+.card-body {
+  padding: 30px 20px;
+}
+
+::ng-deep .mdc-text-field--outlined .mat-mdc-form-field-infix,::ng-deep  .mdc-text-field--no-label .mat-mdc-form-field-infix {
+  padding-top: 0px !important;
+  padding-bottom: 0px !important;
+}
+::ng-deep .mdc-text-field--outlined,::ng-deep .mat-mdc-form-field-infix {
+  height: 40px !important;
+  min-height: 40px !important;
+}
+::ng-deep .mat-mdc-text-field-wrapper .mat-mdc-form-field-flex .mat-mdc-floating-label {
+  top: 18px !important;
+}
+::ng-deep .mat-mdc-select-value {
+  margin-top: 9px;
+}
+::ng-deep .mat-mdc-text-field-wrapper.mdc-text-field--outlined .mdc-notched-outline--upgraded .mdc-floating-label--float-above {
+  --mat-mdc-form-field-label-transform: translateY(calc(calc(0px + var(--mat-form-field-container-height) / 2)* -1)) scale(var(--mat-mdc-form-field-floating-label-scale, 0.75)) !important;
+  transform: var(--mat-mdc-form-field-label-transform) !important;
+}
+.mat-mdc-button:not(:disabled) {
+  color: #0051A8 !important;
+}
+.custom-button{
+  border: 1px solid #0051A8;
+} 
+.mdc-text-field{
+  border: 1px solid rgba(51, 51, 51, 0.87058) !important;
+}

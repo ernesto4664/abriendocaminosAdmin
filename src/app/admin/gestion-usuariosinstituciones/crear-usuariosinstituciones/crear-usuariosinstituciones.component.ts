@@ -7,11 +7,12 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { TerritoriosService } from '../../../services/territorios.service';
 import { UsuariosInstitucionService } from '../../../services/usuarios-institucion.service';
 import { InstitucionesEjecutorasService } from '../../../services/institucionesejecutoras.service';
-
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 @Component({
   selector: 'app-crear-usuariosinstituciones',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatSelectModule, MatFormFieldModule],
+  imports: [CommonModule, ReactiveFormsModule, MatSelectModule, MatFormFieldModule, MatButtonModule, MatIconModule],
   templateUrl: './crear-usuariosinstituciones.component.html',
   styleUrl: './crear-usuariosinstituciones.component.scss'
 })
