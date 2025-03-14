@@ -1,64 +1,48 @@
 <div class="container">
-  <h2 class="titulo">Respuestas por Evaluación</h2>
-  <p>Aquí puedes visualizar y gestionar las respuestas agrupadas por evaluación.</p>
-
-  <div *ngFor="let evaluacion of respuestasPorEvaluacion | keyvalue" class="evaluacion">
+  <h2 class="titulo">Evaluaciones</h2>
+  
+  <div *ngFor="let evaluacion of evaluaciones" class="evaluacion">
     <div class="evaluacion-header">
       <div class="mispan" style="display: grid;">
-        <span class="titulo">{{ evaluacion.key }}</span>
-        <p><strong>Total de Preguntas:</strong> {{ evaluacion.value.length }}</p>
+        <!-- Nombre de la evaluación -->
+        <span class="titulo">{{ evaluacion.nombre }}</span>
+        <p><strong>Total de Preguntas:</strong> {{ evaluacion.preguntas?.length }}</p>
       </div>
+      <!-- Menú de la Evaluación -->
       <div class="menu">
-        <button (mouseenter)="toggleMenu(evaluacion.key)" class="btn-menu">⚙</button>
-        <div *ngIf="activeMenuId === evaluacion.key" class="menu-opciones">
-          <button *ngIf="expandedId !== evaluacion.key" (click)="expandirEvaluacion(evaluacion.key)">Expandir</button>
-          <button *ngIf="expandedId === evaluacion.key" (click)="minimizarEvaluacion()">Minimizar</button>
-          <button (click)="editarEvaluacion(evaluacion.value[0]?.id)">Editar</button>
-
+        <button (mouseenter)="toggleMenu(evaluacion.id)" class="btn-menu">⚙</button>
+        <div *ngIf="activeMenuId === evaluacion.id" class="menu-opciones">
+          <button *ngIf="expandedId !== evaluacion.id" (click)="expandirEvaluacion(evaluacion.id)">Expandir</button>
+          <button *ngIf="expandedId === evaluacion.id" (click)="minimizarEvaluacion()">Minimizar</button>
+          <!-- Botón de Editar: nos llevará al módulo de edición de respuestas -->
+          <button (click)="editarRespuestas(evaluacion.id)">Editar Respuestas</button>
         </div>
       </div>
     </div>
-  
-    <div *ngIf="expandedId === evaluacion.key" class="detalles">
-      <div *ngFor="let respuesta of evaluacion.value">
-        <p><strong>Pregunta:</strong> {{ respuesta.pregunta }}</p>
-  
-        <!-- Respuesta -->
-        <p><strong>Posibles opciones de respuestas:</strong>
-          {{ respuesta.respuestas.length > 0 ? respuesta.respuestas[0]?.respuesta : 'No se le han grabado posibles respuestas a esta pregunta.' }}
-        </p>
-  
-        <!-- Opciones (si existen) -->
-        <div *ngIf="respuesta.respuestas[0]?.opciones?.length > 0">
-          <p><strong>Opciones:</strong></p>
-          <ul>
-            <li *ngFor="let opcion of respuesta.respuestas[0].opciones">
-              {{ opcion.label }}
-            </li>
-          </ul>
-        </div>
-  
-        <!-- Otras opciones -->
-        <div *ngIf="respuesta.respuestas[0]?.tipo === 'si_no_noestoyseguro'">
-          <p><strong>Opciones:</strong></p>
-          <ul>
-            <li *ngFor="let opcion of respuesta.respuestas[0].opciones">
-              <label>
-                <input type="radio" [value]="opcion.label" />
-                {{ opcion.label }}
-              </label>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>    
-  </div>
-  
 
-  <!-- Paginación -->
-  <div class="pagination">
-    <button class="volver" (click)="irAPagina(currentPage - 1)" [disabled]="currentPage === 1">Anterior</button>
-    <span>Página {{ currentPage }} de {{ totalPages }}</span>
-    <button class="ir" (click)="irAPagina(currentPage + 1)" [disabled]="currentPage === totalPages">Siguiente</button>
+    <div *ngIf="expandedId === evaluacion.id" class="detalles">
+      <!-- Listar preguntas -->
+      <div *ngFor="let pregunta of evaluacion.preguntas">
+        <p><strong>Pregunta:</strong> {{ pregunta.pregunta }}</p>
+        
+        <!-- Mostrar posibles respuestas -->
+        <div *ngIf="pregunta.respuestas?.length > 0">
+          <p><strong>Posibles respuestas:</strong></p>
+          <div *ngFor="let respuesta of pregunta.respuestas">
+            <div *ngIf="respuesta.opciones && respuesta.opciones.length > 0">
+              <!-- Muestra las opciones -->
+              <p><strong>Opciones:</strong></p>
+              <div *ngFor="let opcion of respuesta.opciones">
+                <p>{{ opcion.label }}</p>
+              </div>
+            </div>
+            <!-- En caso de que no haya opciones cargadas -->
+            <p *ngIf="!respuesta.opciones || respuesta.opciones.length === 0">Esta pregunta no tiene posibles respuestas cargadas aún</p>
+          </div>
+        </div>
+        <!-- Si no hay respuestas -->
+        <p *ngIf="pregunta.respuestas?.length === 0">Esta pregunta no tiene posibles respuestas cargadas aún</p>
+      </div>
+    </div>
   </div>
 </div>
