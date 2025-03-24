@@ -1,6 +1,7 @@
 import { Component, OnInit, TrackByFunction, inject } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, ReactiveFormsModule, FormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { ChangeDetectorRef } from '@angular/core';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatButtonModule } from '@angular/material/button';
@@ -9,6 +10,16 @@ import { MatSelectModule } from '@angular/material/select';
 import { RespuestasService } from '../../../services/respuestas.service';
 import { PlanesIntervencionService } from '../../../services/plan-intervencion.service';
 import { Router } from '@angular/router';
+
+interface Respuesta {
+  tipo: string;
+  valor: string | number;
+  observaciones: string;
+  opciones: { id: string; label: string }[]; // Opciones deben ser un array de objetos con ID y label
+  subpreguntas: any[]; // Puedes especificar mejor el tipo si conoces su estructura
+}
+
+
 
 @Component({
   selector: 'app-add-respuesta',
@@ -31,9 +42,14 @@ export class AddRespuestaComponent implements OnInit {
   planes: any[] = [];
   evaluaciones: any[] = [];
   preguntas: any[] = [];
-  respuestas: { [preguntaId: number]: any[] } = {};
   observaciones: { [preguntaId: number]: FormControl } = {};
   miFormulario: FormGroup;
+  // Variable para mantener las respuestas y sus opciones
+  respuestas: { [key: number]: { tipo: string, valor: string | number, observaciones: string, opciones: any[], subpreguntas: any[] }[] } = {};
+  preguntaSeleccionada: number | null = null;
+  // Variable para manejar la visibilidad del campo de texto
+  mostrarRespuestaTexto: boolean = false;stas: { [key: number]: { tipo: string, valor: string | number, observaciones: string, opciones: any[], subpreguntas: any[] }[] } = {};
+
 
   private fb: FormBuilder = inject(FormBuilder);
   private PlanesIntervencionService = inject(PlanesIntervencionService);
@@ -44,7 +60,7 @@ export class AddRespuestaComponent implements OnInit {
   trackBySubPregunta!: TrackByFunction<any>;
   trackByOpcion!: TrackByFunction<any>;
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private cdr: ChangeDetectorRef) {
     this.miFormulario = this.fb.group({
       plan_id: ['', Validators.required],
       evaluacion_id: ['', Validators.required]
@@ -123,14 +139,17 @@ cargarEvaluaciones(planId: number) {
       this.respuestas[preguntaId] = [];
     }
 
-    const escalaLikert = this.respuestas[preguntaId].find(res => res.tipo === 'likert');
+    const escalaLikert = this.respuestas[preguntaId].find((res: { tipo: string; }) => res.tipo === 'likert');
     
     if (!escalaLikert) {
       this.respuestas[preguntaId].push({
         tipo: 'likert',
         subpreguntas: [
           { texto: '', opciones: this.obtenerOpcionesLikert() }
-        ]
+        ],
+        valor: '',
+        observaciones: '',
+        opciones: []
       });
     } else {
       console.warn(`⚠️ La pregunta ${preguntaId} ya tiene una escala Likert.`);
@@ -223,73 +242,55 @@ cargarEvaluaciones(planId: number) {
 
     escala.subpreguntas = escala.subpreguntas.filter((sp: any) => sp !== subpregunta);
   }
-
-    /** 📌 Guardar respuestas */
-    guardarRespuestas() {
-      const requestBody = {
-        evaluacion_id: this.miFormulario.get('evaluacion_id')?.value
-          ? Number(this.miFormulario.get('evaluacion_id')?.value)
-          : null,
-    
-        respuestas: this.preguntas.map((pregunta) => {
-          const respuesta = this.respuestas[pregunta.id]?.[0];
-    
-          return {
-            pregunta_id: pregunta.id ? Number(pregunta.id) : null,  // ✅ Asegurar `pregunta_id`
-            tipo: respuesta?.tipo ?? null,
-            respuesta: respuesta?.valor !== undefined && respuesta?.valor !== null
-              ? String(respuesta.valor)
-              : null,
-            observaciones: respuesta?.observaciones ?? null,
-            opciones: respuesta?.opciones?.length ? respuesta.opciones : null,
-            subpreguntas: respuesta?.subpreguntas?.length ? respuesta.subpreguntas : null
-          };
-        }).filter((r) => r.pregunta_id !== null && r.tipo !== null) // ✅ Filtrar respuestas inválidas
-      };
-    
-      console.log("📤 Enviando datos a la API:", JSON.stringify(requestBody, null, 2));
-    
-      if (!requestBody.evaluacion_id) {
-        console.error("❌ Error: `evaluacion_id` no puede ser null.");
-        return;
-      }
-    
-      if (requestBody.respuestas.length === 0) {
-        console.error("❌ Error: No hay respuestas válidas para enviar.");
-        return;
-      }
-    
-      // Asegurarte de pasar las respuestas de manera adecuada:
-      // Cambia esto si 'this.respuestas' no es un array.
-      const respuestasFormateadas = Object.values(this.respuestas).flat(); // Convertir en un array plano
-    
-      this.respuestaService.guardarRespuestas(requestBody, respuestasFormateadas).subscribe({
-        next: (response: any) => {
-          console.log("✅ Respuestas guardadas con éxito", response);
-          this.router.navigate(['admin/gestion-respuestas/listar']); // ✅ Redirección después de éxito
-        },
-        error: (error: any) => {
-          console.error("❌ Error al guardar respuestas:", error);
-        }
-      });
-    }
-    
      
-    /** 📌 Agregar Respuesta de Texto */
-    agregarRespuestaTexto(preguntaId: number) {
-      if (!this.respuestas[preguntaId]) {
-        this.respuestas[preguntaId] = [];
-      }
-      this.respuestas[preguntaId].push({ tipo: 'texto', valor: '' });
+  // ✅ Agregar respuesta de tipo texto SIN DUPLICADOS
+  agregarRespuestaTexto(preguntaId: number) {
+    console.log('✅ Agregando respuesta de texto');
+
+    if (!this.respuestas[preguntaId]) {
+      this.respuestas[preguntaId] = [];
     }
 
+    // 🛑 Elimina cualquier respuesta de tipo "texto" antes de agregar una nueva
+    this.respuestas[preguntaId] = this.respuestas[preguntaId].filter(r => r.tipo !== 'texto');
+
+    // ✅ Agrega un solo input de texto vacío
+    this.respuestas[preguntaId].push({
+      tipo: 'texto',
+      valor: '',
+      observaciones: '',
+      opciones: [],
+      subpreguntas: []
+    });
+
+    this.mostrarRespuestaTexto = true;
+  }
+
+    eliminarRespuesta(preguntaId: number, respuesta: any) {
+      if (!this.respuestas[preguntaId] || !Array.isArray(this.respuestas[preguntaId])) {
+        console.warn(`⚠️ No se encontró la respuesta para la pregunta ${preguntaId}.`);
+        return;
+      }
+      
+      // Eliminar la respuesta correspondiente
+      this.respuestas[preguntaId] = this.respuestas[preguntaId].filter(res => res !== respuesta);
+      console.log(`Respuesta eliminada para la pregunta ${preguntaId}`);
+    }
+    
+          
     /** 📌 Agregar Barra de Satisfacción */
     agregarBarraSatisfaccion(preguntaId: number) {
       if (!this.respuestas[preguntaId]) {
         this.respuestas[preguntaId] = [];
       }
-      this.respuestas[preguntaId].push({ tipo: 'barra_satisfaccion', valor: 5 }); // Inicializa con valor por defecto
+      this.respuestas[preguntaId].push({
+        tipo: 'barra_satisfaccion', valor: '',
+        observaciones: '',
+        opciones: [],
+        subpreguntas: []
+      }); // Inicializa con valor por defecto
     }
+    
 
     /** 📌 Agregar Opción Sí/No */
     agregarOpcionSiNo(preguntaId: number) {
@@ -298,7 +299,10 @@ cargarEvaluaciones(planId: number) {
       }
       this.respuestas[preguntaId].push({
         tipo: 'si_no',
-        valor: ''
+        valor: '',
+        observaciones: '',
+        opciones: [],
+        subpreguntas: []
       });
     }
 
@@ -315,7 +319,9 @@ cargarEvaluaciones(planId: number) {
           { label: 'Sí', value: 'si' },
           { label: 'No', value: 'no' },
           { label: 'No estoy seguro', value: 'no_estoy_seguro' }
-        ]
+        ],
+        observaciones: '',
+        subpreguntas: []
       });
     }
 
@@ -334,27 +340,10 @@ cargarEvaluaciones(planId: number) {
           { label: 'Emoji 3', value: 'Emoji 3' },
           { label: 'Emoji 4', value: 'Emoji 4' },
           { label: 'Emoji 5', value: 'Emoji 5' }
-        ]
+        ],
+        observaciones: '',
+        subpreguntas: []
       });
-    }
-
-    /** 📌 Eliminar una respuesta agregada */
-    eliminarRespuesta(preguntaId: number, respuesta: any) {
-      if (!this.respuestas[preguntaId] || !Array.isArray(this.respuestas[preguntaId])) {
-        console.warn(`⚠️ No se encontró la respuesta para la pregunta ${preguntaId}.`);
-        return;
-      }
-      this.respuestas[preguntaId] = this.respuestas[preguntaId].filter(res => res !== respuesta);
-    }
-
-    /** 📌 Convertir respuesta de texto en opción */
-    convertirASeleccion(preguntaId: number, respuesta: any) {
-      if (!respuesta.valor || !respuesta.valor.trim()) {
-        console.warn("⚠️ No se puede convertir una respuesta vacía.");
-        return;
-      }
-      respuesta.tipo = 'opcion';
-      respuesta.texto = respuesta.valor;
     }
 
     /** 📌 Agregar Input Numérico */
@@ -362,27 +351,130 @@ cargarEvaluaciones(planId: number) {
       if (!this.respuestas[preguntaId]) {
         this.respuestas[preguntaId] = [];
       }
-      this.respuestas[preguntaId].push({ tipo: 'numero', valor: '' });
-    }
-
-    /** 📌 Convertir texto a una opción seleccionable */
-    convertirATipoOpcion(preguntaId: number, respuesta: any) {
-      if (!respuesta.valor || !respuesta.valor.trim()) {
-        alert("⚠️ Debes ingresar un texto antes de convertirlo en una opción.");
-        return;
-      }
-
-      this.respuestas[preguntaId] = this.respuestas[preguntaId].map(r => {
-        if (r === respuesta) {
-          return {
-            tipo: 'opcion',
-            opciones: [
-              { label: respuesta.valor, control: new FormControl('') }
-            ]
-          };
-        }
-        return r;
+      this.respuestas[preguntaId].push({
+        tipo: 'numero', valor: '',
+        observaciones: '',
+        opciones: [],
+        subpreguntas: []
       });
     }
 
+      /** 📌 Mostrar formulario de Opciones Personalizadas */
+      mostrarFormularioOpcionesPersonalizadas(preguntaId: number) {
+        this.preguntaSeleccionada = preguntaId;
+
+        // Verificar si la pregunta ya tiene una respuesta de tipo "opcion_personalizada"
+        if (!this.respuestas[preguntaId]?.some(res => res.tipo === 'opcion_personalizada')) {
+          this.respuestas[preguntaId] = this.respuestas[preguntaId] || [];
+          this.respuestas[preguntaId].push({
+            tipo: "opcion_personalizada",
+            valor: "",
+            observaciones: "",
+            opciones: [],
+            subpreguntas: []
+          });
+        }
+      }
+
+      /** 📌 Agregar nueva opción personalizada */
+      agregarOpcionPersonalizada(preguntaId: number) {
+        const respuesta = this.respuestas[preguntaId]?.find(res => res.tipo === 'opcion_personalizada');
+
+        if (!respuesta) {
+          console.warn(`⚠️ No se encontró una respuesta de tipo "opcion_personalizada" en la pregunta ${preguntaId}.`);
+          return;
+        }
+
+        respuesta.opciones.push({
+          id: `temp-${Date.now()}`,
+          label: ""
+        });
+      }
+
+      /** 📌 Eliminar opción personalizada */
+      eliminarOpcionPersonalizada(preguntaId: number, index: number) {
+        const respuesta = this.respuestas[preguntaId]?.find(res => res.tipo === 'opcion_personalizada');
+
+        if (respuesta && index >= 0 && index < respuesta.opciones.length) {
+          respuesta.opciones.splice(index, 1);
+        } else {
+          console.warn(`⚠️ No se pudo eliminar la opción en la pregunta ${preguntaId}, índice inválido.`);
+        }
+      }
+
+     
+    /** 📌 Guardar respuestas */
+    guardarRespuestas() {
+      const evaluacionId = this.miFormulario.get('evaluacion_id')?.value ?? null;
+    
+      if (!evaluacionId) {
+        console.error("❌ Error: `evaluacion_id` no puede ser null.");
+        alert("Debes seleccionar una evaluación antes de guardar.");
+        return;
+      }
+    
+      const respuestasFiltradas = this.preguntas.flatMap(pregunta => {
+        const respuestasDePregunta = this.respuestas[pregunta.id] ?? [];
+    
+        return respuestasDePregunta.map(respuesta => {
+          let opcionesFinales: { label: any; valor: any; }[] = [];
+          let subpreguntasFinales: { texto: any; opciones: any; }[] = [];
+    
+          // ✅ Procesar opciones según el tipo de respuesta
+          if (respuesta.tipo === 'barra_satisfaccion') {
+            opcionesFinales = [];  // No debe tener opciones
+            subpreguntasFinales = [];  // No debe tener subpreguntas
+          } else if (['5emojis', 'si_no', 'si_no_noestoyseguro', 'opcion_personalizada'].includes(respuesta.tipo)) {
+            opcionesFinales = respuesta.opciones?.map(opcion => ({
+              label: opcion.label ?? "Opción sin título",
+              valor: opcion.valor ?? null
+            })) ?? [];
+          }
+    
+          // ✅ Procesar subpreguntas solo si el tipo es 'likert'
+          if (respuesta.tipo === 'likert' && respuesta.subpreguntas?.length > 0) {
+            subpreguntasFinales = respuesta.subpreguntas.map(subpregunta => ({
+              texto: subpregunta.texto ?? "",
+              opciones: subpregunta.opciones?.map((opcion: { label: any; }) => ({
+                label: opcion.label ?? "Opción sin título"
+              })) ?? []
+            }));
+          }
+    
+          return {
+            pregunta_id: pregunta.id ?? null,
+            tipo: respuesta.tipo ?? null,  // ✅ Mantiene el tipo correcto
+            respuesta: respuesta.valor !== null && respuesta.valor !== undefined 
+              ? String(respuesta.valor) 
+              : null, // ✅ No enviamos "" si es null
+            observaciones: respuesta.observaciones ?? "",
+            opciones: opcionesFinales,
+            subpreguntas: subpreguntasFinales
+          };
+        });
+      });
+    
+      // ✅ Ahora enviamos los datos correctamente al backend
+      const payload = {
+        evaluacion_id: evaluacionId,
+        respuestas: respuestasFiltradas
+      };
+    
+      console.log("📤 Enviando datos a la API:", payload);
+      this.respuestaService.guardarRespuestas(payload).subscribe(
+        response => {
+          console.log("✅ Respuestas guardadas correctamente:", response);
+          alert("Respuestas guardadas con éxito.");
+    
+          // ✅ Redirección al listado después de guardar
+          this.router.navigate(['/admin/gestion-respuestas/listar']);
+        },
+        error => {
+          console.error("❌ Error en la API:", error);
+          alert("Hubo un error al guardar las respuestas.");
+        }
+      );
+    }
+       
+   
 }

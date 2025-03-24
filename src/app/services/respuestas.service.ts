@@ -7,9 +7,6 @@ import { environment } from '../../environments/environment';
   providedIn: 'root'
 })
 export class RespuestasService {
-  obtenerEvaluaciones() {
-    throw new Error('Method not implemented.');
-  }
   private apiUrl = `${environment.apiBaseUrl}/respuestas`;
   private apiUrlR = `http://127.0.0.1:8000/api/v1`;
   private http = inject(HttpClient);
@@ -36,20 +33,20 @@ export class RespuestasService {
     return this.http.post(this.apiUrl, data);
   }
 
-
-  /** 📌 Editar respuesta */
+ /** 📌 Editar respuesta */
   updateRespuesta(id: number, data: any): Observable<any> {
     console.log(`📡 Enviando actualización para ID: ${id}`, data);
     return this.http.put(`${this.apiUrl}/${id}`, data);
-}
-
+  }
+  
   /** 📌 Método en el servicio para eliminar una respuesta */
   eliminarRespuesta(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrlR}/respuestas/${id}`);
   }
 
-  guardarRespuestas(data: any, respuestas: { [preguntaId: number]: any[]; length: number; forEach(arg0: (respuesta: any) => void): unknown; }): Observable<any> {
-    return this.http.post(`${this.apiUrl}`, data);
+  guardarRespuestas(requestBody: any): Observable<any> {
+    console.log("🔍 Enviando datos al backend:", requestBody); // Depuración
+    return this.http.post<any>(this.apiUrl, requestBody);
   }
 
   getRespuestaById(id: string): Observable<any> {
@@ -59,6 +56,13 @@ export class RespuestasService {
   actualizarRespuesta(id: number, data: any): Observable<any> {
     return this.http.put<any>(`${this.apiUrlR}/respuestas/${id}`, data);
   }
-  
 
+  actualizarRespuestas(data: any): Observable<any> {
+    return this.http.put(`${this.apiUrlR}/respuestas-multiple`, data);
+  }
+    
+  eliminarRespuestasPorPregunta(preguntaId: number): Observable<any> {
+    return this.http.delete(`${this.apiUrlR}/respuestas/${preguntaId}`);
+  }
+  
 }

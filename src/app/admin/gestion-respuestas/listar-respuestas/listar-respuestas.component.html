@@ -1,47 +1,91 @@
 <div class="container">
   <h2 class="titulo">Evaluaciones</h2>
-  
+
   <div *ngFor="let evaluacion of evaluaciones" class="evaluacion">
     <div class="evaluacion-header">
       <div class="mispan" style="display: grid;">
-        <!-- Nombre de la evaluación -->
         <span class="titulo">{{ evaluacion.nombre }}</span>
         <p><strong>Total de Preguntas:</strong> {{ evaluacion.preguntas?.length }}</p>
       </div>
-      <!-- Menú de la Evaluación -->
+
       <div class="menu">
         <button (mouseenter)="toggleMenu(evaluacion.id)" class="btn-menu">⚙</button>
         <div *ngIf="activeMenuId === evaluacion.id" class="menu-opciones">
           <button *ngIf="expandedId !== evaluacion.id" (click)="expandirEvaluacion(evaluacion.id)">Expandir</button>
           <button *ngIf="expandedId === evaluacion.id" (click)="minimizarEvaluacion()">Minimizar</button>
-          <!-- Botón de Editar: nos llevará al módulo de edición de respuestas -->
-          <button (click)="editarRespuestas(evaluacion.id)">Editar Respuestas</button>
+          <button (click)="editarRespuestas(evaluacion.id)">Editar Opciones</button>
         </div>
       </div>
     </div>
 
-    <div *ngIf="expandedId === evaluacion.id" class="detalles">
-      <!-- Listar preguntas -->
-      <div *ngFor="let pregunta of evaluacion.preguntas">
+    <div *ngIf="expandedId === evaluacion.id" class="detalless">
+      <div *ngFor="let pregunta of evaluacion.preguntas" class="pregunta-box">
         <p><strong>Pregunta:</strong> {{ pregunta.pregunta }}</p>
-        
-        <!-- Mostrar posibles respuestas -->
-        <div *ngIf="pregunta.respuestas?.length > 0">
-          <p><strong>Posibles respuestas:</strong></p>
-          <div *ngFor="let respuesta of pregunta.respuestas">
-            <div *ngIf="respuesta.opciones && respuesta.opciones.length > 0">
-              <!-- Muestra las opciones -->
-              <p><strong>Opciones:</strong></p>
-              <div *ngFor="let opcion of respuesta.opciones">
-                <p>{{ opcion.label }}</p>
-              </div>
-            </div>
-            <!-- En caso de que no haya opciones cargadas -->
-            <p *ngIf="!respuesta.opciones || respuesta.opciones.length === 0">Esta pregunta no tiene posibles respuestas cargadas aún</p>
-          </div>
+        <p><strong>Tipo de Respuesta:</strong> {{ pregunta.tipos_de_respuesta[0]?.tipo || 'No especificado' }}</p>
+
+        <!-- Manejo especial para texto y número -->
+        <div style="margin-bottom: 20px;" *ngIf="pregunta.tipos_de_respuesta[0]?.tipo === 'texto'">
+          <input type="text" class="form-control" disabled placeholder="Ejemplo: Respuesta de texto">
+          <small class="text-muted">Introducir no más de 500 caracteres.</small>
         </div>
-        <!-- Si no hay respuestas -->
-        <p *ngIf="pregunta.respuestas?.length === 0">Esta pregunta no tiene posibles respuestas cargadas aún</p>
+
+        <div style="margin-bottom: 20px;" *ngIf="pregunta.tipos_de_respuesta[0]?.tipo === 'numero'">
+          <input type="number" class="form-control" disabled placeholder="Ejemplo: 123">
+          <small class="text-muted">Introducir solo números enteros.</small>
+        </div>
+
+        <!-- Manejo especial para Si/No y Si/No/No estoy seguro -->
+        <div *ngIf="pregunta.tipos_de_respuesta[0]?.tipo === 'si_no' || pregunta.tipos_de_respuesta[0]?.tipo === 'si_no_noestoyseguro'">
+          <p><strong>Opciones:</strong></p>
+          <ul>
+            <li>✅ Sí</li>
+            <li>❌ No</li>
+            <li *ngIf="pregunta.tipos_de_respuesta[0]?.tipo === 'si_no_noestoyseguro'">🤷 No estoy seguro</li>
+          </ul>
+        </div>
+
+        <!-- Manejo normal para otras opciones -->
+        <div *ngIf="!['texto', 'numero', 'si_no', 'si_no_noestoyseguro'].includes(pregunta.tipos_de_respuesta[0]?.tipo)">
+          <p><strong>Posibles Opciones a Respuestas:</strong></p>
+          <ul *ngIf="pregunta.respuestas?.length > 0">
+            <li *ngFor="let respuesta of pregunta.respuestas">
+              <ul *ngIf="respuesta.opciones?.length > 0">
+                <li *ngFor="let opcion of respuesta.opciones">
+                  {{ opcion.label || opcion.valor }}
+                </li>
+              </ul>
+
+              <ul *ngIf="respuesta.opciones_barra_satisfaccion?.length > 0">
+                <li *ngFor="let opcion of respuesta.opciones_barra_satisfaccion">
+                  Valor: {{ opcion.valor }}
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Likert: Se maneja solo en las subpreguntas -->
+        <div *ngIf="pregunta.tipos_de_respuesta[0]?.tipo === 'likert'">
+          <p><strong>Subpreguntas:</strong></p>
+          <ul>
+            <li *ngFor="let respuesta of pregunta.respuestas">
+              <ul *ngFor="let subpregunta of respuesta.subpreguntas">
+                <strong>{{ subpregunta.texto }}</strong>
+                <p><strong>Posibles Opciones a Respuestas:</strong></p>
+                <ul>
+                  <li *ngFor="let opcion of subpregunta.opciones_likert">
+                    {{ opcion.label }}
+                  </li>
+                </ul>
+              </ul>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Mensaje si no hay opciones disponibles, excepto para texto/numero -->
+        <p *ngIf="pregunta.respuestas?.length === 0 && !['texto', 'numero'].includes(pregunta.tipos_de_respuesta[0]?.tipo)">
+          <i>Sin posibles opciones a respuestas registradas.</i>
+        </p>
       </div>
     </div>
   </div>

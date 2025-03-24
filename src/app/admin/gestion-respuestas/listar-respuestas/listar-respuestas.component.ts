@@ -12,7 +12,16 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 @Component({
   selector: 'app-listar-respuestas',
   standalone: true,
-  imports: [CommonModule, MatSliderModule, ReactiveFormsModule, FormsModule, MatRadioModule, MatSelectModule, MatButtonModule, MatFormFieldModule],
+  imports: [
+    CommonModule,
+    MatSliderModule,
+    ReactiveFormsModule,
+    FormsModule,
+    MatRadioModule,
+    MatSelectModule,
+    MatButtonModule,
+    MatFormFieldModule
+  ],
   templateUrl: './listar-respuestas.component.html',
   styleUrls: ['./listar-respuestas.component.scss']
 })
@@ -21,26 +30,40 @@ export class ListarRespuestasComponent implements OnInit {
   evaluaciones: any[] = [];
   expandedId: number | null = null;
   activeMenuId: number | null = null;
-
+  apiResponse: any = null; // Guardará el JSON completo
   private respuestasService = inject(RespuestasService);
   private router = inject(Router);
 
   ngOnInit() {
-    this.cargarEvaluaciones();  // Cargar las evaluaciones
+    this.cargarEvaluaciones();
   }
 
   cargarEvaluaciones() {
     this.respuestasService.getRespuesta().subscribe({
       next: (data) => {
-        console.log(data);
-        if (data && Array.isArray(data.evaluaciones)) {
-          this.evaluaciones = data.evaluaciones;
+        console.log("📥 Evaluaciones cargadas:", data);
+        this.apiResponse = data; // Guardamos el JSON completo
+  
+        if (!data || !Array.isArray(data)) {
+          console.warn("⚠️ No se encontraron evaluaciones.");
+          return;
         }
+  
+        // 🔍 Filtrar evaluaciones que tienen al menos una pregunta con respuestas
+        this.evaluaciones = data.filter(evaluacion => 
+          evaluacion.preguntas?.some((pregunta: { respuestas: string | any[]; }) => pregunta.respuestas && pregunta.respuestas.length > 0)
+        );
+  
+        console.log("✅ Evaluaciones filtradas:", this.evaluaciones);
       },
       error: (err) => {
-        console.error('Error al cargar las evaluaciones:', err);
+        console.error("❌ Error al cargar evaluaciones:", err);
       }
     });
+  }
+  
+  getOpcionesLikert(pregunta: any, subpreguntaId: number) {
+    return pregunta.respuestas?.[0]?.opciones_likert?.filter((opcion: { subpregunta_id: number; }) => opcion.subpregunta_id === subpreguntaId) ?? [];
   }
 
   expandirEvaluacion(id: number) {
@@ -55,8 +78,13 @@ export class ListarRespuestasComponent implements OnInit {
     this.activeMenuId = this.activeMenuId === id ? null : id;
   }
 
-    // Función para redirigir al módulo de edición de respuestas
-    editarRespuestas(evaluacionId: number) {
-      this.router.navigate([`/admin/gestion-respuestas/editar/${evaluacionId}`]);
-    }
+  getOpcionesBarraSatisfaccion(pregunta: any): string {
+    return pregunta?.respuestas?.[0]?.opciones_barra_satisfaccion?.length
+      ? pregunta.respuestas[0].opciones_barra_satisfaccion.map((o: { valor: any; }) => o.valor).join(', ')
+      : 'No hay opciones disponibles';
+  }
+
+  editarRespuestas(evaluacionId: number) {
+    this.router.navigate([`/admin/gestion-respuestas/editar/${evaluacionId}`]);
+  }
 }
