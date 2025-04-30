@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import Chart from 'chart.js/auto';
 import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule }   from '@angular/material/icon';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
@@ -14,32 +15,43 @@ import { MatIconModule }   from '@angular/material/icon';
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
+  constructor(private router: Router) {}
+
   cards = [
     {
       title: 'Institución ejecutoras',
-      variant: 'primary',      // azul
+      variant: 'primary',
       primaryLabel: 'Todas las instituciones',
-      secondaryLabel: 'Crear nueva'
+      primaryUrl: '/instituciones',
+      secondaryLabel: 'Crear nueva',
+      secondaryUrl: '/instituciones/crear'
     },
     {
       title: 'NNA registrados',
-      variant: 'success',      // verde
-      primaryLabel: 'Todas las instituciones',
-      secondaryLabel: 'Crear nueva'
+      variant: 'success',
+      primaryLabel: 'Todos los NNA',
+      primaryUrl: '/nna',
+      secondaryLabel: 'Registrar nuevo',
+      secondaryUrl: '/nna/crear'
     },
     {
       title: 'Usuarios',
-      variant: 'warning',      // amarillo
-      primaryLabel: 'Todas las instituciones',
-      secondaryLabel: 'Crear nueva'
+      variant: 'warning',
+      primaryLabel: 'Todos los usuarios',
+      primaryUrl: '/admin/usuarios-registrados',
+      secondaryLabel: 'Crear nuevo',
+      secondaryUrl: '/admin/usuarios-registrados'
     },
     {
       title: 'Planes de intervención',
-      variant: 'danger',       // rojo
-      primaryLabel: 'Todas las instituciones',
-      secondaryLabel: 'Crear nueva'
+      variant: 'danger',
+      primaryLabel: 'Todos los planes',
+      primaryUrl: '/planes',
+      secondaryLabel: 'Crear nuevo',
+      secondaryUrl: '/planes/crear'
     }
   ];
+  
   noticias = [
     { titulo: 'Nueva actualización', descripcion: 'Se han agregado nuevas funcionalidades...' },
     { titulo: 'Mantenimiento programado', descripcion: 'El sistema estará en mantenimiento...' },
@@ -63,5 +75,8 @@ export class DashboardComponent implements OnInit {
         datasets: [{ label: 'Usuarios nuevos', data: [50, 100, 150, 200, 250], borderColor: '#007bff' }]
       }
     });
+  }
+  goTo(url: string): void {
+    this.router.navigateByUrl(url);
   }
 }
