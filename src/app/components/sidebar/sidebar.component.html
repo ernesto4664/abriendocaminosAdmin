@@ -140,8 +140,6 @@
             <li><a routerLink="admin/registro/registro-cuidador-principal" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Registro cuidador/a  principal</a></li>
             <li><a routerLink="admin/registro/registro-nna" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Registro nna</a></li>
             <li><a routerLink="admin/registro/registro-persona-privada" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Registro persona privada</a></li>
-            <li><a routerLink="admin/usuarios-registrados" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Usuarios Registrados</a></li>
-            
           </ul>
         </div>
       </mat-expansion-panel>
@@ -150,6 +148,7 @@
 
     <!-- Opciones adicionales para móvil -->
     <ul>
+      <li class="mobile-only"><a routerLink="admin/usuarios-registrados" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"><img width="32px" src="assets/images/settings.png" alt="panel-icon" class="panel-icon" /> Usuarios Registrados</a></li>
       <li class="mobile-only"><a routerLink="/admin/miperfil" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"><img width="32px" src="assets/images/assignment.png" alt="panel-icon" class="panel-icon" /> Mi Perfil</a></li>
       <li class="mobile-only"><a routerLink="/admin" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"><img width="32px" src="assets/images/home.png" alt="panel-icon" class="panel-icon" /> Dashboard User</a></li>
       <li class="mobile-only"><a routerLink="/logout"><img width="32px" src="assets/images/logout.png" alt="panel-icon" class="panel-icon" /> Logout</a></li>

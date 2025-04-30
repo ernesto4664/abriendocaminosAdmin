@@ -66,7 +66,22 @@
     gap: 0.5rem;
     height: 2.5rem;
   }
-  
+  .btn-success {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: 1px solid #0051A8;
+    background: #fff;
+    border-radius: 0px;
+    color: #0051A8;
+    font-family: Roboto;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 150%;
+    letter-spacing: 0%;
+    text-align: center;
+    cursor: pointer;
+}
   /* Angular Material selects */
   ::ng-deep .mat-mdc-form-field {
     margin-top: 0.75rem;
