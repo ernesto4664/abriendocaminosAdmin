@@ -7,11 +7,12 @@ import {
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatSelectModule } from '@angular/material/select';
-
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 @Component({
   selector: 'app-registro-nna',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatSelectModule],
+  imports: [CommonModule, ReactiveFormsModule, MatSelectModule,MatButtonModule,MatIconModule],
   templateUrl: './registro-nna.component.html',
   styleUrls: ['./registro-nna.component.scss']
 })
