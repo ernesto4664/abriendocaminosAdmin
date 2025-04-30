@@ -23,7 +23,7 @@ export class TerritoriosService {
   }
 
   getLineas(): Observable<any> {
-    return this.http.get<any>('http://127.0.0.1:8000/api/v1/lineas');
+    return this.http.get<any>(`${this.apiLineaUrl}/lineas`);
   }
 
   /** 📌 Obtener todas las regiones */
