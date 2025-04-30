@@ -1,0 +1,140 @@
+<div class="container">
+    <div class="titulo">
+      <h1>Asignación de preguntas correctas y puntuación a evaluaciones</h1>
+    </div>
+  </div>
+  
+  <form [formGroup]="miFormulario" (ngSubmit)="submit()">
+  
+    <h2>Seleccione plan de intervención</h2>
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Plan de Intervención</mat-label>
+      <mat-select formControlName="plan_id" (selectionChange)="onPlanChange($event.value)">
+        <mat-option *ngFor="let p of planes" [value]="p.id">
+          {{ p.nombre }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  
+    <h2>Seleccione instrumento</h2>
+    <mat-form-field appearance="outline" class="w-100 mt-3">
+      <mat-label>Instrumento</mat-label>
+      <mat-select formControlName="evaluacion_id" (selectionChange)="onEvaluacionChange($event.value)">
+        <mat-option *ngFor="let e of evaluaciones" [value]="e.id">
+          {{ e.nombre }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  
+    <div *ngFor="let preg of preguntas" class="mt-4 p-3 border rounded">
+      <p><strong>Pregunta:</strong> {{ preg.pregunta }}</p>
+  
+      <!-- TEXTO / NÚMERO -->
+      <div *ngIf="['texto','numero'].includes(preg.tipos_de_respuesta[0]?.tipo)"
+           class="d-flex gap-3 align-items-start mb-3">
+        <mat-form-field appearance="outline" class="flex-fill">
+          <mat-label>Respuesta Correcta ({{ preg.tipos_de_respuesta[0]?.tipo }})</mat-label>
+          <input
+            matInput
+            [type]="preg.tipos_de_respuesta[0]?.tipo === 'numero' ? 'number' : 'text'"
+            [formControlName]="'correcta_' + preg.id"
+            placeholder="Escriba la respuesta correcta" />
+          <mat-hint *ngIf="preg.tipos_de_respuesta[0]?.tipo === 'texto'">
+            Máx. 500 caracteres.
+          </mat-hint>
+        </mat-form-field>
+  
+        <mat-form-field appearance="outline">
+          <mat-label>Valor Ponderación</mat-label>
+          <mat-select [formControlName]="'valor_' + preg.id">
+            <mat-option *ngFor="let v of valoresPonderacion" [value]="v">
+              {{ v }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+  
+      <!-- BARRA DE SATISFACCIÓN -->
+      <div *ngIf="preg.tipos_de_respuesta[0]?.tipo === 'barra_satisfaccion'" class="mt-3">
+        <p><strong>Nivel de Satisfacción (0–10):</strong></p>
+        <mat-slider
+          [formControlName]="'valor_' + preg.id"
+          thumbLabel
+          tickInterval="1"
+          [min]="0"
+          [max]="10"
+          [step]="1">
+        </mat-slider>
+        <span class="ms-2">{{ miFormulario.get('valor_' + preg.id)?.value }}</span>
+      </div>
+  
+      <!-- OTROS TIPOS -->
+      <ng-container *ngIf="!['texto','numero','barra_satisfaccion'].includes(preg.tipos_de_respuesta[0]?.tipo)">
+        <!-- Si / No -->
+        <div *ngIf="preg.tipos_de_respuesta[0]?.tipo === 'si_no'" class="mb-2">
+          <p><strong>Opciones:</strong></p>
+          <ul><li>✅ Sí</li><li>❌ No</li></ul>
+        </div>
+  
+        <!-- 5 Emojis, personalizado, no estoy seguro -->
+        <div *ngIf="['5emojis','opcion_personalizada','si_no_noestoyseguro']
+                    .includes(preg.tipos_de_respuesta[0]?.tipo)" class="mb-2">
+          <p><strong>Posibles Opciones a Respuestas:</strong></p>
+          <ul><li *ngFor="let o of preg.opcionesRespuesta">{{ o.label }}</li></ul>
+        </div>
+  
+        <!-- Likert: lista de subpreguntas + opciones -->
+        <div *ngIf="preg.tipos_de_respuesta[0]?.tipo === 'likert'" class="mb-2">
+          <p><strong>Subpreguntas y opciones:</strong></p>
+          <div *ngFor="let sub of preg.subpreguntas" class="ps-3 mb-3">
+            <p><em>{{ sub.texto }}</em></p>
+            <ul><li *ngFor="let o of sub.opciones">{{ o.label }}</li></ul>
+          </div>
+        </div>
+  
+        <!-- Selects de respuesta correcta + ponderación -->
+        <ng-container *ngIf="preg.tipos_de_respuesta[0]?.tipo !== 'likert'; else likertBlock">
+          <div class="d-flex gap-3">
+            <mat-form-field appearance="outline" class="flex-fill">
+              <mat-label>Seleccione respuesta correcta</mat-label>
+              <mat-select [formControlName]="'correcta_' + preg.id">
+                <mat-option *ngFor="let opt of preg.opcionesRespuesta" [value]="opt.id">
+                  {{ opt.label }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Valor Ponderación</mat-label>
+              <mat-select [formControlName]="'valor_' + preg.id">
+                <mat-option *ngFor="let v of valoresPonderacion" [value]="v">{{ v }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </ng-container>
+  
+        <!-- Bloque Likert con selects por subpregunta -->
+        <ng-template #likertBlock>
+          <div *ngFor="let sub of preg.subpreguntas" class="ps-3 mb-3 d-flex gap-3">
+            <mat-form-field appearance="outline" class="flex-fill">
+              <mat-label>Respuesta correcta ({{ sub.texto }})</mat-label>
+              <mat-select [formControlName]="'correcta_' + preg.id + '_' + sub.id">
+                <mat-option *ngFor="let o of sub.opciones" [value]="o.id">{{ o.label }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Ponderación</mat-label>
+              <mat-select [formControlName]="'valor_' + preg.id + '_' + sub.id">
+                <mat-option *ngFor="let v of valoresPonderacion" [value]="v">{{ v }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </ng-template>
+      </ng-container>
+    </div>
+  
+    <button mat-raised-button color="primary" class="mt-4"
+            type="submit" [disabled]="miFormulario.invalid">
+      Guardar Ponderaciones
+    </button>
+  </form>
+  

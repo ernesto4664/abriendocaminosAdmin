@@ -37,6 +37,12 @@ import { ListarRespuestasComponent } from './admin/gestion-respuestas/listar-res
 import { AddRespuestaComponent } from './admin/gestion-respuestas/add-respuesta/add-respuesta.component';
 import { EditRespuestaComponent } from './admin/gestion-respuestas/edit-respuesta/edit-respuesta.component';
 
+import { GestionPonderacionComponent } from './admin/gestion-ponderacion/gestion-ponderacion.component';
+import { AddPonderacionComponent } from './admin/gestion-ponderacion/add-ponderacion/add-ponderacion.component';
+import { EditarPonderacionComponent } from './admin/gestion-ponderacion/editar-ponderacion/editar-ponderacion.component';
+import { DetallePonderacionComponent } from './admin/gestion-ponderacion/detalle-ponderacion/detalle-ponderacion.component';
+import { ListarPonderacionComponent } from './admin/gestion-ponderacion/listar-ponderacion/listar-ponderacion.component';
+
 export const routes: Routes = [
   {
     path: '',
@@ -77,6 +83,12 @@ export const routes: Routes = [
       { path: 'admin/gestion-respuestas/crear', component: AddRespuestaComponent },
       { path: 'admin/gestion-respuestas/editar/:id', component: EditRespuestaComponent },
       { path: 'admin/gestion-respuestas/listar', component: ListarRespuestasComponent },
+
+      { path: 'admin/gestion-ponderacion', component: GestionPonderacionComponent },
+      { path: 'admin/gestion-ponderacion/add', component: AddPonderacionComponent },
+      { path: 'admin/gestion-ponderacion/editar/:id', component: EditarPonderacionComponent },
+      { path: 'admin/gestion-ponderacion/detalle/:id', component: DetallePonderacionComponent },
+      { path: 'admin/gestion-ponderacion/listar', component: ListarPonderacionComponent },
     ]
   }
 ];

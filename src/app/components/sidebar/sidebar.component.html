@@ -69,6 +69,22 @@
         </div>
       </mat-expansion-panel>
 
+      <!-- MÓDULO DE GESTION DE PONDERACIONES -->
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <img width="32px" src="assets/images/help_outline.png" alt="panel-icon" class="panel-icon" />
+            Ponderaciones y respuestas correctas
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="submenu">
+          <ul>
+            <li><a routerLink="/admin/gestion-ponderacion/add" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Agregar ponderaciones y respuestas correctas a evaluaciones</a></li>
+            <li><a routerLink="/admin/gestion-ponderacion/listar" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Ver planillas de evaluaciones completas mas sus ponderaciones</a></li>
+          </ul>
+        </div>
+      </mat-expansion-panel>
+
       <!-- MÓDULO BITÁCORA -->
       <mat-expansion-panel>
         <mat-expansion-panel-header>
