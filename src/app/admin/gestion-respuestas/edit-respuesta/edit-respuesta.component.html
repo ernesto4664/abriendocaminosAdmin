@@ -5,49 +5,93 @@
     </div>
 
     <div class="card-body">
+      <h1>{{ evaluacion?.nombre }}</h1>
+
       <!-- Listado de Preguntas -->
       <div *ngFor="let pregunta of preguntas" class="mt-4 p-3 border rounded shadow-sm">
-        <!-- ✅ Campo oculto para enviar el ID de la pregunta -->
-        <input type="hidden" [(ngModel)]="pregunta.id" [attr.name]="'pregunta_id_' + pregunta.id">
-
+        <input type="hidden" [(ngModel)]="pregunta.id">
         <h5 class="fw-bold">{{ pregunta.pregunta }}</h5>
-
+        <p *ngIf="pregunta.tipos_de_respuesta?.length">
+          <strong>Tipo:</strong> {{ pregunta.tipos_de_respuesta[0]?.tipo || 'Sin respuesta' }}
+        </p>
+        
         <!-- Botones para agregar diferentes tipos de respuestas -->
         <div class="d-flex flex-wrap gap-2">
-          <button class="btn btn-secondary" (click)="agregarRespuestaTexto(pregunta.id)">
-            Agregar Respuesta Texto
-          </button>
-          <button class="btn btn-info" (click)="agregarBarraSatisfaccion(pregunta.id)">
-            Agregar Barra de Satisfacción
-          </button>
-          <button class="btn btn-warning" (click)="agregarOpcionSiNo(pregunta.id)">
-            Agregar Opción "Sí / No"
-          </button>
-          <button class="btn btn-success" (click)="agregarEscalaLikertEditable(pregunta.id)">
-            Agregar Escala Likert Editable
-          </button>
-          <button class="btn btn-primary" (click)="agregarOpcionSiNoNoEstoySeguro(pregunta.id)">
-            Agregar "Sí / No / No estoy seguro"
-          </button>
-          <button class="btn btn-primary" (click)="agregarOpcion5emojis(pregunta.id)">
-            Agregar "Emoji 1 hasta Emoji 5"
-          </button>
-          <button class="btn btn-dark" (click)="agregarInputNumerico(pregunta.id)">
-            Agregar Input Numérico
-          </button>
+          <button class="btn btn-secondary" (click)="agregarRespuestaTexto(pregunta.id)">Agregar Respuesta Texto</button>
+          <button class="btn btn-info" (click)="agregarBarraSatisfaccion(pregunta.id)">Agregar Barra de Satisfacción</button>
+          <button class="btn btn-warning" (click)="agregarOpcionSiNo(pregunta.id)">Agregar Opción "Sí / No"</button>
+          <button class="btn btn-success" (click)="agregarEscalaLikertEditable(pregunta.id)">Agregar Escala Likert</button>
+          <button class="btn btn-primary" (click)="agregarOpcionSiNoNoEstoySeguro(pregunta.id)">Agregar "Sí / No / No estoy seguro"</button>
+          <button class="btn btn-primary" (click)="agregarOpcion5emojis(pregunta.id)">Agregar "Emoji 1 hasta Emoji 5"</button>
+          <button class="btn btn-dark" (click)="agregarInputNumerico(pregunta.id)">Agregar Input Numérico</button>
+          <button class="btn btn-primary" (click)="mostrarFormularioOpcionesPersonalizadas(pregunta.id)">Agregar Opciones Personalizadas</button>
         </div>
 
-        <!-- Respuestas agregadas -->
+        <!-- Sección de respuestas cargadas -->
         <div *ngFor="let respuesta of respuestas[pregunta.id]" class="mt-3 p-3 border rounded bg-light">
-          <!-- ✅ Campo oculto en cada respuesta -->
-          <input type="hidden" [(ngModel)]="pregunta.id" [attr.name]="'pregunta_id_' + pregunta.id">
+          <!-- Input bloqueado para texto -->
+          <div *ngIf="pregunta.tipos_de_respuesta[0]?.tipo === 'texto'">
+            <label>Campo de texto:</label>
+            <input type="text" class="form-control" disabled placeholder="Aquí se ingresará el texto">
+            <small class="text-muted">Introducir no más de 500 caracteres.</small>
+          </div>
 
+          <!-- Input bloqueado para número -->
+          <div *ngIf="pregunta.tipos_de_respuesta[0]?.tipo === 'numero'">
+            <label>Campo numérico:</label>
+            <input type="number" class="form-control" disabled placeholder="Aquí se ingresará un número">
+            <small class="text-muted">Introducir solo números enteros.</small>
+          </div>
+
+          <!-- Manejo de opciones tipo "Sí / No" -->
+          <div *ngIf="pregunta.tipos_de_respuesta[0]?.tipo === 'si_no'">
+            <label>Opción Sí/No:</label>
+            <mat-radio-group [(ngModel)]="respuesta.respuesta">
+              <mat-radio-button value="si">Sí</mat-radio-button>
+              <mat-radio-button value="no">No</mat-radio-button>
+            </mat-radio-group>
+          </div>
+
+          <!-- Manejo de opciones tipo "Sí / No / No estoy seguro" -->
+          <div *ngIf="pregunta.tipos_de_respuesta[0]?.tipo === 'si_no_noestoyseguro'" class="mt-3">
+            <label class="form-label">Opción Sí/No/No estoy seguro:</label>
+            <mat-radio-group [(ngModel)]="respuesta.respuesta">
+              <mat-radio-button value="si">Sí</mat-radio-button>
+              <mat-radio-button value="no">No</mat-radio-button>
+              <mat-radio-button value="no_estoy_seguro">No estoy seguro</mat-radio-button>
+            </mat-radio-group>
+          </div>
+
+          <!-- Barra de Satisfacción -->
+          <div *ngIf="pregunta.tipos_de_respuesta[0]?.tipo === 'barra_satisfaccion'">
+            <label class="form-label">Nivel de Satisfacción:</label>
+            <mat-slider 
+              min="0"
+              max="10"
+              step="1"
+              tickInterval="1"
+              thumbLabel>
+              <input matSliderThumb [(ngModel)]="respuesta.valor" name="satisfaccionSlider" />
+            </mat-slider>
+          </div>     
+
+          <!-- Opción de Emojis -->
+          <div *ngIf="pregunta.tipos_de_respuesta[0]?.tipo === '5emojis'" class="mt-3">
+            <label>Opciones Emoji:</label>
+            <mat-radio-group [(ngModel)]="respuesta.valor">
+              <mat-radio-button *ngFor="let opcion of respuesta.opciones" [value]="opcion.value">
+                {{ opcion.label }}
+              </mat-radio-button>
+            </mat-radio-group>
+          </div>
+          
+     
           <!-- Escala Likert Editable -->
           <div *ngIf="respuesta.tipo === 'likert'" class="mt-3 p-2 border">
             <strong>Escala Likert:</strong>
-
-            <!-- Botones para agregar opciones y subpreguntas -->
-            <div class="d-flex align-items-center mt-2">
+          
+            <!-- Botones para agregar opción o subpregunta -->
+            <div class="mt-2">
               <button class="btn btn-success btn-sm me-2" (click)="agregarOpcionLikert(pregunta.id, respuesta)">
                 + Agregar Opción
               </button>
@@ -55,26 +99,29 @@
                 + Agregar Subpregunta
               </button>
             </div>
-
+          
             <!-- Subpreguntas -->
             <div *ngFor="let subpregunta of respuesta.subpreguntas; let i = index" class="mt-3 p-2 border">
               <!-- Input de subpregunta -->
               <input type="text" class="form-control mb-2" [(ngModel)]="subpregunta.texto" placeholder="Ingrese la subpregunta">
-
+          
               <!-- Opciones de la Escala Likert -->
-              <div *ngFor="let opcion of subpregunta.opciones" class="d-flex align-items-center mt-2">
-                <input type="text" class="form-control d-inline w-50 me-2"
-                      [(ngModel)]="opcion.label" placeholder="Editar opción">
-
-                <mat-radio-button [value]="opcion.value">
-                  {{ opcion.label }}
-                </mat-radio-button>
-
-                <button class="btn btn-danger btn-sm ms-2" (click)="eliminarOpcionLikert(subpregunta, opcion)">
-                  ❌
-                </button>
-              </div>
-
+              <mat-radio-group [(ngModel)]="subpregunta.seleccion">
+                <div *ngFor="let opcion of subpregunta.opciones" class="d-flex align-items-center mt-2">
+                  <input type="text" class="form-control d-inline w-50 me-2"
+                        [(ngModel)]="opcion.label" placeholder="Editar opción" />
+          
+                  <mat-radio-button [value]="opcion.value || opcion.label">
+                    {{ opcion.label }}
+                  </mat-radio-button>
+          
+                  <!-- Eliminar opción -->
+                  <button class="btn btn-danger btn-sm ms-2" (click)="eliminarOpcionLikert(subpregunta, opcion)">
+                    ❌
+                  </button>
+                </div>
+              </mat-radio-group>
+          
               <!-- Botón para eliminar subpregunta -->
               <button class="btn btn-danger btn-sm mt-2" (click)="eliminarSubPreguntaLikert(pregunta.id, respuesta, subpregunta)">
                 ❌ Eliminar Subpregunta
@@ -82,67 +129,40 @@
             </div>
           </div>
 
-          <!-- Respuesta de Texto -->
-          <div *ngIf="respuesta.tipo === 'texto'">
-            <label class="form-label">Escribe la respuesta:</label>
-            <input type="text" class="form-control" [(ngModel)]="respuesta.valor" placeholder="Ingresar respuesta">
-          </div>
-
-          <!-- Opción Sí / No -->
-          <div *ngIf="respuesta.tipo === 'si_no'">
-            <label class="form-label">Opción Sí/No:</label>
+          <!-- Opciones Personalizadas -->
+          <div *ngIf="respuesta.tipo === 'opcion_personalizada'" class="mt-3 p-2 border">
+            <h5>Opciones Personalizadas</h5>
+          
             <mat-radio-group [(ngModel)]="respuesta.valor">
-              <mat-radio-button value="si">Sí</mat-radio-button>
-              <mat-radio-button value="no">No</mat-radio-button>
+              <div *ngFor="let opcion of respuesta.opciones; let i = index" class="mb-2 d-flex align-items-center">
+                <input type="text"
+                      [(ngModel)]="opcion.label"
+                      placeholder="Escribe la opción"
+                      class="form-control me-2" />
+          
+                <mat-radio-button [value]="opcion.value || opcion.label">
+                  {{ opcion.label }}
+                </mat-radio-button>
+          
+                <button class="btn btn-danger btn-sm ms-2" (click)="eliminarOpcionPersonalizada(pregunta.id, i)">
+                  ❌
+                </button>
+              </div>
             </mat-radio-group>
+          
+            <button class="btn btn-success btn-sm" (click)="agregarOpcionPersonalizada(pregunta.id)">
+              + Agregar Opción Personalizada
+            </button>
           </div>
-
-          <!-- Opción Sí / No / No estoy seguro -->
-          <div *ngIf="respuesta.tipo === 'si_no_noestoyseguro'" class="mt-3">
-            <label class="form-label">Opción Sí/No/No estoy seguro:</label>
-            <mat-radio-group [(ngModel)]="respuesta.valor">
-              <mat-radio-button *ngFor="let opcion of respuesta.opciones" [value]="opcion.value">
-                {{ opcion.label }}
-              </mat-radio-button>
-            </mat-radio-group>
-          </div>
-
-          <!-- Opción Agregar "Emoji 1 hasta Emoji 5" -->
-          <div *ngIf="respuesta.tipo === '5emojis'" class="mt-3">
-            <label class="form-label">Opciones Emoji 1 hasta Emoji 5:</label>
-            <mat-radio-group style="display: grid;" [(ngModel)]="respuesta.valor">
-              <mat-radio-button *ngFor="let opcion of respuesta.opciones" [value]="opcion.value">
-                {{ opcion.label }}
-              </mat-radio-button>
-            </mat-radio-group>
-          </div>
-
-          <!-- Barra de Satisfacción -->
-          <div *ngIf="respuesta.tipo === 'barra_satisfaccion'">
-            <label class="form-label">Nivel de Satisfacción:</label>
-            <mat-slider min="0" max="10" step="1" class="w-100">
-              <input matSliderStartThumb [(ngModel)]="respuesta.valor">
-              <input matSliderEndThumb>
-            </mat-slider>            
-            <small class="text-muted">0: Nada satisfecho - 10: Completamente satisfecho</small>
-          </div>
-
-          <!-- Input Numérico -->
-          <div *ngIf="respuesta.tipo === 'numero'">
-            <label class="form-label">Número Entero:</label>
-            <input type="number" class="form-control" [(ngModel)]="respuesta.valor"
-                   placeholder="Ingresar número" min="0" step="1">
-          </div>
-
-          <!-- Botón para eliminar respuesta -->
-          <button class="btn btn-danger mt-2" (click)="eliminarRespuesta(pregunta.id, respuesta)">
+          
+          <!-- Botón para eliminar respuestas -->
+          <button class="btn btn-danger mt-2" (click)="eliminarRespuesta(pregunta.id, respuesta.id)">
             Eliminar
-          </button>
+          </button>          
         </div>
       </div>
 
-      <!-- Botón de Guardar -->
-      <button class="btn btn-primary mt-4 w-100" (click)="guardarRespuestas()">Guardar Respuestas</button>
+      <button class="btn btn-primary mt-3" (click)="guardarCambios()">Guardar Cambios</button>
     </div>
   </div>
 </div>

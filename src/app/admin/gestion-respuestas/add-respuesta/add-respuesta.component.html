@@ -39,7 +39,7 @@
         <div class="d-flex flex-wrap gap-2">
           <button class="btn btn-secondary" (click)="agregarRespuestaTexto(pregunta.id)">
             Agregar Respuesta Texto
-          </button>
+          </button>          
           <button class="btn btn-info" (click)="agregarBarraSatisfaccion(pregunta.id)">
             Agregar Barra de Satisfacción
           </button>
@@ -58,6 +58,9 @@
           <button class="btn btn-dark" (click)="agregarInputNumerico(pregunta.id)">
             Agregar Input Numérico
           </button>
+          <button class="btn btn-primary" (click)="mostrarFormularioOpcionesPersonalizadas(pregunta.id)">
+            Agregar Opciones Personalizadas
+          </button>      
         </div>
 
         <!-- Respuestas agregadas -->
@@ -104,13 +107,10 @@
             </div>
           </div>
 
-          <!-- Respuesta de Texto -->
+          <!-- Solo muestra el input si hay una respuesta de tipo 'texto' -->
           <div *ngIf="respuesta.tipo === 'texto'">
-            <label class="form-label">Escribe la respuesta:</label>
-            <input type="text" class="form-control" [(ngModel)]="respuesta.valor" placeholder="Ingresar respuesta">
-            <button class="btn btn-success mt-2" (click)="convertirATipoOpcion(pregunta.id, respuesta)">
-              Convertir a opción
-            </button>
+            <label>Escribe la respuesta:</label>
+            <input type="text" class="form-control" [(ngModel)]="respuesta.valor" />
           </div>
 
           <!-- Opción Sí / No -->
@@ -152,21 +152,29 @@
             <small class="text-muted">0: Nada satisfecho - 10: Completamente satisfecho</small>
           </div>
 
-          <!-- Opción convertida en radio button -->
-          <div *ngIf="respuesta.tipo === 'opcion'">
-            <label class="form-label">Selecciona la opción:</label>
-            <mat-radio-group [(ngModel)]="respuesta.valor">
-              <mat-radio-button *ngFor="let opcion of respuesta.opciones" [value]="opcion.label">
-                {{ opcion.label }}
-              </mat-radio-button>
-            </mat-radio-group>
-          </div>
-
           <!-- Input Numérico -->
           <div *ngIf="respuesta.tipo === 'numero'">
             <label class="form-label">Número Entero:</label>
             <input type="number" class="form-control" [(ngModel)]="respuesta.valor"
                    placeholder="Ingresar número" min="0" step="1">
+          </div>
+
+          <!-- Opciones Personalizadas -->
+          <div *ngIf="respuesta.tipo === 'opcion_personalizada'">
+            <h5>Opciones Personalizadas</h5>
+
+            <div *ngFor="let opcion of respuesta.opciones; let i = index">
+              <input style="margin: 5px;"
+                type="text" 
+                [(ngModel)]="respuesta.opciones[i].label" 
+                placeholder="Escribe la opción"
+              >
+              <button class="btn btn-danger btn-sm" (click)="eliminarOpcionPersonalizada(pregunta.id, i)">X</button>
+            </div>
+
+            <button class="btn btn-success btn-sm" (click)="agregarOpcionPersonalizada(pregunta.id)">
+              + Agregar Opción Personalizada
+            </button>
           </div>
 
           <!-- Botón para eliminar respuesta -->
