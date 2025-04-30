@@ -36,6 +36,12 @@ import { ListarUsuariosinstitucionesComponent } from './admin/gestion-usuariosin
 import { ListarRespuestasComponent } from './admin/gestion-respuestas/listar-respuestas/listar-respuestas.component';
 import { AddRespuestaComponent } from './admin/gestion-respuestas/add-respuesta/add-respuesta.component';
 import { EditRespuestaComponent } from './admin/gestion-respuestas/edit-respuesta/edit-respuesta.component';
+import { RegistroCuidadorPrincipalComponent } from './admin/registros/registro-cuidador-principal/registro-cuidador-principal.component';
+import { RegistroNnaComponent } from './admin/registros/registro-nna/registro-nna.component';
+import { RegistroPrivadaComponent } from './admin/registros/registro-persona-privada/registro-persona-privada.component';
+import { UsuariosRegistradosComponent } from './admin/usuarios-registrados/usuarios-registrados.component';
+import { DetalleSectionComponent } from './admin/usuarios-registrados/detalle/registro-detalle/registro-detalle.component';
+
 
 import { GestionPonderacionComponent } from './admin/gestion-ponderacion/gestion-ponderacion.component';
 import { AddPonderacionComponent } from './admin/gestion-ponderacion/add-ponderacion/add-ponderacion.component';
@@ -89,6 +95,14 @@ export const routes: Routes = [
       { path: 'admin/gestion-ponderacion/editar/:id', component: EditarPonderacionComponent },
       { path: 'admin/gestion-ponderacion/detalle/:id', component: DetallePonderacionComponent },
       { path: 'admin/gestion-ponderacion/listar', component: ListarPonderacionComponent },
+
+      { path: 'admin/registro/registro-cuidador-principal', component: RegistroCuidadorPrincipalComponent },
+      { path: 'admin/registro/registro-nna', component: RegistroNnaComponent },
+      { path: 'admin/registro/registro-persona-privada', component: RegistroPrivadaComponent },
+
+      { path: 'admin/usuarios-registrados', component: UsuariosRegistradosComponent },
+      { path: 'admin/usuarios-registrados/detalle', component: DetalleSectionComponent },
+      
     ]
   }
 ];
