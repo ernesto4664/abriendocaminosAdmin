@@ -1,0 +1,107 @@
+
+  /* Barra de progreso */
+  .progress {
+    background-color: #e9ecef;
+  }
+  .progress-bar {
+    background-color: #0dcaf0; /* info */
+  }
+  
+  /* Leyenda */
+  .legend-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    gap: 1rem;
+    margin: 0;
+  }
+  .legend-dot {
+    display: inline-block;
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 50%;
+    margin-right: 0.5rem;
+  }
+  .bg-info    { background-color: #0F69C4 !important; }
+  .bg-success { background-color: #1D9E0A !important; }
+  .bg-danger  { background-color: #9E0E0B !important; }
+  
+  /* Cards */
+  .card {
+    border: none;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  }
+  .card-header {
+    background: #fff;
+    border-bottom: 1px solid #e0e0e0;
+    padding: 0.75rem 1.5rem;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    font-family: Roboto;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 150%;
+    letter-spacing: 0px;
+    color: #404040;
+  }
+  .card-body {
+    padding: 1.5rem;
+  }
+  
+  /* Títulos */
+  .card-title, .card-header h5 {
+    margin: 0;
+    font-weight: 500;
+  }
+  
+  /* Definition list */
+  dt {
+    font-weight: 500;
+  }
+  dd {
+    margin-bottom: 0.75rem;
+  }
+  
+  /* Botones y enlaces */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: fit-content;
+    height: fit-content;
+    border-radius: 3px;
+    background: #BE0606;
+    border: none;
+  }
+  .text-decoration-none {
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+  }
+  .pasos li{
+    font-family: Roboto;
+font-weight: 500;
+font-size: 15px;
+line-height: 100%;
+letter-spacing: 0%;
+color: #333333;
+  }
+  .documento{
+    font-family: Roboto;
+font-weight: 700;
+font-size: 16px;
+line-height: 150%;
+letter-spacing: 0%;
+text-align: center;
+color: #0F69C4;
+  }
+  .botoningresar{
+    width: 72;
+    height: 20;
+    top: 617px;
+    left: 1304px;
+    border-radius: 3px;
+    background: #0F69C4;
+    color: #fff;
+}

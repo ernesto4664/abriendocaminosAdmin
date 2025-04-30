@@ -128,6 +128,23 @@
           </ul>
         </div>
       </mat-expansion-panel>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <img width="32px" src="assets/images/settings.png" alt="panel-icon" class="panel-icon" />
+            Registros
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="submenu">
+          <ul>
+            <li><a routerLink="admin/registro/registro-cuidador-principal" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Registro cuidador/a  principal</a></li>
+            <li><a routerLink="admin/registro/registro-nna" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Registro nna</a></li>
+            <li><a routerLink="admin/registro/registro-persona-privada" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Registro persona privada</a></li>
+            <li><a routerLink="admin/usuarios-registrados" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Usuarios Registrados</a></li>
+            
+          </ul>
+        </div>
+      </mat-expansion-panel>
       
     </mat-accordion>
 

@@ -1,0 +1,197 @@
+<div class="container mt-4 p-0">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="titulo">Registro Persona privada/o de libertad</h3>
+      </div>
+  
+      <div class="card-body">
+        <form [formGroup]="pplForm" (ngSubmit)="onSubmit()">
+  
+          <!-- Rut PPL / DV / Validar / Asignar NNA -->
+          <div class="row g-3">
+            <div class="col-md-12">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Asignar NNA</mat-label>
+                <mat-select formControlName="asignarNna">
+                  <mat-option value="">Seleccionar *</mat-option>
+                  <mat-option *ngFor="let nna of listaNnas" [value]="nna.id">
+                    {{ nna.nombre }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-md-3">
+              <label for="rutPpl" class="form-label">Rut PPL</label>
+              <input
+                id="rutPpl"
+                type="text"
+                class="form-control"
+                formControlName="rutPpl"
+                placeholder="0000000"
+              />
+            </div>
+            <div class="col-md-1">
+              <label for="dvPpl" class="form-label">DV</label>
+              <input
+                id="dvPpl"
+                type="text"
+                class="form-control"
+                formControlName="dvPpl"
+                placeholder="0"
+              />
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+              <button
+                type="button"
+                class="btn btn-primary w-100"
+                (click)="validarRutPpl()"
+              >
+                Validar rut  <mat-icon class="icon">add_circle_outline</mat-icon>
+              </button>
+            </div>
+            
+          </div>
+  
+          <!-- Nombres PPL / Apellidos PPL -->
+          <div class="row g-3 mt-3">
+            <div class="col-md-6">
+              <label for="nombresPpl" class="form-label">Nombres PPL</label>
+              <input
+                id="nombresPpl"
+                type="text"
+                class="form-control"
+                formControlName="nombresPpl"
+                placeholder="Ingresar nombres"
+              />
+            </div>
+            <div class="col-md-6">
+              <label for="apellidosPpl" class="form-label">Apellidos PPL</label>
+              <input
+                id="apellidosPpl"
+                type="text"
+                class="form-control"
+                formControlName="apellidosPpl"
+                placeholder="Ingresar apellidos"
+              />
+            </div>
+          </div>
+  
+          <!-- Sexo / Centro penal -->
+          <div class="row g-3 mt-3">
+            <div class="col-md-4">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Sexo</mat-label>
+                <mat-select formControlName="sexoPpl">
+                  <mat-option value="">Seleccionar *</mat-option>
+                  <mat-option value="M">Masculino</mat-option>
+                  <mat-option value="F">Femenino</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-md-8 mt-0">
+              <label for="centroPenal" class="form-label">Centro penal</label>
+              <input
+                id="centroPenal"
+                type="text"
+                class="form-control"
+                formControlName="centroPenal"
+                placeholder="Ingresar nombre"
+              />
+            </div>
+          </div>
+  
+          <!-- Región del centro penal -->
+          <div class="row g-3 mt-0">
+            <div class="col-12">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Región del centro penal</mat-label>
+                <mat-select formControlName="regionPenal">
+                  <mat-option value="">Seleccionar *</mat-option>
+                  <mat-option *ngFor="let r of regionesPenal" [value]="r">
+                    {{ r }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+  
+          <!-- Nacionalidad -->
+          <div class="row g-3 mt-0">
+            <div class="col-12">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Nacionalidad</mat-label>
+                <mat-select formControlName="nacionalidadPpl">
+                  <mat-option value="">Seleccionar *</mat-option>
+                  <mat-option *ngFor="let n of nacionalidades" [value]="n">
+                    {{ n }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+  
+  
+          <!-- ¿Quieres ser parte del programa? -->
+          <div class="row g-3 mt-4 align-items-center">
+            <div class="col-auto">
+              <label class="form-label mb-0">¿Quieres ser parte del programa?</label>
+            </div>
+            <div class="col-auto">
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  formControlName="participaPrograma"
+                  [value]="true"
+                  id="pplProgSi"
+                />
+                <label class="form-check-label" for="pplProgSi">Sí</label>
+              </div>
+              <div class="form-check ms-3">
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  formControlName="participaPrograma"
+                  [value]="false"
+                  id="pplProgNo"
+                />
+                <label class="form-check-label" for="pplProgNo">No</label>
+              </div>
+            </div>
+          </div>
+  
+          <!-- Motivo si No -->
+          <div
+            class="row g-3 mt-3"
+            *ngIf="pplForm.get('participaPrograma')?.value === false"
+          >
+            <div class="col-12">
+              <label for="motivoPpl" class="form-label"
+                >¿Por qué no quieres ser parte del programa?</label
+              >
+              <textarea
+                id="motivoPpl"
+                rows="3"
+                class="form-control"
+                formControlName="motivoNoParticipa"
+                placeholder="Escribe los motivos"
+              ></textarea>
+            </div>
+            
+          </div>
+  
+          <!-- Guardar -->
+          <div class="button-container mt-4">
+            <button
+              type="submit"
+              class="btn btn-success"
+              [disabled]="pplForm.invalid"
+            >
+              Guardar  <mat-icon class="icon">add_circle_outline</mat-icon>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  

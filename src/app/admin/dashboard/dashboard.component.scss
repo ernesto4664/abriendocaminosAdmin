@@ -10,6 +10,8 @@ $text-color: #333;
   padding: 20px;
   background: $background-color;
   min-height: 100vh;
+  width: 100%;
+  max-width: 100%;
 }
 
 // 🔹 Título del Dashboard
@@ -57,7 +59,7 @@ $text-color: #333;
 button {
   padding: 8px 12px;
   border: none;
-  border-radius: 4px;
+  border-radius: 0px;
   cursor: pointer;
   margin-top: 10px;
 
@@ -117,4 +119,53 @@ button {
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.card {
+  border: none;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Borde superior de color según variante */
+.card-top-primary   { border-top: 4px solid #0d6efd; }
+.card-top-success   { border-top: 4px solid #198754; }
+.card-top-warning   { border-top: 4px solid #ffc107; }
+.card-top-danger    { border-top: 4px solid #dc3545; }
+
+.card-title {
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+}
+
+/* Asegura que los botones queden pegados abajo */
+.card-body {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Ajustes de icono */
+.btn i {
+  font-size: 1rem;
+}
+.container{
+  width: fit-content;
+}
+::ng-deep button.btn-primary {
+  background: #0D6EBD !important;
+  color: white !important;
+  display: flex !important;
+  max-width: max-content;
+    margin: auto;
+}
+::ng-deep .btn-success {
+  background: #4CAF50 !important;
+  color: white !important;
+  display: flex;
+  max-width: max-content;
+  margin: auto;
+  
 }

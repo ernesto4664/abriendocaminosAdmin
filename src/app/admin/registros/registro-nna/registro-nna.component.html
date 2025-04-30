@@ -1,0 +1,172 @@
+<div class="container mt-4 p-0">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="titulo">Registro NNA</h3>
+      </div>
+  
+      <div class="card-body">
+        <form [formGroup]="nnaForm" (ngSubmit)="onSubmit()">
+  
+          <!-- Profesional a cargo / Institución ejecutora -->
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label for="profesional" class="form-label">Profesional a cargo</label>
+              <input id="profesional" type="text" class="form-control"
+                     formControlName="profesional" placeholder="Asignar" />
+            </div>
+            <div class="col-md-6">
+              <label for="institucion" class="form-label">¿A qué institución ejecutora perteneces?</label>
+              <input id="institucion" type="text" class="form-control"
+                     formControlName="institucion" placeholder="Asignar" />
+            </div>
+          </div>
+  
+          <!-- Rut NNA / DV / Validar / Vías de ingreso -->
+          <div class="row g-3 mt-3">
+            <div class="col-md-4">
+              <label for="rutNna" class="form-label">Rut NNA</label>
+              <input id="rutNna" type="text" class="form-control"
+                     formControlName="rutNna" placeholder="0000000" />
+            </div>
+            <div class="col-md-1">
+              <label for="dvNna" class="form-label">DV</label>
+              <input id="dvNna" type="text" class="form-control"
+                     formControlName="dvNna" placeholder="0" />
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+              <button type="button" class="btn btn-primary w-100"
+                      (click)="validarRutNna()">
+                Validar rut <i class="bi bi-plus-circle"></i>
+              </button>
+            </div>
+            <div class="col-md-5">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Consultar por las vías de ingreso</mat-label>
+                <mat-select formControlName="viasIngreso">
+                  <mat-option value="">Seleccionar *</mat-option>
+                  <mat-option *ngFor="let v of viasIngreso" [value]="v">
+                    {{ v }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+  
+          <!-- Nombres / Apellidos -->
+          <div class="row g-3 mt-3">
+            <div class="col-md-6">
+              <label for="nombresNna" class="form-label">Nombres NNA</label>
+              <input id="nombresNna" type="text" class="form-control"
+                     formControlName="nombresNna" placeholder="Ingresar nombres" />
+            </div>
+            <div class="col-md-6">
+              <label for="apellidosNna" class="form-label">Apellidos NNA</label>
+              <input id="apellidosNna" type="text" class="form-control"
+                     formControlName="apellidosNna" placeholder="Ingresar apellidos" />
+            </div>
+          </div>
+  
+          <!-- Edad / Sexo -->
+          <div class="row g-3 mt-3">
+            <div class="col-md-6">
+              <label for="edadNna" class="form-label">Edad</label>
+              <input id="edadNna" type="text" class="form-control"
+                     formControlName="edadNna" placeholder="Años cumplidos al ingreso" />
+            </div>
+            <div class="col-md-6">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Sexo</mat-label>
+                <mat-select formControlName="sexoNna">
+                  <mat-option value="">Seleccionar *</mat-option>
+                  <mat-option value="M">Masculino</mat-option>
+                  <mat-option value="F">Femenino</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+  
+          <!-- Parentescos -->
+          <div class="row g-3 mt-3">
+            <div class="col-md-6">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Parentesco con ASPL</mat-label>
+                <mat-select formControlName="parentescoAsplNna">
+                  <mat-option value="">Seleccionar *</mat-option>
+                  <mat-option *ngFor="let p of parentescosAspl" [value]="p">
+                    {{ p }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-md-6">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Parentesco con CP</mat-label>
+                <mat-select formControlName="parentescoCpNna">
+                  <mat-option value="">Seleccionar *</mat-option>
+                  <mat-option *ngFor="let p of parentescosCp" [value]="p">
+                    {{ p }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+  
+          <!-- Nacionalidad -->
+          <div class="row g-3 mt-3">
+            <div class="col-12">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Nacionalidad</mat-label>
+                <mat-select formControlName="nacionalidadNna">
+                  <mat-option value="">Seleccionar *</mat-option>
+                  <mat-option *ngFor="let n of nacionalidades" [value]="n">
+                    {{ n }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+  
+          <!-- Participación en programa -->
+          <div class="row g-3 mt-4 align-items-center">
+            <div class="col-auto">
+              <label class="form-label mb-0">¿Quieres ser parte del programa?</label>
+            </div>
+            <div class="col-auto">
+              <div class="form-check">
+                <input class="form-check-input" type="radio"
+                       formControlName="participaPrograma" [value]="true" id="progSiNna" />
+                <label class="form-check-label" for="progSiNna">Sí</label>
+              </div>
+              <div class="form-check ms-3">
+                <input class="form-check-input" type="radio"
+                       formControlName="participaPrograma" [value]="false" id="progNoNna" />
+                <label class="form-check-label" for="progNoNna">No</label>
+              </div>
+            </div>
+          </div>
+  
+          <!-- Motivos si No participa -->
+          <div class="row g-3 mt-3"
+               *ngIf="nnaForm.get('participaPrograma')?.value === false">
+            <div class="col-12">
+              <label for="motivoNoNna" class="form-label">
+                ¿Por qué no quieres ser parte del programa?
+              </label>
+              <textarea id="motivoNoNna" rows="3" class="form-control"
+                        formControlName="motivoNoParticipa" placeholder="Escribe los motivos">
+              </textarea>
+            </div>
+          </div>
+  
+          <!-- Botón Guardar -->
+          <div class="button-container mt-4">
+            <button type="submit" class="btn btn-success" [disabled]="nnaForm.invalid">
+              Guardar <i class="bi bi-save"></i>
+            </button>
+          </div>
+  
+        </form>
+      </div>
+    </div>
+  </div>
+  

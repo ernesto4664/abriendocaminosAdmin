@@ -2,15 +2,44 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import Chart from 'chart.js/auto';
+import { MatSelectModule } from '@angular/material/select';
+import { MatIconModule }   from '@angular/material/icon';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, MatSelectModule,
+    MatIconModule ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
+  cards = [
+    {
+      title: 'Institución ejecutoras',
+      variant: 'primary',      // azul
+      primaryLabel: 'Todas las instituciones',
+      secondaryLabel: 'Crear nueva'
+    },
+    {
+      title: 'NNA registrados',
+      variant: 'success',      // verde
+      primaryLabel: 'Todas las instituciones',
+      secondaryLabel: 'Crear nueva'
+    },
+    {
+      title: 'Usuarios',
+      variant: 'warning',      // amarillo
+      primaryLabel: 'Todas las instituciones',
+      secondaryLabel: 'Crear nueva'
+    },
+    {
+      title: 'Planes de intervención',
+      variant: 'danger',       // rojo
+      primaryLabel: 'Todas las instituciones',
+      secondaryLabel: 'Crear nueva'
+    }
+  ];
   noticias = [
     { titulo: 'Nueva actualización', descripcion: 'Se han agregado nuevas funcionalidades...' },
     { titulo: 'Mantenimiento programado', descripcion: 'El sistema estará en mantenimiento...' },

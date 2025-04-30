@@ -1,0 +1,55 @@
+ 
+  .card {
+    border: none;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  }
+  
+  .card-body {
+    padding: 1.5rem;
+  }
+  
+  .table thead th {
+    border-bottom: 2px solid #e9ecef;
+  }
+  
+  .mat-icon {
+    vertical-align: middle;
+  }
+  
+  /* Colores de estatus */
+  .text-primary { color: #0d6efd !important; }
+  .text-success { color: #198754 !important; }
+  .text-danger  { color: #dc3545 !important; }
+    .btn-primary{
+        background: var(--Primario-Base, #0F69C4);
+    }
+    button.btn.btn-sm.btn-outline-primary {
+        background: #0F69C4;
+        color: #fff;
+    }
+    ::ng-deep .text-primary {
+        color: #2083C1 !important;
+    }
+    ::ng-deep .text-success {
+        color: #1D9E0A !important;
+    }
+    ::ng-deep .text-danger{
+        color: #9E0E0B !important;
+    }
+    a.page-link {
+    margin: 12px;
+    font-family: Roboto;
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 150%;
+    letter-spacing: 0px;
+    text-align: center;
+    color: #0F69C4;
+    background: #fff;
+    border: none;
+    }
+    .active  a.page-link {
+        color: #0F69C4; 
+        border: 2px solid #0F69C4;
+        border-radius: 100%;
+    }
