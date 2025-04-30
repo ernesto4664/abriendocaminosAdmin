@@ -6,16 +6,18 @@
         <div class="card-body text-center d-flex flex-column justify-content-between">
           <h5 class="card-title">{{ card.title }}</h5>
           
-          <div>
-            <button class="btn btn-primary w-100 mb-3">
+        
+            <button class="btn btn-primary w-100 mb-3" [routerLink]="card.primaryUrl">
               {{ card.primaryLabel }} <i class="bi bi-plus-circle ms-1"></i>
               <mat-icon class="icon">add_circle_outline</mat-icon>
             </button>
-            <button class="btn btn-success w-100">
+            
+            <button class="btn btn-success w-100" [routerLink]="card.secondaryUrl">
               {{ card.secondaryLabel }} <i class="bi bi-plus-circle ms-1"></i>
               <mat-icon class="icon">add_circle_outline</mat-icon>
             </button>
-          </div>
+            
+        
         </div>
       </div>
     </div>
