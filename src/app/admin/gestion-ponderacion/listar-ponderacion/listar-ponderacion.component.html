@@ -1,1 +1,69 @@
-<p>gestion-convocatorias works!</p>
+<div class="container">
+    <h2 class="titulo">Evaluaciones</h2>
+  
+    <div *ngFor="let ev of evaluaciones" class="evaluacion">
+      <div class="evaluacion-header">
+        <div class="mispan">
+          <span class="titulo">{{ ev.nombre }}</span>
+          <p><strong>Total de Preguntas:</strong> {{ ev.preguntas.length }}</p>
+          <p><strong>Puntos totales:</strong> {{ ev.puntosTotales }} pts</p>
+        </div>
+  
+        <div class="menu">
+          <button mat-icon-button (click)="toggleMenu(ev.id)">
+            <mat-icon>settings</mat-icon>
+          </button>
+          <div *ngIf="activeMenuId === ev.id" class="menu-opciones">
+            <button *ngIf="expandedId !== ev.id" (click)="expandirEvaluacion(ev.id)">Expandir</button>
+            <button *ngIf="expandedId === ev.id" (click)="minimizarEvaluacion()">Minimizar</button>
+            <button (click)="editarPonderaciones(ev.id)">Editar</button>
+          </div>
+        </div>
+      </div>
+  
+      <div *ngIf="expandedId === ev.id" class="detalless">
+        <div *ngFor="let preg of ev.preguntas" class="pregunta-box">
+          <p><strong>Pregunta:</strong> {{ preg.pregunta }}</p>
+          <p><strong>Tipo de Respuesta:</strong> {{ preg.tipos_de_respuesta[0]?.tipo || 'No especificado' }}</p>
+  
+          <p><strong>Posibles Opciones a Respuestas:</strong></p>
+          <ul *ngIf="preg.respuestas?.length; else noOpts">
+            <li *ngFor="let r of preg.respuestas">
+              <ul *ngIf="r.opciones?.length">
+                <li *ngFor="let opt of r.opciones">
+                  {{ opt.label || opt.valor }}
+                </li>
+              </ul>
+              <ul *ngIf="r.opciones_barra_satisfaccion?.length">
+                <li *ngFor="let opt of r.opciones_barra_satisfaccion">
+                  Valor: {{ opt.valor }}
+                </li>
+              </ul>
+            </li>
+          </ul>
+          <ng-template #noOpts>
+            <i>Sin posibles opciones a respuestas registradas.</i>
+          </ng-template>
+  
+          <!-- AQUI los correctos + valor -->
+          <p><strong>Respuesta correcta y ponderación:</strong></p>
+          <ul *ngIf="preg.detalles.length; else noCorrecta">
+            <li *ngFor="let det of preg.detalles">
+              <span *ngIf="det.respuesta_correcta !== null; else byId">
+                {{ det.respuesta_correcta }}
+              </span>
+              <ng-template #byId>
+                <!-- buscar label si solo tienes el ID -->
+                ID: {{ det.respuesta_correcta_id }}
+              </ng-template>
+              — <em>{{ det.valor }} pts</em>
+            </li>
+          </ul>
+          <ng-template #noCorrecta>
+            <i>No hay respuesta correcta ni valor registrados.</i>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </div>
+  
