@@ -6,18 +6,18 @@ import {
   FormControl,
   ReactiveFormsModule
 } from '@angular/forms';
-import { CommonModule } from '@angular/common';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
-import { MatButtonModule } from '@angular/material/button';
-import { MatSliderModule } from '@angular/material/slider';
-import { MatInputModule } from '@angular/material/input';
-import { Router } from '@angular/router';
-import { map } from 'rxjs/operators';
+import { CommonModule }         from '@angular/common';
+import { MatFormFieldModule }   from '@angular/material/form-field';
+import { MatSelectModule }      from '@angular/material/select';
+import { MatButtonModule }      from '@angular/material/button';
+import { MatSliderModule }      from '@angular/material/slider';
+import { MatInputModule }       from '@angular/material/input';
+import { Router }               from '@angular/router';
+import { map }                  from 'rxjs/operators';
 
-import { PonderacionesService } from '../../../services/ponderaciones.service';
+import { PonderacionesService }      from '../../../services/ponderaciones.service';
 import { PlanesIntervencionService } from '../../../services/plan-intervencion.service';
-import { RespuestasService } from '../../../services/respuestas.service';
+import { RespuestasService }         from '../../../services/respuestas.service';
 
 @Component({
   selector: 'app-add-ponderacion',
@@ -36,20 +36,20 @@ import { RespuestasService } from '../../../services/respuestas.service';
 })
 export class AddPonderacionComponent implements OnInit {
   miFormulario!: FormGroup;
-  planes: any[] = [];
+  planes: any[]       = [];
   evaluaciones: any[] = [];
-  preguntas: any[] = [];
-  valoresPonderacion = Array.from({ length: 21 }, (_, i) => i * 0.5);
+  preguntas: any[]    = [];
+  valoresPonderacion  = Array.from({ length: 21 }, (_, i) => i * 0.5);
 
-  private fb = inject(FormBuilder);
-  private planService = inject(PlanesIntervencionService);
+  private fb                = inject(FormBuilder);
+  private planService       = inject(PlanesIntervencionService);
   private respuestasService = inject(RespuestasService);
-  private pondService = inject(PonderacionesService);
-  private router = inject(Router);
+  private pondService       = inject(PonderacionesService);
+  private router            = inject(Router);
 
   ngOnInit() {
     this.miFormulario = this.fb.group({
-      plan_id: ['', Validators.required],
+      plan_id:       ['', Validators.required],
       evaluacion_id: ['', Validators.required]
     });
     this.planService.getPlanes().subscribe(data => this.planes = data);
@@ -57,10 +57,9 @@ export class AddPonderacionComponent implements OnInit {
 
   onPlanChange(planId: number) {
     this.evaluaciones = [];
-    this.preguntas = [];
+    this.preguntas    = [];
     this.resetDynamicControls();
     if (!planId) return;
-
     this.planService
       .getEvaluacionesConPreguntas(planId)
       .pipe(map(res => res.evaluaciones || []))
@@ -74,76 +73,69 @@ export class AddPonderacionComponent implements OnInit {
 
     this.respuestasService
       .getEvaluacionCompleta(evId)
-      .pipe(map(resp => resp.preguntas || resp.evaluacion?.preguntas || []))
+      .pipe(map(resp => resp.preguntas || []))
       .subscribe(pregs => {
-        // Mapeo de preguntas + subpreguntas likert
+        // 1) Levantamos preguntas + opciones + subpreguntas
         this.preguntas = pregs.map((p: any) => {
-          const tipo = p.tipos_de_respuesta[0]?.tipo;
-          // opciones generales
-          const opcionesRespuesta = (p.respuestas || []).flatMap((r: any) => r.opciones || []);
-          // extraer subpreguntas en likert
-          let subpreguntas: any[] = [];
-          if (tipo === 'likert') {
-            const respLikert = (p.respuestas || []).find((r: any) => Array.isArray(r.subpreguntas));
-            if (respLikert) {
-              subpreguntas = (respLikert.subpreguntas || []).map((sp: any) => ({
+          const t = this.tipo(p);
+          let opciones = (p.respuestas || []).flatMap((r: any) => r.opciones || []);
+          if (!opciones.length) opciones = [{ id: null, label: '(sin opciones)' }];
+
+          // Extraer subpreguntas likert
+          let subs: any[] = [];
+          if (t === 'likert') {
+            const rl = (p.respuestas || []).find((r: any) => Array.isArray(r.subpreguntas));
+            if (rl) {
+              subs = rl.subpreguntas.map((sp: any) => ({
                 id: sp.id,
                 texto: sp.texto,
                 opciones: sp.opciones_likert || []
               }));
             }
           }
-          return { ...p, opcionesRespuesta, subpreguntas };
+
+          return { ...p, opcionesRespuesta: opciones, subpreguntas: subs };
         });
 
-        // añadir controles
+        // 2) Generar controles dinámicos
         this.preguntas.forEach(p => {
-          const tipo = p.tipos_de_respuesta[0]?.tipo;
-          if (tipo === 'barra_satisfaccion') {
-            this.miFormulario.addControl(
-              `valor_${p.id}`,
-              new FormControl(0, [
-                Validators.required,
-                Validators.min(0),
-                Validators.max(10),
-                Validators.pattern(/^(?:[0-9]|10)$/)
-              ])
-            );
-          } else if (tipo === 'texto' || tipo === 'numero') {
-            this.miFormulario.addControl(
-              `correcta_${p.id}`,
-              new FormControl('', [
-                Validators.required,
-                ...(tipo === 'texto'
-                  ? [Validators.maxLength(500)]
-                  : [Validators.pattern(/^\d+$/)])
-              ])
-            );
-            this.miFormulario.addControl(`valor_${p.id}`, new FormControl('', Validators.required));
-          } else if (tipo !== 'likert') {
-            this.miFormulario.addControl(`correcta_${p.id}`, new FormControl('', Validators.required));
-            this.miFormulario.addControl(`valor_${p.id}`, new FormControl('', Validators.required));
-          } else {
-            // likert: uno por cada subpregunta
-            p.subpreguntas.forEach((sub: { id: any; }) => {
-              this.miFormulario.addControl(
-                `correcta_${p.id}_${sub.id}`,
-                new FormControl('', Validators.required)
-              );
-              this.miFormulario.addControl(
-                `valor_${p.id}_${sub.id}`,
-                new FormControl('', Validators.required)
-              );
+          const t = this.tipo(p), id = p.id;
+          // Barra
+          if (t === 'barra_satisfaccion') {
+            this.miFormulario.addControl(`valor_${id}`,
+              new FormControl(0, [Validators.required, Validators.min(0), Validators.max(10)]));
+          }
+          // Texto / número
+          else if (['texto','numero'].includes(t)) {
+            this.miFormulario.addControl(`correcta_${id}`, new FormControl('', Validators.required));
+            this.miFormulario.addControl(`valor_${id}`,     new FormControl('', Validators.required));
+          }
+          // Discretas
+          else if (['si_no','si_no_noestoyseguro','5emojis','opcion_personalizada'].includes(t)) {
+            this.miFormulario.addControl(`correcta_${id}`, new FormControl('', Validators.required));
+            this.miFormulario.addControl(`valor_${id}`,     new FormControl('', Validators.required));
+          }
+          // Likert
+          if (t === 'likert') {
+            p.subpreguntas.forEach((sub: any) => {
+              this.miFormulario.addControl(`correcta_${id}_${sub.id}`,
+                new FormControl('', Validators.required));
+              this.miFormulario.addControl(`valor_${id}_${sub.id}`,
+                new FormControl('', Validators.required));
             });
           }
         });
-      }, err => console.error('Error cargando evaluación completa:', err));
+      });
   }
 
   private resetDynamicControls() {
     Object.keys(this.miFormulario.controls)
-      .filter(key => key.startsWith('correcta_') || key.startsWith('valor_'))
+      .filter(k => k.startsWith('correcta_') || k.startsWith('valor_'))
       .forEach(ctrl => this.miFormulario.removeControl(ctrl));
+  }
+
+  tipo(p: any): string {
+    return p.tipos_de_respuesta?.[0]?.tipo || '';
   }
 
   submit() {
@@ -152,46 +144,40 @@ export class AddPonderacionComponent implements OnInit {
     const detalles: any[] = [];
 
     this.preguntas.forEach(p => {
-      const tipo = p.tipos_de_respuesta[0]?.tipo;
-      if (tipo === 'barra_satisfaccion') {
-        detalles.push({ pregunta_id: p.id, tipo, valor: fv[`valor_${p.id}`] });
-      } else if (tipo === 'texto' || tipo === 'numero') {
+      const t = this.tipo(p), id = p.id;
+      if (t === 'barra_satisfaccion') {
+        detalles.push({ pregunta_id: id, tipo: t, valor: fv[`valor_${id}`] });
+      } else if (['texto','numero'].includes(t)) {
         detalles.push({
-          pregunta_id: p.id,
-          tipo,
-          respuesta_correcta: fv[`correcta_${p.id}`],
-          valor: fv[`valor_${p.id}`]
+          pregunta_id: id,
+          tipo: t,
+          respuesta_correcta: fv[`correcta_${id}`],
+          valor: fv[`valor_${id}`]
         });
-      } else if (tipo !== 'likert') {
+      } else if (['si_no','si_no_noestoyseguro','5emojis','opcion_personalizada'].includes(t)) {
         detalles.push({
-          pregunta_id: p.id,
-          tipo,
-          respuesta_correcta_id: fv[`correcta_${p.id}`],
-          valor: fv[`valor_${p.id}`]
+          pregunta_id: id,
+          tipo: t,
+          respuesta_correcta_id: fv[`correcta_${id}`],
+          valor: fv[`valor_${id}`]
         });
-      } else {
-        p.subpreguntas.forEach((sub: { id: any; }) => {
+      } else if (t === 'likert') {
+        p.subpreguntas.forEach((sub: any) => {
           detalles.push({
-            pregunta_id: p.id,
+            pregunta_id: id,
             subpregunta_id: sub.id,
-            tipo,
-            respuesta_correcta_id: fv[`correcta_${p.id}_${sub.id}`],
-            valor: fv[`valor_${p.id}_${sub.id}`]
+            tipo: t,
+            respuesta_correcta_id: fv[`correcta_${id}_${sub.id}`],
+            valor: fv[`valor_${id}_${sub.id}`]
           });
         });
       }
     });
 
-    const payload = {
-      plan_id: fv.plan_id,
+    this.pondService.guardarPonderaciones({
+      plan_id:       fv.plan_id,
       evaluacion_id: fv.evaluacion_id,
       detalles
-    };
-
-    this.pondService.guardarPonderaciones(payload)
-      .subscribe(
-        () => this.router.navigate(['/admin/gestion-ponderacion/listar']),
-        err => console.error('Error guardando ponderaciones:', err)
-      );
+    }).subscribe(() => this.router.navigate(['/admin/gestion-ponderacion/listar']));
   }
 }

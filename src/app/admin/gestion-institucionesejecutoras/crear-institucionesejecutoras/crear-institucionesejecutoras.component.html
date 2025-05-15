@@ -57,9 +57,14 @@
           <input id="plazas" type="number" formControlName="plazas" class="form-control" readonly>
 
           <!-- Plan de Intervención (autocompletado según el territorio seleccionado) -->
-          <label style="margin-top: 20px;" for="plan_intervencion">Plan de Intervención</label>
-          <input id="plan_intervencion" type="text" formControlName="planesdeintervencion_id" class="form-control" readonly>
-          <!-- Campo oculto que contiene el ID del plan y se envía al backend -->
+          <label for="plan_intervencion">Plan de Intervención</label>
+          <input id="plan_intervencion"
+                type="text"
+                formControlName="planesdeintervencion_nombre"
+                class="form-control"
+                readonly>
+
+          <!-- Campo oculto que contiene el ID del plan -->
           <input type="hidden" formControlName="planesdeintervencion_id">
 
           <!-- Período de Registro Desde -->
