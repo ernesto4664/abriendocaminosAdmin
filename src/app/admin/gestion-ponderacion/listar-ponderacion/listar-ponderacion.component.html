@@ -39,7 +39,7 @@
           <p><strong>Subpreguntas:</strong></p>
           <div *ngFor="let det of preg.items" class="subpregunta-box">
             <p>– {{ det.subpregunta_texto }}</p>
-            <p><strong>Correcta:</strong> {{ det.respuesta_correcta_label }}</p>
+            <p><strong>Correcta:</strong> {{ det.respuesta_correcta_label || '-' }}</p>
             <p><strong>Ponderación:</strong> {{ det.valor }} pts</p>
           </div>
         </div>

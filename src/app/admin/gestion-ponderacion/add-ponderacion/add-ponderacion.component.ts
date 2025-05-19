@@ -75,21 +75,46 @@ export class AddPonderacionComponent implements OnInit {
       .getEvaluacionCompleta(evId)
       .pipe(map(resp => resp.preguntas || []))
       .subscribe(pregs => {
-        // 1) Levantamos preguntas + opciones + subpreguntas
         this.preguntas = pregs.map((p: any) => {
-          const t = this.tipo(p);
-          let opciones = (p.respuestas || []).flatMap((r: any) => r.opciones || []);
-          if (!opciones.length) opciones = [{ id: null, label: '(sin opciones)' }];
+          const tipo = this.tipo(p);
+          const r0 = (p.respuestas || [])[0] ?? {};
 
-          // Extraer subpreguntas likert
+          let opciones: any[] = [];
+
+          // ✅ Caso 1: opciones vienen desde backend
+          if (Array.isArray(r0.opciones) && r0.opciones.length > 0) {
+            opciones = r0.opciones.map((o: any, idx: number) => ({
+              id: o.id ?? `inject-${p.id}-${idx}`,
+              label: o.label,
+              valor: o.valor ?? null
+            }));
+          }
+
+          // ✅ Caso 2: inyectamos opciones por tipo si están vacías
+          else if (['si_no', 'si_no_noestoyseguro'].includes(tipo)) {
+            opciones = [
+              { id: `inject-${p.id}-1`, label: 'SI', valor: 1 },
+              { id: `inject-${p.id}-2`, label: 'NO', valor: 2 }
+            ];
+            if (tipo === 'si_no_noestoyseguro') {
+              opciones.push({ id: `inject-${p.id}-3`, label: 'No estoy seguro', valor: null });
+            }
+          }
+
+          // ✅ Caso 3: sin opciones
+          if (!opciones.length) {
+            opciones = [{ id: null, label: '(sin opciones)' }];
+          }
+
+          // ✅ Likert: subpreguntas con opciones
           let subs: any[] = [];
-          if (t === 'likert') {
-            const rl = (p.respuestas || []).find((r: any) => Array.isArray(r.subpreguntas));
-            if (rl) {
-              subs = rl.subpreguntas.map((sp: any) => ({
+          if (tipo === 'likert') {
+            const rLikert = (p.respuestas || []).find((r: any) => Array.isArray(r.subpreguntas));
+            if (rLikert) {
+              subs = rLikert.subpreguntas.map((sp: any) => ({
                 id: sp.id,
                 texto: sp.texto,
-                opciones: sp.opciones_likert || []
+                opciones: sp.opciones || []  // 👈 Este es el cambio clave
               }));
             }
           }
@@ -97,36 +122,36 @@ export class AddPonderacionComponent implements OnInit {
           return { ...p, opcionesRespuesta: opciones, subpreguntas: subs };
         });
 
-        // 2) Generar controles dinámicos
+        // 🧠 Agregar dinámicamente los controles
         this.preguntas.forEach(p => {
-          const t = this.tipo(p), id = p.id;
-          // Barra
-          if (t === 'barra_satisfaccion') {
+          const tipo = this.tipo(p);
+          const id = p.id;
+
+          if (tipo === 'barra_satisfaccion') {
             this.miFormulario.addControl(`valor_${id}`,
               new FormControl(0, [Validators.required, Validators.min(0), Validators.max(10)]));
           }
-          // Texto / número
-          else if (['texto','numero'].includes(t)) {
+
+          else if (['texto', 'numero'].includes(tipo)) {
             this.miFormulario.addControl(`correcta_${id}`, new FormControl('', Validators.required));
-            this.miFormulario.addControl(`valor_${id}`,     new FormControl('', Validators.required));
+            this.miFormulario.addControl(`valor_${id}`, new FormControl('', Validators.required));
           }
-          // Discretas
-          else if (['si_no','si_no_noestoyseguro','5emojis','opcion_personalizada'].includes(t)) {
+
+          else if (['si_no', 'si_no_noestoyseguro', '5emojis', 'opcion_personalizada'].includes(tipo)) {
             this.miFormulario.addControl(`correcta_${id}`, new FormControl('', Validators.required));
-            this.miFormulario.addControl(`valor_${id}`,     new FormControl('', Validators.required));
+            this.miFormulario.addControl(`valor_${id}`, new FormControl('', Validators.required));
           }
-          // Likert
-          if (t === 'likert') {
+
+          else if (tipo === 'likert') {
             p.subpreguntas.forEach((sub: any) => {
-              this.miFormulario.addControl(`correcta_${id}_${sub.id}`,
-                new FormControl('', Validators.required));
-              this.miFormulario.addControl(`valor_${id}_${sub.id}`,
-                new FormControl('', Validators.required));
+              this.miFormulario.addControl(`correcta_${id}_${sub.id}`, new FormControl('', Validators.required));
+              this.miFormulario.addControl(`valor_${id}_${sub.id}`, new FormControl('', Validators.required));
             });
           }
         });
       });
   }
+
 
   private resetDynamicControls() {
     Object.keys(this.miFormulario.controls)
