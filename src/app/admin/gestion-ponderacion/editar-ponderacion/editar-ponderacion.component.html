@@ -1,1 +1,142 @@
-<p>gestion-convocatorias works!</p>
+<div class="container">
+  <div class="titulo">
+    <h1>Edición de preguntas correctas y ponderaciones</h1>
+  </div>
+  <div class="row" style="padding: 50px;">
+    <div class="col-md-12">
+      <form [formGroup]="miFormulario" (ngSubmit)="submit()">
+
+        <!-- Cabecera: muestra plan y evaluación (puedes ocultarlo si no interesa editar) -->
+        <div class="row g-3 mb-4">
+          <div class="col">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Plan de intervención</mat-label>
+              <input matInput formControlName="plan_id" [disabled]="true" />
+            </mat-form-field>
+          </div>
+          <div class="col">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Evaluación</mat-label>
+              <input matInput formControlName="evaluacion_id" [disabled]="true" />
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Preguntas dinámicas -->
+        <ng-container *ngFor="let preg of preguntas">
+          <div class="mb-4 p-3 border rounded">
+            <p><strong>Pregunta:</strong> {{ preg.pregunta }}</p>
+
+            <!-- TEXTO / NÚMERO -->
+            <ng-container *ngIf="['texto','numero'].includes(tipo(preg))">
+              <div class="d-flex gap-3 align-items-start">
+                <mat-form-field appearance="outline" class="flex-fill">
+                  <mat-label>Respuesta Correcta</mat-label>
+                  <input
+                    matInput
+                    [type]="tipo(preg) === 'numero' ? 'number' : 'text'"
+                    formControlName="correcta_{{ preg.id }}"
+                    placeholder="Respuesta correcta"
+                  />
+                  <mat-hint *ngIf="tipo(preg) === 'texto'">Máx. 500 caracteres.</mat-hint>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                  <mat-label>Valor Ponderación</mat-label>
+                  <mat-select formControlName="valor_{{ preg.id }}">
+                    <mat-option *ngFor="let v of valoresPonderacion" [value]="v">
+                      {{ v }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </ng-container>
+
+            <!-- BARRA SATISFACCIÓN -->
+            <ng-container *ngIf="tipo(preg) === 'barra_satisfaccion'">
+              <p><strong>Nivel de Satisfacción (0–10):</strong></p>
+              <div class="d-flex align-items-center gap-3">
+                <mat-slider
+                  formControlName="valor_{{ preg.id }}"
+                  thumbLabel
+                  tickInterval="1"
+                  [min]="0"
+                  [max]="10"
+                  [step]="1">
+                </mat-slider>
+                <span>{{ miFormulario.get('valor_' + preg.id)?.value }}</span>
+              </div>
+            </ng-container>
+
+            <!-- OPCIONES DISCRETAS (✓ aquí integrado correctamente) -->
+            <ng-container *ngIf="['si_no','si_no_noestoyseguro','5emojis','opcion_personalizada'].includes(tipo(preg))">
+              <p><strong>Posibles Opciones a Respuestas:</strong></p>
+              <ul class="mb-3">
+                <li *ngFor="let o of preg.opcionesRespuesta">{{ o.label }}</li>
+              </ul>
+              <div class="d-flex gap-3 align-items-start">
+                <!-- <mat-form-field> para la respuesta correcta -->
+                <mat-form-field appearance="outline" class="flex-fill">
+                  <mat-label>Respuesta Correcta</mat-label>
+                  <mat-select formControlName="correcta_{{ preg.id }}">
+                    <mat-option *ngFor="let opt of preg.opcionesRespuesta" [value]="opt.id">
+                      {{ opt.label }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <!-- <mat-form-field> para la ponderación -->
+                <mat-form-field appearance="outline">
+                  <mat-label>Valor Ponderación</mat-label>
+                  <mat-select formControlName="valor_{{ preg.id }}">
+                    <mat-option *ngFor="let v of valoresPonderacion" [value]="v">
+                      {{ v }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </ng-container>
+
+            <!-- LIKERT -->
+            <ng-container *ngIf="tipo(preg) === 'likert'">
+              <p><strong>Subpreguntas y Opciones:</strong></p>
+              <div *ngFor="let sub of preg.subpreguntas" class="ps-3 mb-2">
+                <p><em>{{ sub.texto }}</em></p>
+                <ul>
+                  <li *ngFor="let o of sub.opciones">{{ o.label }}</li>
+                </ul>
+              </div>
+              <div *ngFor="let sub of preg.subpreguntas" class="ps-3 mb-3 d-flex gap-3 align-items-start">
+                <mat-form-field appearance="outline" class="flex-fill">
+                  <mat-label>Respuesta Correcta ({{ sub.texto }})</mat-label>
+                  <mat-select formControlName="correcta_{{ preg.id }}_{{ sub.id }}">
+                    <mat-option *ngFor="let o of sub.opciones" [value]="o.id">
+                      {{ o.label }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                  <mat-label>Valor Ponderación</mat-label>
+                  <mat-select formControlName="valor_{{ preg.id }}_{{ sub.id }}">
+                    <mat-option *ngFor="let v of valoresPonderacion" [value]="v">
+                      {{ v }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </ng-container>
+
+          </div>
+        </ng-container>
+
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          [disabled]="miFormulario.invalid"
+        >
+          Guardar Ponderaciones
+        </button>
+      </form>
+    </div>
+  </div>
+</div>

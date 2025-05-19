@@ -9,6 +9,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RespuestasService } from '../../../services/respuestas.service';
+import { forkJoin } from 'rxjs/internal/observable/forkJoin';
 
 @Component({
   selector: 'app-edit-respuesta',
@@ -33,7 +34,8 @@ export class EditRespuestaComponent implements OnInit {
   preguntas: any[] = [];
   respuestas: { [key: number]: any[] } = {};
   edicionActiva: { [key: number]: boolean } = {};
-
+  cargando: boolean = false;          // mientras carga la evaluación
+  guardando: boolean = false; 
   // Variable para manejar la visibilidad del campo de texto
   mostrarRespuestaTexto: boolean = false;stas: { [key: number]: { tipo: string, valor: string | number, observaciones: string, opciones: any[], subpreguntas: any[] }[] } = {};
 
@@ -44,7 +46,7 @@ export class EditRespuestaComponent implements OnInit {
   preguntaSeleccionada: number | undefined;
   respuestasOriginales: any;
   http: any;
-  evaluacionId: any;
+  evaluacionId!: number;
   evaluaciones: any;
 
   constructor(private router: Router, private cdr: ChangeDetectorRef) {
@@ -54,79 +56,74 @@ export class EditRespuestaComponent implements OnInit {
   }
 
   ngOnInit() {
-    const evaluacionId = this.route.snapshot.paramMap.get('id');
-    if (evaluacionId) {
-      this.cargarEvaluacion(parseInt(evaluacionId));
+    const param = this.route.snapshot.paramMap.get('id');
+    if (param) {
+      this.evaluacionId = parseInt(param, 10);    // ← guardamos el número
+      this.cargarEvaluacion(this.evaluacionId);
     }
   }
 
   /** 📌 Cargar evaluación y sus respuestas */
-  cargarEvaluacion(evaluacionId: number) {
-    this.respuestaService.getEvaluacionCompleta(evaluacionId).subscribe(
-      (data) => {
+cargarEvaluacion(evaluacionId: number) {
+  // 1️⃣ Pongo el flag a true para deshabilitar UI mientras carga
+  this.cargando = true;
+
+  this.respuestaService.getEvaluacionCompleta(evaluacionId)
+    .subscribe({
+      next: (data) => {
         this.evaluacion = data;
-        this.preguntas = data.preguntas;
-        this.respuestas = {};
-  
+        this.preguntas   = data.preguntas;
+        this.respuestas  = {};
+
         this.preguntas.forEach((pregunta) => {
           if (!pregunta.respuestas) {
             pregunta.respuestas = [];
           }
-  
-          // Detectar tipo de respuesta si no está definido
-          const tiposDetectados = pregunta.respuestas.map((r: any) => r.tipo).filter(Boolean);
-          if (!pregunta.tipos_de_respuesta || !pregunta.tipos_de_respuesta.length) {
+
+          const tiposDetectados = pregunta.respuestas
+            .map((r: any) => r.tipo)
+            .filter(Boolean);
+
+          if (!pregunta.tipos_de_respuesta?.length) {
             pregunta.tipos_de_respuesta = tiposDetectados.length
               ? [{ tipo: tiposDetectados[0] }]
               : [];
           }
-  
-          this.respuestas[pregunta.id] = pregunta.respuestas.map((respuesta: any) => {
-            const tipoDetectado = respuesta.tipo || (pregunta.tipos_de_respuesta?.[0]?.tipo ?? '');
-  
-            return {
-              id: respuesta.id,
-              tipo: tipoDetectado, // ✅ Esto garantiza que el tipo esté disponible en el template
-              valor: respuesta.valor || '',
-              observaciones: respuesta.observaciones || '',
-  
-              // ✅ Opciones personalizadas
-              opciones: Array.isArray(respuesta.opciones)
-                ? respuesta.opciones.map((op: any) => ({
-                    id: op.id ?? `temp-${Date.now()}`,
-                    label: op.label || '',
-                    value: op.value || ''
-                  }))
-                : [],
-  
-              // ✅ Escala Likert: subpreguntas + match con opciones_likert
-              subpreguntas: Array.isArray(respuesta.subpreguntas)
-                ? respuesta.subpreguntas.map((sub: any) => ({
-                    id: sub.id,
-                    texto: sub.texto || '',
-                    opciones: Array.isArray(respuesta.opciones_likert)
-                      ? respuesta.opciones_likert
-                          .filter((op: any) => op.subpregunta_id === sub.id)
-                          .map((op: any) => ({
-                            id: op.id,
-                            label: op.label || '',
-                            value: op.value || '',
-                            control: new FormControl('')
-                          }))
-                      : []
-                  }))
-                : []
-            };
-          });
+
+          this.respuestas[pregunta.id] = pregunta.respuestas.map((respuesta: any) => ({
+            id:           respuesta.id,
+            tipo:         respuesta.tipo,
+            valor:        respuesta.valor  ?? '',
+            observaciones: respuesta.observaciones ?? '',
+            opciones:     respuesta.opciones || [],
+            subpreguntas: Array.isArray(respuesta.subpreguntas)
+              ? respuesta.subpreguntas.map((sub: any) => ({
+                  id:       sub.id,
+                  texto:    sub.texto || '',
+                  opciones: Array.isArray(sub.opciones)
+                    ? sub.opciones.map((op: any) => ({
+                        id:    op.id,
+                        label: op.label,
+                        value: op.valor ?? op.label
+                      }))
+                    : []
+                }))
+              : []
+          }));
         });
-  
+
         console.log('✅ Preguntas y respuestas cargadas:', this.preguntas);
       },
-      (error) => {
-        console.error('❌ Error al cargar la evaluación:', error);
+      error: (err) => {
+        console.error('❌ Error al cargar la evaluación:', err);
+        alert('⚠️ No se pudo cargar la evaluación. Revisa la consola.');
+      },
+      complete: () => {
+        // 3️⃣ Siempre resetear el flag, con éxito o error
+        this.cargando = false;
       }
-    );
-  }
+    });
+}
   
   private agruparSubpreguntasLikert(respuesta: any) {
     if (!Array.isArray(respuesta.subpreguntas) || !Array.isArray(respuesta.opciones_likert)) {
@@ -164,68 +161,86 @@ export class EditRespuestaComponent implements OnInit {
   }
 
     /** 📌 Guardar cambios */
-    guardarCambios() {
-      const respuestasFiltradas = this.preguntas.flatMap(pregunta => {
-        return (this.respuestas[pregunta.id] || [])
-          .filter(respuesta => !respuesta.eliminado)
-          .map(respuesta => {
-            const idValido = typeof respuesta.id === 'number' && respuesta.id < 1000000
-              ? respuesta.id
-              : null;
-    
-            // ✅ Opciones limpias
-            const opcionesLimpias = (respuesta.opciones ?? []).map((op: any) => ({
-              ...op,
-              id: typeof op.id === 'number' || (typeof op.id === 'string' && !op.id.toString().startsWith('temp-')) ? op.id : null,
-              label: op.label || '',
-              value: op.value ?? op.label ?? ''
-            }));
-    
-            // ✅ Subpreguntas limpias con opciones Likert
-            const subpreguntasLimpias = (respuesta.subpreguntas ?? []).map((sp: any) => ({
-              texto: sp.texto || '',
-              opciones: (sp.opciones ?? []).map((op: any) => ({
-                label: op.label || '',
-                value: op.value ?? op.label ?? ''
-              }))
-            }));
-    
-            return {
-              id: idValido,
-              pregunta_id: pregunta.id,
-              tipo: respuesta.tipo,
-              valor: respuesta.valor ?? '',
-              observaciones: respuesta.observaciones ?? '',
-              opciones: opcionesLimpias,
-              subpreguntas: subpreguntasLimpias
-            };
-          });
+
+guardarCambios() {
+  // 1️⃣ Deshabilito el botón y muestro “Guardando…”
+  this.guardando = true;
+
+  // 2️⃣ Armo el array de respuestas igual que antes
+  const respuestasFiltradas = this.preguntas.flatMap(pregunta => {
+    return (this.respuestas[pregunta.id] || [])
+      .filter(respuesta => !respuesta.eliminado)
+      .map(respuesta => {
+        const idValido = (typeof respuesta.id === 'number' && respuesta.id < 1_000_000)
+          ? respuesta.id
+          : null;
+
+        const opcionesLimpias = (respuesta.opciones ?? []).map((op: any) => ({
+          id:    (typeof op.id === 'number' || (typeof op.id === 'string' && !op.id.toString().startsWith('temp-')))
+                    ? op.id
+                    : null,
+          label: op.label || '',
+          value: op.value ?? op.label ?? ''
+        }));
+
+        const subpreguntasLimpias = (respuesta.subpreguntas ?? []).map((sp: any) => ({
+          texto:    sp.texto || '',
+          opciones: (sp.opciones ?? []).map((op: any) => ({
+            label: op.label || '',
+            value: op.value ?? op.label ?? ''
+          }))
+        }));
+
+        return {
+          id:            idValido,
+          pregunta_id:   pregunta.id,
+          tipo:          respuesta.tipo,
+          valor:         respuesta.valor  ?? '',
+          observaciones: respuesta.observaciones ?? '',
+          opciones:      opcionesLimpias,
+          subpreguntas:  subpreguntasLimpias
+        };
       });
-    
-      if (respuestasFiltradas.length === 0) {
-        alert("⚠️ Debes agregar al menos una respuesta antes de guardar.");
-        return;
+  });
+
+  if (!respuestasFiltradas.length) {
+    alert("⚠️ Debes agregar al menos una respuesta antes de guardar.");
+    this.guardando = false;
+    return;
+  }
+
+  const payload = {
+    evaluacion_id: this.evaluacionId,   // ← aquí ya estará definido
+    respuestas:    respuestasFiltradas
+  };
+
+  console.log("📤 Payload para /respuestas-multiple:", payload);
+
+  // 3️⃣ Llamo al servicio
+  this.respuestaService.actualizarRespuestas(payload).subscribe({
+    next: () => {
+      alert("✅ Todas las respuestas han sido guardadas correctamente.");
+      this.router.navigate(['/admin/gestion-respuestas/listar']);
+    },
+    error: (err) => {
+      console.error("❌ Error al guardar respuestas:", err);
+
+      if (err.status === 422 && err.error?.errors) {
+        // 4️⃣ Extraigo y muestro los mensajes de validación
+        const msgs = Object.entries(err.error.errors)
+          .map(([campo, m]: any) => `${campo}: ${m.join(', ')}`)
+          .join('\n');
+        alert(`⚠️ Errores de validación:\n${msgs}`);
+      } else {
+        alert("⚠️ Hubo un problema al guardar las respuestas. Revisa la consola.");
       }
-    
-      const payload = {
-        evaluacion_id: this.evaluacion.id,
-        respuestas: respuestasFiltradas
-      };
-    
-      console.log("📤 Enviando respuestas actualizadas a la API:", payload);
-    
-      this.respuestaService.actualizarRespuestas(payload).subscribe({
-        next: () => {
-          alert("✅ Todas las respuestas han sido guardadas correctamente.");
-        //  this.actualizarEvaluaciones();
-          this.router.navigate(['/admin/gestion-respuestas/listar']);
-        },
-        error: err => {
-          console.error("❌ Error al guardar respuestas:", err);
-          alert("⚠️ Hubo un problema al guardar las respuestas. Revisa la consola.");
-        }
-      });
+    },
+    complete: () => {
+      // 5️⃣ Siempre resetear el flag
+      this.guardando = false;
     }
+  });
+}
     
     
   private actualizarEvaluaciones() {
@@ -536,48 +551,46 @@ export class EditRespuestaComponent implements OnInit {
     }
   }
 
-  eliminarRespuesta(preguntaId: number, respuestaId: number) {
-    console.log(`🔍 Intentando eliminar respuesta con ID: ${respuestaId}`);
-  
-    if (!this.respuestas[preguntaId] || !Array.isArray(this.respuestas[preguntaId])) {
-      console.warn(`⚠️ No se encontraron respuestas para la pregunta ${preguntaId}.`);
-      return;
-    }
-  
-    const confirmacion = confirm("¿Estás seguro de que deseas eliminar esta posible opción de respuesta?");
-    if (!confirmacion) {
-      console.log("❌ Eliminación cancelada por el usuario.");
-      return;
-    }
-  
-    // Buscar el índice de la respuesta
-    const index = this.respuestas[preguntaId].findIndex(res => res.id === respuestaId);
-  
-    if (index !== -1) {
-      console.log(`✅ Respuesta ${respuestaId} encontrada en el índice ${index}, eliminando...`);
-      this.respuestas[preguntaId].splice(index, 1);
-  
-      // 🔄 También actualizar `pregunta.respuestas`
-      const pregunta = this.preguntas.find(p => p.id === preguntaId);
-      if (pregunta) {
-        pregunta.respuestas = [...this.respuestas[preguntaId]];
-  
-        // 🛑 Si ya no hay respuestas, limpiar `tipos_de_respuesta`
-        if (pregunta.respuestas.length === 0) {
-          console.log(`🛑 No quedan respuestas en la pregunta ${preguntaId}, limpiando tipo...`);
-          pregunta.tipos_de_respuesta = []; // Limpia el tipo de respuesta
+  eliminarRespuesta(preguntaId: number) {
+    if (!confirm('¿Eliminar esta opción?')) return;
+
+    this.respuestaService.existeDetalle(this.evaluacionId)
+      .subscribe({
+        next: tieneDetalle => {
+          if (!tieneDetalle) {
+            // 🔸 Caso: NO HAY PONDERACIONES
+            this.respuestaService.eliminarRespuestasPorPregunta(preguntaId)
+              .subscribe({
+                next: () => {
+                  this.cargarEvaluacion(this.evaluacionId); // recarga vista
+                  alert('✅ Respuesta eliminada correctamente.');
+                },
+                error: () => {
+                  alert('❌ No se pudo eliminar la respuesta.');
+                }
+              });
+
+          } else {
+            // 🔸 Caso: SÍ HAY PONDERACIONES
+            if (!confirm('Esta evaluación ya tiene ponderaciones. ¿Desea limpiar TODO lo asociado a esta pregunta?')) return;
+
+            this.respuestaService
+              .limpiarPreguntaCompleta(preguntaId, this.evaluacionId)
+              .subscribe({
+                next: () => {
+                  this.cargarEvaluacion(this.evaluacionId); // recarga vista
+                  alert('✅ Pregunta y sus ponderaciones eliminadas correctamente.');
+                },
+                error: () => {
+                  alert('❌ No se pudo eliminar todo lo relacionado.');
+                }
+              });
+          }
+        },
+        error: () => {
+          alert('❌ No se pudo verificar si existen ponderaciones.');
         }
-      }
-  
-      // 🔄 Forzar actualización
-      this.respuestas = { ...this.respuestas };
-      this.cdr.detectChanges();
-  
-      console.log(`✅ Respuesta ${respuestaId} eliminada del front.`);
-      alert(`✅ Opción de respuesta eliminada con éxito.`);
-    } else {
-      console.warn(`⚠️ No se encontró la respuesta con ID ${respuestaId} en el array.`);
-    }
+      });
   }
   
   agregarTipoRespuesta(preguntaId: number, nuevoTipo: string) {
