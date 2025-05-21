@@ -496,38 +496,43 @@ guardarCambios() {
   /** 📌 Mostrar formulario de Opciones Personalizadas */
   mostrarFormularioOpcionesPersonalizadas(preguntaId: number) {
     this.preguntaSeleccionada = preguntaId;
-  
+
     const pregunta = this.preguntas.find(p => p.id === preguntaId);
     if (pregunta) {
       pregunta.tipos_de_respuesta = [{ tipo: 'opcion_personalizada' }];
     }
-  
-    if (!this.respuestas[preguntaId]?.some(res => res.tipo === 'opcion_personalizada')) {
-      this.respuestas[preguntaId] = this.respuestas[preguntaId] || [];
-  
-      this.respuestas[preguntaId].push({
-        tipo: "opcion_personalizada",
-        valor: "",
-        observaciones: "",
-        opciones: [{ id: `temp-${Date.now()}`, label: '' }],
-        subpreguntas: []
-      });
-    }
+
+    // 🔴 Limpiar respuestas previas mal formadas o de otro tipo
+    this.respuestas[preguntaId] = [];
+
+    // ✅ Crear una sola respuesta válida
+    this.respuestas[preguntaId].push({
+      id: null,
+      pregunta_id: preguntaId,
+      tipo: "opcion_personalizada",
+      valor: "",
+      observaciones: "",
+      opciones: [
+        { id: `temp-${Date.now()}`, label: '', value: '' }
+      ],
+      subpreguntas: []
+    });
+
+    // 🔁 Forzar detección de cambios en pantalla
+    this.respuestas = { ...this.respuestas };
+    this.cdr.detectChanges();
   }
   
   
   /** 📌 Agregar nueva opción personalizada */
   agregarOpcionPersonalizada(preguntaId: number) {
     const respuesta = this.respuestas[preguntaId]?.find(res => res.tipo === 'opcion_personalizada');
-
-    if (!respuesta) {
-      console.warn(`⚠️ No se encontró una respuesta de tipo "opcion_personalizada" en la pregunta ${preguntaId}.`);
-      return;
-    }
+    if (!respuesta) return;
 
     respuesta.opciones.push({
       id: `temp-${Date.now()}`,
-      label: ""
+      label: '',
+      value: ''
     });
   }
 
@@ -572,14 +577,22 @@ guardarCambios() {
 
           } else {
             // 🔸 Caso: SÍ HAY PONDERACIONES
-            if (!confirm('Esta evaluación ya tiene ponderaciones. ¿Desea limpiar TODO lo asociado a esta pregunta?')) return;
+            if (!confirm('Esta evaluación ya tiene ponderaciones. ¿Desea limpiar TODO lo asociado a esta pregunta y actualizar el tipo?')) return;
+
+            // ✅ Obtenemos el tipo actual para actualizar detalle_ponderaciones
+            const tipoActual = this.preguntas.find(p => p.id === preguntaId)?.tipos_de_respuesta?.[0]?.tipo ?? null;
+
+            if (!tipoActual) {
+              alert('⚠️ No se pudo detectar el tipo actual de la pregunta. Cancelando operación.');
+              return;
+            }
 
             this.respuestaService
-              .limpiarPreguntaCompleta(preguntaId, this.evaluacionId)
+              .limpiarPreguntaConTipo(preguntaId, this.evaluacionId, tipoActual)
               .subscribe({
                 next: () => {
                   this.cargarEvaluacion(this.evaluacionId); // recarga vista
-                  alert('✅ Pregunta y sus ponderaciones eliminadas correctamente.');
+                  alert('✅ Pregunta y sus ponderaciones limpiadas y tipo actualizado correctamente.');
                 },
                 error: () => {
                   alert('❌ No se pudo eliminar todo lo relacionado.');
@@ -592,6 +605,7 @@ guardarCambios() {
         }
       });
   }
+
   
   agregarTipoRespuesta(preguntaId: number, nuevoTipo: string) {
     console.log(`➕ Agregando tipo de respuesta: ${nuevoTipo} a la pregunta ${preguntaId}`);

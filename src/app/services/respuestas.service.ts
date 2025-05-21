@@ -88,9 +88,17 @@ export class RespuestasService {
     );
   }
 
-  limpiarPreguntaCompleta(preguntaId: number, evaluacionId: number): Observable<any> {
-    return this.http.delete(
-      `${this.apiUrlR}/respuestas/pregunta/${preguntaId}/evaluacion/${evaluacionId}`
+  limpiarPreguntaCompleta(preguntaId: number, evaluacionId: number, tipo: string): Observable<any> {
+    return this.http.request('delete', `${this.apiUrlR}/respuestas/pregunta/${preguntaId}/evaluacion/${evaluacionId}`, {
+      body: { tipo } // ✅ ya no "nuevo_tipo"
+    });
+  }
+
+  limpiarPreguntaConTipo(preguntaId: number, evaluacionId: number, tipo: string): Observable<any> {
+    return this.http.post(
+      `${this.apiUrlR}/respuestas/pregunta/${preguntaId}/evaluacion/${evaluacionId}/limpiar`,
+      { tipo }
     );
   }
+
 }
