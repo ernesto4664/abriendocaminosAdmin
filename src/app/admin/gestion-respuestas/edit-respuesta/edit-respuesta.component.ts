@@ -163,28 +163,32 @@ cargarEvaluacion(evaluacionId: number) {
     /** 📌 Guardar cambios */
 
 guardarCambios() {
-  // 1️⃣ Deshabilito el botón y muestro “Guardando…”
   this.guardando = true;
 
-  // 2️⃣ Armo el array de respuestas igual que antes
+  // 1️⃣ Filtramos solo las preguntas con respuestas modificadas (nuevas o editadas)
   const respuestasFiltradas = this.preguntas.flatMap(pregunta => {
-    return (this.respuestas[pregunta.id] || [])
-      .filter(respuesta => !respuesta.eliminado)
-      .map(respuesta => {
-        const idValido = (typeof respuesta.id === 'number' && respuesta.id < 1_000_000)
-          ? respuesta.id
-          : null;
+    const respuestasPregunta = this.respuestas[pregunta.id] || [];
 
+    return respuestasPregunta
+      .filter(respuesta => !respuesta.eliminado) // Excluir eliminadas
+      .filter(respuesta => {
+        // Enviar solo si es nueva o se cambió tipo/opciones
+        return (
+          respuesta.id === null ||                         // respuesta nueva
+          respuesta.tipo !== (pregunta.respuestas?.[0]?.tipo ?? null) || // cambio de tipo
+          (respuesta.opciones?.length !== pregunta.respuestas?.[0]?.opciones?.length) // cambio de opciones
+        );
+      })
+      .map(respuesta => {
         const opcionesLimpias = (respuesta.opciones ?? []).map((op: any) => ({
-          id:    (typeof op.id === 'number' || (typeof op.id === 'string' && !op.id.toString().startsWith('temp-')))
-                    ? op.id
-                    : null,
+          id: (typeof op.id === 'number' || (typeof op.id === 'string' && !op.id.toString().startsWith('temp-')))
+            ? op.id : null,
           label: op.label || '',
           value: op.value ?? op.label ?? ''
         }));
 
         const subpreguntasLimpias = (respuesta.subpreguntas ?? []).map((sp: any) => ({
-          texto:    sp.texto || '',
+          texto: sp.texto || '',
           opciones: (sp.opciones ?? []).map((op: any) => ({
             label: op.label || '',
             value: op.value ?? op.label ?? ''
@@ -192,41 +196,38 @@ guardarCambios() {
         }));
 
         return {
-          id:            idValido,
-          pregunta_id:   pregunta.id,
-          tipo:          respuesta.tipo,
-          valor:         respuesta.valor  ?? '',
+          id: (typeof respuesta.id === 'number' && respuesta.id < 1_000_000) ? respuesta.id : null,
+          pregunta_id: pregunta.id,
+          tipo: respuesta.tipo,
+          valor: respuesta.valor ?? '',
           observaciones: respuesta.observaciones ?? '',
-          opciones:      opcionesLimpias,
-          subpreguntas:  subpreguntasLimpias
+          opciones: opcionesLimpias,
+          subpreguntas: subpreguntasLimpias
         };
       });
   });
 
   if (!respuestasFiltradas.length) {
-    alert("⚠️ Debes agregar al menos una respuesta antes de guardar.");
+    alert("⚠️ No detectamos ningún cambio para guardar.");
     this.guardando = false;
     return;
   }
 
   const payload = {
-    evaluacion_id: this.evaluacionId,   // ← aquí ya estará definido
-    respuestas:    respuestasFiltradas
+    evaluacion_id: this.evaluacionId,
+    respuestas: respuestasFiltradas
   };
 
-  console.log("📤 Payload para /respuestas-multiple:", payload);
+  console.log("📤 Payload filtrado para actualizar:", payload);
 
-  // 3️⃣ Llamo al servicio
   this.respuestaService.actualizarRespuestas(payload).subscribe({
     next: () => {
-      alert("✅ Todas las respuestas han sido guardadas correctamente.");
+      alert("✅ Cambios guardados correctamente.");
       this.router.navigate(['/admin/gestion-respuestas/listar']);
     },
     error: (err) => {
       console.error("❌ Error al guardar respuestas:", err);
-
       if (err.status === 422 && err.error?.errors) {
-        // 4️⃣ Extraigo y muestro los mensajes de validación
         const msgs = Object.entries(err.error.errors)
           .map(([campo, m]: any) => `${campo}: ${m.join(', ')}`)
           .join('\n');
@@ -236,11 +237,11 @@ guardarCambios() {
       }
     },
     complete: () => {
-      // 5️⃣ Siempre resetear el flag
       this.guardando = false;
     }
   });
 }
+
     
     
   private actualizarEvaluaciones() {

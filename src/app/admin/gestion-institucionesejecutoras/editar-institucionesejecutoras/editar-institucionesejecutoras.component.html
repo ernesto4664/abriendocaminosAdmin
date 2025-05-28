@@ -1,0 +1,101 @@
+<div class="container mt-4 p-0">
+  <div class="card">
+    <div class="card-header text-white">
+      <h3 class="titulo">Editar Institución Ejecutora</h3>
+    </div>
+    <div class="card-body">
+      <form [formGroup]="institucionForm" (ngSubmit)="onSubmit()">
+
+        <!-- Nombre Fantasía -->
+        <div class="form-group">
+          <label for="nombre_fantasia" class="form-label">Nombre Fantasía</label>
+          <input id="nombre_fantasia" type="text" formControlName="nombre_fantasia" class="form-control"
+            placeholder="Ingresar nombre fantasía">
+        </div>
+
+        <!-- Nombre Legal -->
+        <div class="form-group mt-3">
+          <label for="nombre_legal" class="form-label">Nombre Legal</label>
+          <input id="nombre_legal" type="text" formControlName="nombre_legal" class="form-control"
+            placeholder="Ingresar nombre legal">
+        </div>
+
+        <!-- RUT -->
+        <div class="form-group mt-3">
+          <label for="rut" class="form-label">RUT</label>
+          <input id="rut" type="text" formControlName="rut" class="form-control"
+            placeholder="Ingresar RUT (sin puntos y con guión)">
+        </div>
+
+        <!-- Teléfono -->
+        <div class="form-group mt-3">
+          <label for="telefono" class="form-label">Teléfono</label>
+          <input id="telefono" type="text" formControlName="telefono" class="form-control"
+            placeholder="Ingresar número de teléfono">
+        </div>
+
+        <!-- Email -->
+        <div class="form-group mt-3">
+          <label for="email" class="form-label">Email</label>
+          <input id="email" type="email" formControlName="email" class="form-control"
+            placeholder="Ingresar correo electrónico">
+        </div>
+
+        <!-- Seleccionar Territorio -->
+        <label style="margin-top: 20px; margin-bottom: 10px;" for="territorio">Seleccionar Territorio</label>
+        <mat-form-field appearance="outline">
+          <mat-label>Seleccionar Territorio</mat-label>
+          <mat-select formControlName="territorio_id" (selectionChange)="onTerritorioChange($event)">
+            <mat-option *ngFor="let territorio of territorios" [value]="territorio.id">
+              {{ territorio.nombre_territorio }} - Línea {{ territorio.linea?.nombre || 'Sin asignar' }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- Plazas (readonly) -->
+        <label for="plazas">Plazas</label>
+        <input id="plazas" type="number" formControlName="plazas" class="form-control" readonly>
+
+        <!-- Plan de Intervención (readonly) -->
+        <label for="plan_intervencion">Plan de Intervención</label>
+        <input id="plan_intervencion" type="text" formControlName="planesdeintervencion_nombre" class="form-control" readonly>
+
+        <!-- Campo oculto con el ID del plan -->
+        <input type="hidden" formControlName="planesdeintervencion_id">
+
+        <!-- Período de Registro Desde -->
+        <div class="form-group" style="margin-top:20px;">
+          <label for="periodo_registro_desde" class="form-label">Período de Registro (Desde)</label>
+          <input id="periodo_registro_desde" type="date" formControlName="periodo_registro_desde" class="form-control">
+        </div>
+
+        <!-- Período de Registro Hasta -->
+        <div class="form-group mt-3">
+          <label for="periodo_registro_hasta" class="form-label">Período de Registro (Hasta)</label>
+          <input id="periodo_registro_hasta" type="date" formControlName="periodo_registro_hasta" class="form-control">
+        </div>
+
+        <!-- Período de Seguimiento Desde -->
+        <div class="form-group mt-3">
+          <label for="periodo_seguimiento_desde" class="form-label">Período de Seguimiento (Desde)</label>
+          <input id="periodo_seguimiento_desde" type="date" formControlName="periodo_seguimiento_desde" class="form-control">
+        </div>
+
+        <!-- Período de Seguimiento Hasta -->
+        <div class="form-group mt-3">
+          <label for="periodo_seguimiento_hasta" class="form-label">Período de Seguimiento (Hasta)</label>
+          <input id="periodo_seguimiento_hasta" type="date" formControlName="periodo_seguimiento_hasta" class="form-control">
+        </div>
+
+        <!-- Botón Guardar -->
+        <div class="button-container">
+          <button mat-button1 class="custom-button" [disabled]="institucionForm.invalid">
+            Actualizar
+            <mat-icon class="icon">edit</mat-icon>
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>

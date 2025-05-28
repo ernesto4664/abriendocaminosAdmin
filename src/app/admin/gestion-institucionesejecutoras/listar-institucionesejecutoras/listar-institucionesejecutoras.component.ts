@@ -110,7 +110,7 @@ export class ListarInstitucionesejecutorasComponent implements OnInit {
   }
 
   editarInstitucion(id: number) {
-    this.router.navigate([`/admin/gestion-instituciones/editar/${id}`]);
+    this.router.navigate(['/admin/gestion-institucionesejecutoras/editar', id]);
   }
 
   refrescar() {
