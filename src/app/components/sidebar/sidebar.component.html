@@ -145,6 +145,37 @@
           </ul>
         </div>
       </mat-expansion-panel>
+      <!-- Nuevo panel de Documentos -->
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <img width="32px" src="assets/images/assignment.png" alt="panel-icon" class="panel-icon" />
+        Documentos
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <div class="submenu">
+      <ul>
+        <li>
+          <a
+            routerLink="admin/documentos/listar"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+          >
+            Listado de Documentos
+          </a>
+        </li>
+        <li>
+          <a
+            routerLink="admin/documentos/add"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+          >
+            Cargar Documento
+          </a>
+        </li>
+      </ul>
+    </div>
+  </mat-expansion-panel>
       
     </mat-accordion>
 

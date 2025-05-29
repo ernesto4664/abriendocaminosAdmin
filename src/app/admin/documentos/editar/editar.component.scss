@@ -1,0 +1,42 @@
+// Puedes reutilizar los estilos que ya tienes:
+.titulo {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+  font-size: 20px;
+  color: #404040;
+}
+
+.form-label {
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-control {
+  border: 1px solid #ccc;
+  border-radius: 0;
+  padding: 8px 12px;
+  &:focus {
+    border-color: #007bff;
+    outline: none;
+  }
+}
+
+.btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  &:hover {
+    background-color: #0056b3;
+  }
+}
+
+.button-container {
+  display: flex;
+  justify-content: flex-end;
+}
