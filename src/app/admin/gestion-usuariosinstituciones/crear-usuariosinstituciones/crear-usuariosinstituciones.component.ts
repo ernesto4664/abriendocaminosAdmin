@@ -9,6 +9,8 @@ import { UsuariosInstitucionService } from '../../../services/usuarios-instituci
 import { InstitucionesEjecutorasService } from '../../../services/institucionesejecutoras.service';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSnackBar } from '@angular/material/snack-bar';
+
 @Component({
   selector: 'app-crear-usuariosinstituciones',
   standalone: true,
@@ -17,6 +19,7 @@ import { MatIconModule } from '@angular/material/icon';
   styleUrl: './crear-usuariosinstituciones.component.scss'
 })
 export class CrearUsuariosinstitucionesComponent implements OnInit {
+  [x: string]: any;
   usuarioForm!: FormGroup;
   regiones: any[] = [];
   provincias: any[] = [];
@@ -30,6 +33,7 @@ export class CrearUsuariosinstitucionesComponent implements OnInit {
   private territoriosService = inject(TerritoriosService);
   private usuariosInstitucionService = inject(UsuariosInstitucionService);
   private institucionesEjecutorasService = inject(InstitucionesEjecutorasService);
+  private snackBar = inject(MatSnackBar);
 
   ngOnInit() {
     this.inicializarFormulario();
@@ -41,9 +45,9 @@ export class CrearUsuariosinstitucionesComponent implements OnInit {
     this.usuarioForm = this.fb.group({
       nombres: ['', Validators.required],
       apellidos: ['', Validators.required],
-      rut: ['', [Validators.required, Validators.minLength(8)]],
+      rut: ['', Validators.required], // quita el minLength por ahora
       sexo: ['', Validators.required],
-      fecha_nacimiento: ['', Validators.required],
+      fecha_nacimiento: [null, Validators.required],
       profesion: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       rol: ['PROFESIONAL', Validators.required],
@@ -131,8 +135,31 @@ export class CrearUsuariosinstitucionesComponent implements OnInit {
     console.log("🏛️ Instituciones disponibles para la ubicación seleccionada:", this.institucionesFiltradas);
   }
 
+  generarContrasena() {
+    const longitud = 12;
+    const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+';
+    let contrasena = '';
+
+    for (let i = 0; i < longitud; i++) {
+      const randomIndex = Math.floor(Math.random() * caracteres.length);
+      contrasena += caracteres[randomIndex];
+    }
+
+    this.usuarioForm.get('password')?.setValue(contrasena);
+
+    // Mostrar mensaje visual con la contraseña generada
+    // Mostrar mensaje visual con la contraseña generada
+    this.snackBar.open(`🔐 Contraseña generada: ${contrasena}`, 'Cerrar', {
+      duration: 6000,
+      horizontalPosition: 'end',
+      verticalPosition: 'top',
+      panelClass: 'snackbar-success'
+    });
+  }
+
   /** 📌 Enviar formulario */
   onSubmit() {
+    console.log('🚀 Se disparó onSubmit');
     if (this.usuarioForm.valid) {
       const formData = this.usuarioForm.getRawValue();
       console.log('📤 Enviando datos:', formData);
@@ -150,5 +177,6 @@ export class CrearUsuariosinstitucionesComponent implements OnInit {
     } else {
       alert('⚠️ Por favor, completa todos los campos antes de guardar.');
     }
+    console.log(this.usuarioForm.value)
   }
 }

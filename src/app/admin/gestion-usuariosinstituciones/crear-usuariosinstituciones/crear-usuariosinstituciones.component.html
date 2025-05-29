@@ -100,18 +100,23 @@
                     </mat-select>
                 </mat-form-field>
   
-                <!-- Contraseña -->
+                <!-- Contraseña + botón generar -->
                 <div class="form-group mt-3">
-                    <label for="password" class="form-label">Contraseña</label>
-                    <input id="password" type="password" formControlName="password" class="form-control" placeholder="Ingresar contraseña">
+                <label for="password" class="form-label">Contraseña</label>
+                <div class="input-group">
+                    <input id="password" type="text" formControlName="password" class="form-control" placeholder="Ingresar contraseña">
+                    <button mat-mini-fab color="primary" type="button" (click)="generarContrasena()" class="ml-2">
+                    <mat-icon>autorenew</mat-icon>
+                    </button>
+                </div>
+                <small class="form-text text-muted">Haz clic en el ícono para generar una contraseña segura</small>
                 </div>
 
                 <!-- Botón de Guardar -->
 
                 <div class="button-container">
-                    <button mat-button1 class="custom-button" [disabled]="usuarioForm.invalid">
-                      Guardar
-                      <mat-icon class="icon">add_circle_outline</mat-icon>
+                    <button type="submit" mat-button class="custom-button">
+                    <mat-icon class="icon">add_circle_outline</mat-icon>
                     </button>
                   </div>
 
