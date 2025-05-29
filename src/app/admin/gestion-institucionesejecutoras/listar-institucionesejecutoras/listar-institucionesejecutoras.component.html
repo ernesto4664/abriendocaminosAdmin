@@ -46,18 +46,35 @@
           <p><strong>Provincia:</strong> {{ getProvincias(institucion.territorio) }}</p>
           <p><strong>Comuna(s):</strong> {{ getComunas(institucion.territorio) }}</p>
 
-          <!-- 🟢 Línea de Intervención -->
-          <p><strong>Línea de intervención:</strong> 
-              {{ institucion.plan_de_intervencion?.linea_id ? 'Línea ' + institucion.plan_de_intervencion.linea_id : 'Sin asignar' }}
-          </p>
+            <!-- 🟢 Línea de intervención -->
+            <p><strong>Línea de intervención:</strong> 
+            {{
+                institucion.territorio?.linea?.nombre
+                || (institucion.plan_de_intervencion?.linea_id ? 'Línea ' + institucion.plan_de_intervencion.linea_id : 'Sin asignar')
+            }}
+            </p>
 
-          <!-- 🟢 Plan de Intervención -->
-          <p><strong>Plan de Intervención:</strong> 
-              {{ institucion.plan_de_intervencion?.nombre || 'Sin plan asignado' }}
-          </p>
+            <!-- Mostrar plan si viene directo -->
+            <p><strong>Plan de intervención:</strong> 
+            <span *ngIf="institucion.plan_de_intervencion">
+            {{ institucion.plan_de_intervencion.nombre }}
+            </span>
 
-          <!-- 🔹 Plazas -->
-          <p><strong>Plazas:</strong> {{ institucion.plazas }}</p>
+            <!-- Mostrar plan si fue heredado desde la línea -->
+            <span *ngIf="!institucion.plan_de_intervencion && institucion.planDeIntervencion">
+            {{ institucion.planDeIntervencion.nombre }}
+            </span>
+
+            <!-- Si no hay plan ni directo ni heredado -->
+            <span *ngIf="!institucion.plan_de_intervencion && !institucion.planDeIntervencion">
+            Sin plan asignado
+            </span>
+            </p>
+            <!-- 🟢 Plazas (buscar en institución o en territorio) -->
+            <p><strong>Plazas:</strong> 
+            {{ institucion.plazas || institucion.territorio?.plazas || 'No definidas' }}
+            </p>
+
       </div>
   </div>
 

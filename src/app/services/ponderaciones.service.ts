@@ -22,7 +22,20 @@ export class PonderacionesService {
   }
 
   getPonderacionesCompletas(): Observable<EvaluacionPonderada[]> {
-    // <-- aquí apuntamos al /completo
     return this.http.get<EvaluacionPonderada[]>(`${this.apiBaseUrl}/completo`);
+  }
+
+    /** Obtiene una ponderación específica con sus detalles */
+  getPonderacionPorId(id: number): Observable<EvaluacionPonderada> {
+    return this.http.get<EvaluacionPonderada>(`${this.apiBaseUrl}/${id}/completo`);
+  }
+
+  /** Actualiza una ponderación existente */
+  updatePonderacion(id: number, body: {
+    plan_id: number;
+    evaluacion_id: number;
+    detalles: any[];
+  }): Observable<any> {
+    return this.http.put<any>(`${this.apiBaseUrl}/${id}`, body);
   }
 }

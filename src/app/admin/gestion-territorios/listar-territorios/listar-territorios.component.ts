@@ -28,19 +28,22 @@ export class ListarTerritoriosComponent implements OnInit {
   ngOnInit() {
     this.territoriosService.getTerritorios().subscribe({
       next: (data) => {
-        console.log("📌 Territorios cargados:", data);
-  
-        this.territorios = data.map(territorio => ({
-          ...territorio,
-          region_nombres: this.obtenerNombresString(territorio.regiones),
-          provincia_nombres: this.obtenerNombresString(territorio.provincias),
-          comuna_nombres: this.obtenerNombresString(territorio.comunas),
-          linea_nombre: territorio.linea_nombre || 'Sin asignar' // ✅ Mostrar nombre de la línea
-        }));
+        console.log("📌 Territorios crudos:", data);
 
-        this.aplicarFiltros(); // Aplicar filtros después de cargar
-      },
-      error: (err) => console.error("❌ Error al obtener territorios:", err)
+        this.territorios = data.map(territorio => {
+          console.log("👉 linea_id:", territorio.linea_id);
+          return {
+            ...territorio,
+            region_nombres: this.obtenerNombresString(territorio.regiones),
+            provincia_nombres: this.obtenerNombresString(territorio.provincias),
+            comuna_nombres: this.obtenerNombresString(territorio.comunas),
+            linea_id: territorio.linea_id, // asegúrate que venga
+            linea_nombre: territorio.linea?.nombre || 'Sin asignar'
+          };
+        });
+
+        this.aplicarFiltros();
+      }
     });
 
     this.loadLineas(); // ✅ Cargar líneas de intervención
@@ -117,3 +120,4 @@ export class ListarTerritoriosComponent implements OnInit {
     }
   }
 }
+

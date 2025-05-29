@@ -66,67 +66,86 @@ export class AddPonderacionComponent implements OnInit {
       .subscribe(evs => this.evaluaciones = evs);
   }
 
-  onEvaluacionChange(evId: number) {
-    this.preguntas = [];
-    this.resetDynamicControls();
-    if (!evId) return;
+onEvaluacionChange(evId: number) {
+  this.preguntas = [];
+  this.resetDynamicControls();
+  if (!evId) return;
 
-    this.respuestasService
-      .getEvaluacionCompleta(evId)
-      .pipe(map(resp => resp.preguntas || []))
-      .subscribe(pregs => {
-        // 1) Levantamos preguntas + opciones + subpreguntas
-        this.preguntas = pregs.map((p: any) => {
-          const t = this.tipo(p);
-          let opciones = (p.respuestas || []).flatMap((r: any) => r.opciones || []);
-          if (!opciones.length) opciones = [{ id: null, label: '(sin opciones)' }];
+  this.respuestasService
+    .getEvaluacionCompleta(evId)
+    .pipe(map(resp => resp.preguntas || []))
+    .subscribe(pregs => {
+      this.preguntas = pregs.map((p: any) => {
+        const tipo = this.tipo(p);
+        const r0 = (p.respuestas || [])[0] ?? {};
 
-          // Extraer subpreguntas likert
-          let subs: any[] = [];
-          if (t === 'likert') {
-            const rl = (p.respuestas || []).find((r: any) => Array.isArray(r.subpreguntas));
-            if (rl) {
-              subs = rl.subpreguntas.map((sp: any) => ({
-                id: sp.id,
-                texto: sp.texto,
-                opciones: sp.opciones_likert || []
-              }));
-            }
-          }
+        let opciones: any[] = [];
 
-          return { ...p, opcionesRespuesta: opciones, subpreguntas: subs };
-        });
+        // ✅ Caso 1: opciones reales del backend
+        if (Array.isArray(r0.opciones) && r0.opciones.length > 0) {
+          opciones = r0.opciones.map((o: any, idx: number) => ({
+            id: typeof o.id === 'number' ? o.id : idx + 10000, // asegurar número
+            label: o.label,
+            valor: o.valor ?? o.label
+          }));
+        }
+        // ✅ Caso 2: tipos con opciones por defecto
+        else if (['si_no', 'si_no_noestoyseguro'].includes(tipo)) {
+          opciones = [
+            { id: 1, label: 'Sí', valor: 'si' },
+            { id: 2, label: 'No', valor: 'no' }
+          ];
+          if (tipo === 'si_no_noestoyseguro') {
+            opciones.push({ id: 3, label: 'No estoy seguro', valor: 'no_estoy_seguro' });
+          }
+        }
 
-        // 2) Generar controles dinámicos
-        this.preguntas.forEach(p => {
-          const t = this.tipo(p), id = p.id;
-          // Barra
-          if (t === 'barra_satisfaccion') {
-            this.miFormulario.addControl(`valor_${id}`,
-              new FormControl(0, [Validators.required, Validators.min(0), Validators.max(10)]));
+        // ✅ Caso 3: sin opciones
+        if (!opciones.length) {
+          opciones = [{ id: null, label: '(sin opciones)' }];
+        }
+
+        // ✅ Likert
+        let subs: any[] = [];
+        if (tipo === 'likert') {
+          const rLikert = (p.respuestas || []).find((r: any) => Array.isArray(r.subpreguntas));
+          if (rLikert) {
+            subs = rLikert.subpreguntas.map((sp: any) => ({
+              id: sp.id,
+              texto: sp.texto,
+              opciones: sp.opciones || []
+            }));
           }
-          // Texto / número
-          else if (['texto','numero'].includes(t)) {
-            this.miFormulario.addControl(`correcta_${id}`, new FormControl('', Validators.required));
-            this.miFormulario.addControl(`valor_${id}`,     new FormControl('', Validators.required));
-          }
-          // Discretas
-          else if (['si_no','si_no_noestoyseguro','5emojis','opcion_personalizada'].includes(t)) {
-            this.miFormulario.addControl(`correcta_${id}`, new FormControl('', Validators.required));
-            this.miFormulario.addControl(`valor_${id}`,     new FormControl('', Validators.required));
-          }
-          // Likert
-          if (t === 'likert') {
-            p.subpreguntas.forEach((sub: any) => {
-              this.miFormulario.addControl(`correcta_${id}_${sub.id}`,
-                new FormControl('', Validators.required));
-              this.miFormulario.addControl(`valor_${id}_${sub.id}`,
-                new FormControl('', Validators.required));
-            });
-          }
-        });
+        }
+
+        return { ...p, opcionesRespuesta: opciones, subpreguntas: subs };
       });
-  }
+
+      // 🧠 Agregar dinámicamente los controles
+      this.preguntas.forEach(p => {
+        const tipo = this.tipo(p);
+        const id = p.id;
+
+        if (tipo === 'barra_satisfaccion') {
+          this.miFormulario.addControl(`valor_${id}`, new FormControl(0, [Validators.required, Validators.min(0), Validators.max(10)]));
+        }
+        else if (['texto', 'numero'].includes(tipo)) {
+          this.miFormulario.addControl(`correcta_${id}`, new FormControl('', Validators.required));
+          this.miFormulario.addControl(`valor_${id}`, new FormControl('', Validators.required));
+        }
+        else if (['si_no', 'si_no_noestoyseguro', '5emojis', 'opcion_personalizada'].includes(tipo)) {
+          this.miFormulario.addControl(`correcta_${id}`, new FormControl('', Validators.required));
+          this.miFormulario.addControl(`valor_${id}`, new FormControl('', Validators.required));
+        }
+        else if (tipo === 'likert') {
+          p.subpreguntas.forEach((sub: any) => {
+            this.miFormulario.addControl(`correcta_${id}_${sub.id}`, new FormControl('', Validators.required));
+            this.miFormulario.addControl(`valor_${id}_${sub.id}`, new FormControl('', Validators.required));
+          });
+        }
+      });
+    });
+}
 
   private resetDynamicControls() {
     Object.keys(this.miFormulario.controls)
@@ -140,44 +159,97 @@ export class AddPonderacionComponent implements OnInit {
 
   submit() {
     if (this.miFormulario.invalid) return;
+
     const fv = this.miFormulario.value;
     const detalles: any[] = [];
 
-    this.preguntas.forEach(p => {
-      const t = this.tipo(p), id = p.id;
+    for (const p of this.preguntas) {
+      const t  = this.tipo(p);
+      const id = p.id;
+
+      // 🎯 Barra de satisfacción
       if (t === 'barra_satisfaccion') {
-        detalles.push({ pregunta_id: id, tipo: t, valor: fv[`valor_${id}`] });
-      } else if (['texto','numero'].includes(t)) {
         detalles.push({
           pregunta_id: id,
-          tipo: t,
-          respuesta_correcta: fv[`correcta_${id}`],
-          valor: fv[`valor_${id}`]
-        });
-      } else if (['si_no','si_no_noestoyseguro','5emojis','opcion_personalizada'].includes(t)) {
-        detalles.push({
-          pregunta_id: id,
-          tipo: t,
-          respuesta_correcta_id: fv[`correcta_${id}`],
-          valor: fv[`valor_${id}`]
-        });
-      } else if (t === 'likert') {
-        p.subpreguntas.forEach((sub: any) => {
-          detalles.push({
-            pregunta_id: id,
-            subpregunta_id: sub.id,
-            tipo: t,
-            respuesta_correcta_id: fv[`correcta_${id}_${sub.id}`],
-            valor: fv[`valor_${id}_${sub.id}`]
-          });
+          tipo:        t,
+          valor:       fv[`valor_${id}`]
         });
       }
-    });
 
-    this.pondService.guardarPonderaciones({
+      // 📝 Texto o número
+      else if (['texto', 'numero'].includes(t)) {
+        const respCorrecta = fv[`correcta_${id}`];
+        const valor        = fv[`valor_${id}`];
+
+        if (!respCorrecta || typeof respCorrecta !== 'string') {
+          alert(`⚠️ La respuesta correcta de la pregunta "${p.pregunta}" no es válida o está vacía.`);
+          return;
+        }
+
+        detalles.push({
+          pregunta_id:        id,
+          tipo:               t,
+          respuesta_correcta: respCorrecta,
+          valor:              valor
+        });
+      }
+
+      // ✅ Selección tipo si_no, etc
+      else if (['si_no', 'si_no_noestoyseguro', '5emojis', 'opcion_personalizada'].includes(t)) {
+        const respuestaId = fv[`correcta_${id}`];
+        const valor       = fv[`valor_${id}`];
+
+        if (respuestaId === null || respuestaId === '' || isNaN(Number(respuestaId))) {
+          alert(`⚠️ La respuesta correcta de la pregunta "${p.pregunta}" no es válida. Selección requerida.`);
+          return;
+        }
+
+        detalles.push({
+          pregunta_id:           id,
+          tipo:                  t,
+          respuesta_correcta_id: Number(respuestaId),
+          valor:                 valor
+        });
+      }
+
+      // 🎚️ Likert
+      else if (t === 'likert') {
+        for (const sub of p.subpreguntas) {
+          const respId = fv[`correcta_${id}_${sub.id}`];
+          const valor  = fv[`valor_${id}_${sub.id}`];
+
+          if (respId === null || isNaN(Number(respId))) {
+            alert(`⚠️ Debes seleccionar una opción válida para la subpregunta "${sub.texto}"`);
+            return;
+          }
+
+          detalles.push({
+            pregunta_id:           id,
+            subpregunta_id:        sub.id,
+            tipo:                  t,
+            respuesta_correcta_id: Number(respId),
+            valor:                 valor
+          });
+        }
+      }
+    }
+
+    const payload = {
       plan_id:       fv.plan_id,
       evaluacion_id: fv.evaluacion_id,
       detalles
-    }).subscribe(() => this.router.navigate(['/admin/gestion-ponderacion/listar']));
+    };
+
+    this.pondService.guardarPonderaciones(payload).subscribe({
+      next: () => {
+        alert("✅ Ponderaciones guardadas correctamente.");
+        this.router.navigate(['/admin/gestion-ponderacion/listar']);
+      },
+      error: err => {
+        console.error("❌ Error al guardar ponderaciones:", err);
+        alert("⚠️ Hubo un problema al guardar. Revisa la consola.");
+      }
+    });
   }
+
 }

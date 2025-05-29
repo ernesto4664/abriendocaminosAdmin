@@ -156,13 +156,23 @@
           </div>
           
           <!-- Botón para eliminar respuestas -->
-          <button class="btn btn-danger mt-2" (click)="eliminarRespuesta(pregunta.id, respuesta.id)">
+          <button class="btn btn-danger mt-2"
+                  (click)="eliminarRespuesta(pregunta.id)">
             Eliminar
-          </button>          
+          </button>       
         </div>
       </div>
 
-      <button class="btn btn-primary mt-3" (click)="guardarCambios()">Guardar Cambios</button>
+      <button
+        class="btn btn-primary mt-3"
+        (click)="guardarCambios()"
+        [disabled]="cargando || guardando"
+      >
+        <!-- si estás cargando, deshabilitado y puedes mostrar un spinner/…" -->
+        <span *ngIf="cargando">Cargando…</span>
+        <span *ngIf="!cargando && !guardando">Guardar Cambios</span>
+      </button>
+
     </div>
   </div>
 </div>

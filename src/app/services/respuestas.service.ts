@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 
 @Injectable({
@@ -8,7 +8,7 @@ import { environment } from '../../environments/environment';
 })
 export class RespuestasService {
   private apiUrl = `${environment.apiBaseUrl}/respuestas`;
-  private apiUrlR = `http://127.0.0.1:8000/api/v1`;
+  private apiUrlR = `${environment.apiBaseUrl}`;
   private http = inject(HttpClient);
 
   constructor() {}
@@ -62,7 +62,42 @@ export class RespuestasService {
   }
     
   eliminarRespuestasPorPregunta(preguntaId: number): Observable<any> {
-    return this.http.delete(`${this.apiUrlR}/respuestas/${preguntaId}`);
+    return this.http.delete(
+      `${this.apiUrlR}/respuestas/pregunta/${preguntaId}`
+    );
   }
-  
+
+    existeDetalle(evaluacionId: number): Observable<boolean> {
+    return this.http
+      .get<{ tiene: boolean }>(`${this.apiUrlR}/ponderaciones/existe-detalle/${evaluacionId}`)
+      .pipe(
+        map(res => res.tiene)
+      );
+  }
+
+    limpiarDetalle(evaluacionId: number): Observable<void> {
+    return this.http.delete<void>(
+      `${this.apiUrlR}/ponderaciones/${evaluacionId}`
+    );
+  }
+
+    eliminarDetalle(detalleId: number): Observable<void> {
+    return this.http.delete<void>(
+      `${this.apiUrlR}/ponderaciones/detalle/${detalleId}`
+    );
+  }
+
+  limpiarPreguntaCompleta(preguntaId: number, evaluacionId: number, tipo: string): Observable<any> {
+    return this.http.request('delete', `${this.apiUrlR}/respuestas/pregunta/${preguntaId}/evaluacion/${evaluacionId}`, {
+      body: { tipo } // ✅ ya no "nuevo_tipo"
+    });
+  }
+
+  limpiarPreguntaConTipo(preguntaId: number, evaluacionId: number, tipo: string): Observable<any> {
+    return this.http.post(
+      `${this.apiUrlR}/respuestas/pregunta/${preguntaId}/evaluacion/${evaluacionId}/limpiar`,
+      { tipo }
+    );
+  }
+
 }
