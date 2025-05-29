@@ -21,7 +21,8 @@ export class EditarUsuariosinstitucionesComponent implements OnInit {
   provincias: any[] = [];
   comunas: any[] = [];
   instituciones: any[] = [];
-  roles = ['SEREMI', 'COORDINADOR', 'PROFESIONAL']; // Opciones de rol
+  institucionesFiltradas: any[] = [];
+  roles = ['SEREMI', 'COORDINADOR', 'PROFESIONAL'];
   usuarioId!: number;
   cargando = false;
 
@@ -30,7 +31,7 @@ export class EditarUsuariosinstitucionesComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private usuariosInstitucionService = inject(UsuariosInstitucionService);
   private territoriosService = inject(TerritoriosService);
-  private institucionesService = inject(InstitucionesEjecutorasService);
+  private institucionesService = inject(InstitucionesEjecutorasService); // ✅ este es el nombre correcto
 
   ngOnInit() {
     this.usuarioId = Number(this.route.snapshot.paramMap.get('id'));
@@ -39,7 +40,6 @@ export class EditarUsuariosinstitucionesComponent implements OnInit {
     this.cargarUsuario();
   }
 
-  /** 📌 Inicializa el formulario */
   inicializarFormulario() {
     this.usuarioForm = this.fb.group({
       nombres: ['', Validators.required],
@@ -54,73 +54,132 @@ export class EditarUsuariosinstitucionesComponent implements OnInit {
       provincia_id: ['', Validators.required],
       comuna_id: ['', Validators.required],
       institucion_id: ['', Validators.required],
-      password: [''] // Opcional, se actualizará solo si el usuario ingresa una nueva clave
+      password: ['']
     });
   }
 
-  /** 📌 Carga todas las regiones */
   cargarRegiones() {
     this.territoriosService.getRegiones().subscribe({
-      next: (data) => this.regiones = data,
-      error: (err) => console.error("❌ Error al cargar regiones", err)
+      next: (data: any) => this.regiones = data,
+      error: (err: any) => console.error("❌ Error al cargar regiones", err)
     });
   }
 
-  /** 📌 Carga los datos del usuario a editar */
   cargarUsuario() {
     this.cargando = true;
     this.usuariosInstitucionService.getUsuarioInstitucionById(this.usuarioId).subscribe({
-      next: (usuario) => {
-        console.log("📌 Cargando usuario:", usuario);
-        this.usuarioForm.patchValue(usuario);
-        this.cargarProvincias(usuario.region_id);
-        this.cargarComunas(usuario.provincia_id);
-        this.cargarInstituciones(usuario.region_id);
-        this.cargando = false;
+      next: (usuario: any) => {
+        const fechaFormateada = usuario.fecha_nacimiento?.split('T')[0] ?? '';
+
+        this.usuarioForm.patchValue({
+          nombres: usuario.nombres,
+          apellidos: usuario.apellidos,
+          rut: usuario.rut,
+          sexo: usuario.sexo,
+          fecha_nacimiento: fechaFormateada,
+          profesion: usuario.profesion,
+          email: usuario.email,
+          rol: usuario.rol,
+          region_id: usuario.region_id,
+          provincia_id: usuario.provincia_id,
+          comuna_id: usuario.comuna_id,
+          institucion_id: usuario.institucion_id
+        });
+
+        this.territoriosService.getProvincias([usuario.region_id]).subscribe({
+          next: (data: any) => {
+            this.provincias = data;
+            this.territoriosService.getComunas([usuario.provincia_id]).subscribe({
+              next: (comunas: any) => {
+                this.comunas = comunas;
+                this.cargarInstitucionesPorRegion(usuario.region_id);
+                this.cargando = false;
+              },
+              error: (err: any) => {
+                console.error("❌ Error al cargar comunas", err);
+                this.cargando = false;
+              }
+            });
+          },
+          error: (err: any) => {
+            console.error("❌ Error al cargar provincias", err);
+            this.cargando = false;
+          }
+        });
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error("❌ Error al cargar usuario", err);
         this.cargando = false;
       }
     });
   }
 
-  /** 📌 Carga provincias según la región seleccionada */
-  cargarProvincias(regionId: number) {
-    this.territoriosService.getProvincias([regionId]).subscribe({
-      next: (data) => this.provincias = data,
-      error: (err) => console.error("❌ Error al cargar provincias", err)
-    });
+  onRegionChange(event: any) {
+    const regionId = event.value;
+    this.provincias = [];
+    this.comunas = [];
+    this.usuarioForm.patchValue({ provincia_id: '', comuna_id: '', institucion_id: '' });
+
+    if (regionId) {
+      this.territoriosService.getProvincias([regionId]).subscribe({
+        next: (data: any) => {
+          this.provincias = data;
+          this.cargarInstitucionesPorRegion(regionId);
+        },
+        error: (err: any) => console.error("❌ Error al cargar provincias", err)
+      });
+    }
   }
 
-  /** 📌 Carga comunas según la provincia seleccionada */
-  cargarComunas(provinciaId: number) {
-    this.territoriosService.getComunas([provinciaId]).subscribe({
-      next: (data) => this.comunas = data,
-      error: (err) => console.error("❌ Error al cargar comunas", err)
-    });
+  onProvinciaChange(event: any) {
+    const provinciaId = event.value;
+    this.comunas = [];
+    this.usuarioForm.patchValue({ comuna_id: '', institucion_id: '' });
+
+    if (provinciaId) {
+      this.territoriosService.getComunas([provinciaId]).subscribe({
+        next: (data: any) => {
+          this.comunas = data;
+          this.filtrarInstituciones();
+        },
+        error: (err: any) => console.error("❌ Error al cargar comunas", err)
+      });
+    }
   }
 
-  /** 📌 Carga instituciones según la región */
-  cargarInstituciones(regionId: number) {
+  cargarInstitucionesPorRegion(regionId: number) {
+    if (!regionId) return;
+
     this.institucionesService.getInstitucionesPorRegion(regionId).subscribe({
-      next: (data) => this.instituciones = data,
-      error: (err) => console.error("❌ Error al cargar instituciones", err)
+      next: (data: any) => {
+        this.instituciones = data;
+        this.filtrarInstituciones();
+      },
+      error: (err: any) => console.error("❌ Error al obtener instituciones:", err)
     });
   }
 
-  /** 📌 Enviar actualización */
+  filtrarInstituciones() {
+    const regionId = this.usuarioForm.get('region_id')?.value;
+    const provinciaId = this.usuarioForm.get('provincia_id')?.value;
+    const comunaId = this.usuarioForm.get('comuna_id')?.value;
+
+    this.institucionesFiltradas = this.instituciones.filter(inst =>
+      (!regionId || inst.territorio?.regiones?.some((r: any) => r.id === regionId)) &&
+      (!provinciaId || inst.territorio?.provincias?.some((p: any) => p.id === provinciaId)) &&
+      (!comunaId || inst.territorio?.comunas?.some((c: any) => c.id === comunaId))
+    );
+  }
+
   onSubmit() {
     if (this.usuarioForm.valid) {
       const formData = this.usuarioForm.getRawValue();
-      console.log('📤 Enviando datos:', formData);
-
       this.usuariosInstitucionService.updateUsuarioInstitucion(this.usuarioId, formData).subscribe({
         next: () => {
           alert('✅ Usuario actualizado correctamente');
           this.router.navigate(['/admin/gestion-usuariosinstituciones/listar']);
         },
-        error: (error) => {
+        error: (error: any) => {
           alert('❌ Error al actualizar usuario');
           console.error('❌ Error:', error);
         }
@@ -130,7 +189,6 @@ export class EditarUsuariosinstitucionesComponent implements OnInit {
     }
   }
 
-  /** 📌 Volver al listado */
   volver() {
     this.router.navigate(['/admin/gestion-usuariosinstituciones/listar']);
   }

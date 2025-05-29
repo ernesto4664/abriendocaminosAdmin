@@ -51,10 +51,59 @@
                 <input id="email" type="email" formControlName="email" class="form-control">
             </div>
 
-            <!-- Contraseña (Opcional) -->
+            <!-- Rol (por defecto Profesional) -->
+            <mat-form-field class="w-100 mt-3" appearance="outline">
+                <mat-label>Seleccionar Rol</mat-label>
+                <mat-select formControlName="rol">
+                    <mat-option *ngFor="let r of roles" [value]="r">{{ r }}</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <!-- Selección de Región -->
+            <mat-form-field class="w-100 mt-3" appearance="outline">
+                <mat-label>Seleccionar Región</mat-label>
+                <mat-select formControlName="region_id" (selectionChange)="onRegionChange($event)">
+                    <mat-option *ngFor="let region of regiones" [value]="region.id">
+                        {{ region.nombre }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <!-- Selección de Provincia -->
+            <mat-form-field class="w-100 mt-3" appearance="outline">
+                <mat-label>Seleccionar Provincia</mat-label>
+                <mat-select formControlName="provincia_id" (selectionChange)="onProvinciaChange($event)">
+                    <mat-option *ngFor="let provincia of provincias" [value]="provincia.id">
+                        {{ provincia.nombre }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <!-- Selección de Comuna -->
+            <mat-form-field class="w-100 mt-3" appearance="outline">
+                <mat-label>Seleccionar Comuna</mat-label>
+                <mat-select formControlName="comuna_id">
+                    <mat-option *ngFor="let comuna of comunas" [value]="comuna.id">
+                        {{ comuna.nombre }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <!-- Seleccionar Institución -->
+            <mat-form-field class="w-100 mt-3" appearance="outline">
+                <mat-label>Seleccionar Institución</mat-label>
+                <mat-select formControlName="institucion_id">
+                <mat-option *ngFor="let institucion of instituciones" [value]="institucion.id">
+                    {{ institucion.nombre_fantasia }}
+                </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <!-- Actualizar Contraseña -->
             <div class="form-group mt-3">
-                <label for="password" class="form-label">Contraseña (Opcional)</label>
-                <input id="password" type="password" formControlName="password" class="form-control">
+            <label for="password" class="form-label">Actualizar Contraseña (Opcional)</label>
+            <input id="password" type="password" formControlName="password" class="form-control" placeholder="Solo si desea cambiarla">
+            <small class="form-text text-muted">Deja este campo vacío si no deseas cambiar la contraseña</small>
             </div>
 
             <!-- Botones -->
