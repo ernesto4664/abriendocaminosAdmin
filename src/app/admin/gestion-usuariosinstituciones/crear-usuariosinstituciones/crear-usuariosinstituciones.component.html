@@ -5,7 +5,7 @@
         </div>
 
         <div class="card-body">
-            <form [formGroup]="usuarioForm" (ngSubmit)="onSubmit()">
+            <form [formGroup]="usuarioForm" (ngSubmit)="onSubmit()" name="usuarioForm">
                 
                 <!-- Nombres -->
                 <div class="form-group">
@@ -21,8 +21,11 @@
 
                 <!-- RUT -->
                 <div class="form-group mt-3">
-                    <label for="rut" class="form-label">RUT</label>
-                    <input id="rut" type="text" formControlName="rut" class="form-control" placeholder="Ingresar RUT">
+                <label for="rut" class="form-label">RUT</label>
+                <input id="rut" type="text" formControlName="rut" class="form-control" placeholder="Ingresar RUT">
+                <small class="form-text text-muted">
+                    Ingresar sin puntos y con guion final. Ejemplo: 12345678-9
+                </small>
                 </div>
 
                 <!-- Sexo -->
@@ -113,13 +116,12 @@
                 </div>
 
                 <!-- Botón de Guardar -->
-
                 <div class="button-container">
-                    <button type="submit" mat-button class="custom-button">
+                <button type="submit" mat-raised-button color="primary">
                     <mat-icon class="icon">add_circle_outline</mat-icon>
-                    </button>
-                  </div>
-
+                    Guardar
+                </button>
+                </div>
             </form>
         </div>
     </div>

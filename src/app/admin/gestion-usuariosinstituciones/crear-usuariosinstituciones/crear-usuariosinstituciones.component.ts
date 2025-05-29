@@ -159,7 +159,8 @@ export class CrearUsuariosinstitucionesComponent implements OnInit {
 
   /** 📌 Enviar formulario */
   onSubmit() {
-    console.log('🚀 Se disparó onSubmit');
+    alert('🟢 onSubmit activado');
+    console.log('✅ Formulario enviado');
     if (this.usuarioForm.valid) {
       const formData = this.usuarioForm.getRawValue();
       console.log('📤 Enviando datos:', formData);
