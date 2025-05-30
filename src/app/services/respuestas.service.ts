@@ -8,7 +8,8 @@ import { environment } from '../../environments/environment';
 })
 export class RespuestasService {
   private apiUrl = `${environment.apiBaseUrl}/respuestas`;
-  private apiUrlR = `${environment.apiBaseUrl}`;
+
+  private apiUrlR = `http://13.58.212.158/api/v1`;
   private http = inject(HttpClient);
 
   constructor() {}
