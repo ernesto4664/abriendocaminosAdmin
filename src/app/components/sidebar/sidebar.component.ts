@@ -8,6 +8,8 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { AuthUserService } from '../../services/auth-user.service';
+import { Router } from '@angular/router';
 
 @Component({
   standalone: true,
@@ -26,6 +28,8 @@ export class SidebarComponent implements OnInit, OnDestroy {
   constructor(
     private eRef: ElementRef,
     private sidebarService: SidebarService,
+    private authUserService: AuthUserService,
+    private router: Router,
     private breakpointObserver: BreakpointObserver
   ) {}
 
@@ -53,5 +57,9 @@ export class SidebarComponent implements OnInit, OnDestroy {
   // Otros métodos (toggleMenu, closeSidebar, etc.)...
   closeSidebar(): void {
     this.sidebarService.closeSidebar();
+  }
+    logout(): void {
+    this.authUserService.logout();
+    this.router.navigate(['/login']);
   }
 }

@@ -53,9 +53,15 @@ import { ListarPonderacionComponent } from './admin/gestion-ponderacion/listar-p
 import { CargarDocumentoComponent } from './admin/documentos/crear/crear.component';
 import { EditarDocumentoComponent } from './admin/documentos/editar/editar.component';
 import { ListarDocumentosComponent } from './admin/documentos/listar/listar.component';
+import { Login_UserinstitucionComponent } from './login_userinstitucion/login_userinstitucion.component';
+import { AuthGuard } from './auth.guard'; // Asegúrate de importar tu guard
+
 
 export const routes: Routes = [
+  
+  { path: 'login', component: Login_UserinstitucionComponent },
   {
+    canActivate: [AuthGuard], // Aplica el guard al layout principal
     path: '',
     component: LayoutComponent, // Aquí aseguramos que el layout se aplique a todas las rutas hijas
     children: [
@@ -111,6 +117,8 @@ export const routes: Routes = [
       { path: 'admin/documentos/add', component: CargarDocumentoComponent },
       { path: 'admin/documentos/listar', component: ListarDocumentosComponent },
       { path: 'admin/documentos/editar/:id', component: EditarDocumentoComponent },
+      
+      
       
     ]
   }

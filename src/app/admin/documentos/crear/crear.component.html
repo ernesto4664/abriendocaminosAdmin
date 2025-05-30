@@ -2,11 +2,11 @@
 <div class="container mt-4 p-0">
   <div class="card">
     <div class="card-body">
-      <h2>Cargar Documento</h2>
+      <h2>Cargar Consentimiento</h2>
       <form [formGroup]="formulario" (ngSubmit)="onSubmit()">
 
         <div class="form-group">
-          <label for="nombre">Nombre del Documento</label>
+          <label for="nombre">Nombre</label>
           <input id="nombre"
                  type="text"
                  formControlName="nombre"
@@ -37,7 +37,7 @@
         <button type="submit"
                 class="btn btn-primary"
                 [disabled]="cargando">
-          {{ cargando ? (progreso + '%') : 'Subir Documento' }}
+          {{ cargando ? (progreso + '%') : 'Subir Consentimiento' }}
         </button>
       </form>
     </div>

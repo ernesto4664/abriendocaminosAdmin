@@ -1,1 +1,44 @@
-<p>Login_UserinstitucionComponent</p>
+<div class="login-container">
+  <div class="left-panel">
+    <h1><span class="texto1">Abriendo</span><br /><span class="light-text">Caminos</span></h1>
+    <!--<button class="admin-btn" >
+      <span class="material-icons">add</span> Ingresa como administrador
+    </button>-->
+  </div>
+
+  <div class="right-panel">
+    <div class="login-box">
+      <h2>Ingresar como usuario</h2>
+
+      <form (ngSubmit)="login()">
+        <label for="email">Correo electrónico</label>
+        <input
+          type="email"
+          id="email"
+          placeholder="Ingresar correo"
+          [(ngModel)]="email"
+          name="email"
+          required
+        />
+
+        <label for="password">Contraseña</label>
+        <input
+          type="password"
+          id="password"
+          placeholder="Ingresar contraseña"
+          [(ngModel)]="password"
+          name="password"
+          required
+        />
+
+        <button type="submit" class="login-btn">
+          Ingresar aquí <mat-icon class="icon">add_circle_outline</mat-icon>
+        </button>
+
+        <a class="forgot-password" href="#">¿Ha olvidado su contraseña?</a>
+      </form>
+
+      <div class="error" *ngIf="errorMessage">{{ errorMessage }}</div>
+    </div>
+  </div>
+</div>

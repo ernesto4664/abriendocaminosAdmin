@@ -150,7 +150,7 @@
     <mat-expansion-panel-header>
       <mat-panel-title>
         <img width="32px" src="assets/images/assignment.png" alt="panel-icon" class="panel-icon" />
-        Documentos
+        Consentimiento
       </mat-panel-title>
     </mat-expansion-panel-header>
     <div class="submenu">
@@ -161,7 +161,7 @@
             routerLinkActive="active"
             [routerLinkActiveOptions]="{ exact: true }"
           >
-            Listado de Documentos
+            Listado de Consentimiento
           </a>
         </li>
         <li>
@@ -183,7 +183,7 @@
     <ul>
       <li class="mobile-only"><a routerLink="/admin/miperfil" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"><img width="32px" src="assets/images/assignment.png" alt="panel-icon" class="panel-icon" /> Mi Perfil</a></li>
       <li class="mobile-only"><a routerLink="/admin" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"><img width="32px" src="assets/images/home.png" alt="panel-icon" class="panel-icon" /> Dashboard User</a></li>
-      <li class="mobile-only"><a routerLink="/logout"><img width="32px" src="assets/images/logout.png" alt="panel-icon" class="panel-icon" /> Logout</a></li>
+      <li class="mobile-only"><a  (click)="logout()"><img width="32px" src="assets/images/logout.png" alt="panel-icon" class="panel-icon" /> Logout</a></li>
     </ul>
   </mat-sidenav>
 </mat-sidenav-container>

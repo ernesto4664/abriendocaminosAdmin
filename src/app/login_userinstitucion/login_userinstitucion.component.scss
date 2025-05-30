@@ -1,0 +1,115 @@
+.login-container {
+  display: flex;
+  height: 100vh;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.left-panel {
+  flex: 1;
+  
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 50px;
+}
+
+.left-panel h1 {
+  font-size: 48px;
+  margin-bottom: 20px;
+}
+
+.left-panel .light-text {
+  font-weight: 300;
+}
+
+.admin-btn {
+  background: none;
+  border: 1px solid white;
+  color: white;
+  padding: 10px 20px;
+  font-size: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+.login-container{
+  background: linear-gradient(180deg, #092039 0%, #0D539A 100%);
+}
+.right-panel {
+  flex: 1;
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-box {
+  background: white;
+  padding: 40px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  width: 100%;
+  max-width: 400px;
+  border-radius: 8px;
+}
+
+.login-box h2 {
+  margin-bottom: 20px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.login-box label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+}
+
+.login-box input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.login-btn {
+  background-color: #0055aa;
+  color: white;
+  border: none;
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  cursor: pointer;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  border-radius: 4px;
+}
+
+.forgot-password {
+  display: block;
+  text-align: center;
+  margin-top: 15px;
+  font-size: 14px;
+  color: #0055aa;
+  text-decoration: none;
+}
+.light-text{
+  font-family: Roboto;
+  font-weight: 300;
+  font-size: 140px;
+  line-height: 100%;
+  letter-spacing: 0%;
+
+}
+.texto1{
+  font-family: Roboto;
+  font-weight: 900;
+  font-size: 160px;
+  line-height: 100%;
+  letter-spacing: 0%;
+
+}
