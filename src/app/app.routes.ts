@@ -49,6 +49,11 @@ import { EditarPonderacionComponent } from './admin/gestion-ponderacion/editar-p
 import { DetallePonderacionComponent } from './admin/gestion-ponderacion/detalle-ponderacion/detalle-ponderacion.component';
 import { ListarPonderacionComponent } from './admin/gestion-ponderacion/listar-ponderacion/listar-ponderacion.component';
 
+
+import { CargarDocumentoComponent } from './admin/documentos/crear/crear.component';
+import { EditarDocumentoComponent } from './admin/documentos/editar/editar.component';
+import { ListarDocumentosComponent } from './admin/documentos/listar/listar.component';
+
 export const routes: Routes = [
   {
     path: '',
@@ -102,6 +107,10 @@ export const routes: Routes = [
 
       { path: 'admin/usuarios-registrados', component: UsuariosRegistradosComponent },
       { path: 'admin/usuarios-registrados/detalle', component: DetalleSectionComponent },
+
+      { path: 'admin/documentos/add', component: CargarDocumentoComponent },
+      { path: 'admin/documentos/listar', component: ListarDocumentosComponent },
+      { path: 'admin/documentos/editar/:id', component: EditarDocumentoComponent },
       
     ]
   }

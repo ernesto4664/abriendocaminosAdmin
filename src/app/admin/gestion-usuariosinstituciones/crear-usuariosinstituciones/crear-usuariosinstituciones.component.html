@@ -5,7 +5,7 @@
         </div>
 
         <div class="card-body">
-            <form [formGroup]="usuarioForm" (ngSubmit)="onSubmit()">
+            <form [formGroup]="usuarioForm" (ngSubmit)="onSubmit()" name="usuarioForm">
                 
                 <!-- Nombres -->
                 <div class="form-group">
@@ -21,8 +21,11 @@
 
                 <!-- RUT -->
                 <div class="form-group mt-3">
-                    <label for="rut" class="form-label">RUT</label>
-                    <input id="rut" type="text" formControlName="rut" class="form-control" placeholder="Ingresar RUT">
+                <label for="rut" class="form-label">RUT</label>
+                <input id="rut" type="text" formControlName="rut" class="form-control" placeholder="Ingresar RUT">
+                <small class="form-text text-muted">
+                    Ingresar sin puntos y con guion final. Ejemplo: 12345678-9
+                </small>
                 </div>
 
                 <!-- Sexo -->
@@ -95,26 +98,30 @@
                     <mat-label>Seleccionar Institución</mat-label>
                     <mat-select formControlName="institucion_id">
                     <mat-option *ngFor="let institucion of instituciones" [value]="institucion.id">
-                        {{ institucion.nombre_fantasia }}
+                        {{ institucion.nombre_fantasia }} -<p><strong>Código territorio:</strong> {{ institucion.territorio?.cod_territorio }}</p>
                     </mat-option>
                     </mat-select>
                 </mat-form-field>
   
-                <!-- Contraseña -->
+                <!-- Contraseña + botón generar -->
                 <div class="form-group mt-3">
-                    <label for="password" class="form-label">Contraseña</label>
-                    <input id="password" type="password" formControlName="password" class="form-control" placeholder="Ingresar contraseña">
+                <label for="password" class="form-label">Contraseña</label>
+                <div class="input-group">
+                    <input id="password" type="text" formControlName="password" class="form-control" placeholder="Ingresar contraseña">
+                    <button mat-mini-fab color="primary" type="button" (click)="generarContrasena()" class="ml-2">
+                    <mat-icon>autorenew</mat-icon>
+                    </button>
+                </div>
+                <small class="form-text text-muted">Haz clic en el ícono para generar una contraseña segura</small>
                 </div>
 
                 <!-- Botón de Guardar -->
-
                 <div class="button-container">
-                    <button mat-button1 class="custom-button" [disabled]="usuarioForm.invalid">
-                      Guardar
-                      <mat-icon class="icon">add_circle_outline</mat-icon>
-                    </button>
-                  </div>
-
+                <button type="submit" mat-raised-button color="primary">
+                    <mat-icon class="icon">add_circle_outline</mat-icon>
+                    Guardar
+                </button>
+                </div>
             </form>
         </div>
     </div>

@@ -87,6 +87,11 @@ export class ListarInstitucionesejecutorasComponent implements OnInit {
     return territorio?.regiones?.length ? territorio.regiones[0].nombre : 'No asignada';
   }
 
+  /** 📌 Obtener el nombre de la región */
+  getCodigoNombre(territorio: any): string {
+    return territorio?.codigos?.length ? territorio.codigos[0].nombre : 'No asignada';
+  }
+
   /** 📌 Obtener la lista de provincias */
   getProvincias(territorio: any): string {
     return territorio?.provincias?.length ? territorio.provincias.map((p: { nombre: any; }) => p.nombre).join(', ') : 'No asignadas';

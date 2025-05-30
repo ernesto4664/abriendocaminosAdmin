@@ -1,0 +1,31 @@
+<!-- src/app/admin/documentos/listar-documentos/listar.component.html -->
+<div class="container">
+  <h2 class="titulo">Listado de Documentos</h2>
+  <p>Administración de los documentos cargados en el sistema.</p>
+
+  <div *ngFor="let doc of paged" class="item">
+    <div class="item-header">
+      <div class="info">
+        <span class="nombre">{{ doc.nombre }}</span>
+        <small class="meta">
+          Destino: <strong>{{ doc.formulario_destino }}</strong>
+          · Subido: {{ doc.created_at | date:'short' }}
+        </small>
+      </div>
+      <div class="acciones">
+        <button (click)="toggleMenu(doc.id)" class="btn-menu">⚙</button>
+        <div *ngIf="activeMenuId === doc.id" class="menu-opciones">
+          <button (click)="descargarDocumento(doc)">Descargar</button>
+          <button (click)="editarDocumento(doc.id)">Editar</button>
+          <button (click)="eliminarDocumento(doc.id)">Eliminar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pagination">
+    <button (click)="irAPagina(currentPage - 1)" [disabled]="currentPage === 1">Anterior</button>
+    <span>Página {{ currentPage }} de {{ totalPages }}</span>
+    <button (click)="irAPagina(currentPage + 1)" [disabled]="currentPage === totalPages">Siguiente</button>
+  </div>
+</div>

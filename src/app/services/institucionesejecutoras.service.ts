@@ -39,4 +39,8 @@ export class InstitucionesEjecutorasService {
     return this.http.get<any[]>(`${this.apiBaseUrl}?region_id=${regionId}`);
   }
   
+  buscarPorNombre(): Observable<any> {
+    return this.http.get(`${this.apiBaseUrl}/buscarPorNombre`);
+  }
+  
 }

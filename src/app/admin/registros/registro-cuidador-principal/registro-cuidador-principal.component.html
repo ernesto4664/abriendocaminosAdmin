@@ -10,8 +10,8 @@
         <!-- Fila Rut / DV / Validar / Asignar NNA -->
         <div class="row g-3">
           <div class="col-md-12">
-            <mat-form-field appearance="outline" class="w-100 mt-3-md-0">
-              <mat-label>Asignar NNA</mat-label>
+            <label for="Asignar-NNA" class="form-label">Asignar NNA</label>
+            <mat-form-field appearance="fill" class="w-100 mt-3-md-0">
               <mat-select formControlName="asignarNna">
                 <mat-option value="">Seleccionar *</mat-option>
                 <mat-option *ngFor="let nna of listaNnas" [value]="nna.id">
@@ -54,10 +54,10 @@
         </div>
 
         <!-- Fila Sexo / Edad -->
-        <div class="row g-3 mt-3">
+        <div class="row g-3 mt-0">
           <div class="col-md-6">
-            <mat-form-field appearance="outline" class="w-100">
-              <mat-label>Sexo</mat-label>
+            <label for="Sexo" class="form-label">Sexo</label>
+            <mat-form-field appearance="fill" class="w-100">
               <mat-select formControlName="sexo">
                 <mat-option value="">Seleccionar *</mat-option>
                 <mat-option value="M">Masculino</mat-option>
@@ -65,7 +65,7 @@
               </mat-select>
             </mat-form-field>
           </div>
-          <div class="col-md-6 m-0">
+          <div class="col-md-6 mt-4">
             <label for="edad" class="form-label">Edad cuidador/a</label>
             <input id="edad" type="number" class="form-control"
                    formControlName="edad" placeholder="Ingresar edad" />
@@ -75,8 +75,8 @@
         <!-- Fila Parentescos -->
         <div class="row g-3 mt-3">
           <div class="col-md-6 m-0">
-            <mat-form-field appearance="outline" class="w-100">
-              <mat-label>Parentesco CP con ASPL</mat-label>
+            <label for="ParentescoASPL" class="form-label">Parentesco CP con ASPL</label>
+            <mat-form-field appearance="fill" class="w-100">
               <mat-select formControlName="parentescoAspl">
                 <mat-option value="">Seleccionar *</mat-option>
                 <mat-option *ngFor="let p of parentescosAspl" [value]="p">
@@ -86,8 +86,8 @@
             </mat-form-field>
           </div>
           <div class="col-md-6 m-0">
-            <mat-form-field appearance="outline" class="w-100">
-              <mat-label>Parentesco NNA con CP</mat-label>
+            <label for="ParentescoCPL" class="form-label">Parentesco NNA con CPL</label>
+            <mat-form-field appearance="fill" class="w-100">
               <mat-select formControlName="parentescoNna">
                 <mat-option value="">Seleccionar *</mat-option>
                 <mat-option *ngFor="let p of parentescosNna" [value]="p">
@@ -101,8 +101,8 @@
         <!-- Fila Nacionalidad -->
         <div class="row g-3 mt-3">
           <div class="col-12">
-            <mat-form-field appearance="outline" class="w-100">
-              <mat-label>Nacionalidad</mat-label>
+            <label for="Nacionalidad" class="form-label">NacionalidadPL</label>
+            <mat-form-field appearance="fill" class="w-100">
               <mat-select formControlName="nacionalidad">
                 <mat-option value="">Seleccionar *</mat-option>
                 <mat-option *ngFor="let n of nacionalidades" [value]="n">
@@ -140,6 +140,26 @@
                       formControlName="motivoNoParticipa" placeholder="Escribe los motivos"></textarea>
           </div>
 
+        </div>
+        <!-- Descarga y carga de documento firmado si Sí participa -->
+                <div class="row g-3 mt-0"
+             *ngIf="cuidadorForm.get('participaPrograma')?.value === true">
+          <div class="col-md-3 d-flex" style="align-items: end;">
+            <!-- Botón descarga -->
+            <button type="button"
+                    class="btn btn-primary w-100"
+                    (click)="descargarDocumento()">
+              Descargar documento <mat-icon class="icon">add_circle_outline</mat-icon>
+            </button>
+          </div>
+          <div class="col-md-6">
+            <!-- Upload -->
+            <label for="docFirmado" class="form-label">Documento firmado</label>
+            <input id="docFirmado"
+                   type="file"
+                   class="form-control"
+                   (change)="onFileSelected($event)" />
+          </div>
         </div>
 
         <!-- Botón Guardar Final -->

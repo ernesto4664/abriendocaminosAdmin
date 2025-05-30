@@ -90,7 +90,7 @@ textarea#motivoNoNna {
 }
   /* Ajustes Angular Material selects */
   ::ng-deep .mat-mdc-form-field {
-    margin-top: 0.75rem;
+    margin-top: 0rem;
   }
   ::ng-deep .mat-mdc-form-field-infix {
     min-height: 2.5rem !important;
@@ -100,4 +100,7 @@ textarea#motivoNoNna {
   ::ng-deep .mat-mdc-select-value {
     margin-top: 0.4rem;
   }
+  ::ng-deep .mdc-text-field--filled:not(.mdc-text-field--disabled) {
+    background-color: #ffffff !important;
+}
   

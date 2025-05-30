@@ -22,7 +22,7 @@
       <div class="institucion-header">
           <div class="mispan" style="display: grid;">
               <span class="titulo">
-                  {{ institucion.nombre_fantasia }} - {{ getRegionNombre(institucion.territorio) }}
+                  {{ institucion.nombre_fantasia }} - {{ getRegionNombre(institucion.territorio) }} - <p><strong>Código territorio:</strong> {{ institucion.territorio?.cod_territorio }}</p>
               </span>
               <p><strong>RUT:</strong> {{ institucion.rut }}</p>
               <p><strong>Región:</strong> <span class="region-text">{{ getRegionNombre(institucion.territorio) }}</span></p>
