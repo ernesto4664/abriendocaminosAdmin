@@ -11,7 +11,7 @@ import { UsuariosInstitucionService } from '../../../services/usuarios-instituci
   styleUrl: './listar-usuariosinstituciones.component.scss'
 })
 export class ListarUsuariosinstitucionesComponent implements OnInit {
-  usuariosPorInstitucion: { [key: string]: any[] } = {};
+  usuariosPorInstitucion: { [key: string]: { institucion: any, usuarios: any[] } } = {};
 
   private usuariosInstitucionService = inject(UsuariosInstitucionService);
   private router = inject(Router);
@@ -20,24 +20,28 @@ export class ListarUsuariosinstitucionesComponent implements OnInit {
     this.cargarUsuarios();
   }
 
+  /** 📌 Cargar y agrupar usuarios por institución (por ID) */
   cargarUsuarios() {
     this.usuariosInstitucionService.getUsuariosInstitucion().subscribe({
       next: (usuarios) => {
-        this.usuariosPorInstitucion = usuarios.reduce((acc, usuario) => {
-          const nombreInstitucion = usuario.institucion?.nombre_fantasia || 'Sin institución';
-          acc[nombreInstitucion] = acc[nombreInstitucion] || [];
-          acc[nombreInstitucion].push(usuario);
-          return acc;
-        }, {} as { [key: string]: any[] });
+        this.usuariosPorInstitucion = usuarios.reduce((acc: any, usuario: any) => {
+          const institucionId = usuario.institucion?.id;
+          if (!institucionId) return acc;
 
+          if (!acc[institucionId]) {
+            acc[institucionId] = {
+              institucion: usuario.institucion,
+              usuarios: []
+            };
+          }
+
+          acc[institucionId].usuarios.push(usuario);
+          return acc;
+        }, {});
         console.log('✅ Usuarios agrupados por institución:', this.usuariosPorInstitucion);
       },
       error: (err) => console.error('❌ Error al obtener usuarios:', err)
     });
-  }
-
-  keyValueArray(obj: { [key: string]: any[] }): { key: string; value: any[] }[] {
-    return Object.entries(obj).map(([key, value]) => ({ key, value }));
   }
 
   editarUsuario(id: number) {

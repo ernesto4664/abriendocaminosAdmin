@@ -1,13 +1,11 @@
 <div class="container mt-4 p-0">
   <h3>Usuarios Institucionales</h3>
 
-  <div *ngFor="let grupo of keyValueArray(usuariosPorInstitucion)">
+  <div class="form-control mb-4" *ngFor="let grupo of usuariosPorInstitucion | keyvalue">
     <h4 class="mt-4">
-      {{ grupo.key }} -
-      <span *ngIf="grupo.value?.[0]?.institucion?.territorio">
-        Código territorio: {{ grupo.value[0].institucion.territorio.cod_territorio }} /
-        Territorio: {{ grupo.value[0].institucion.territorio.nombre_territorio }}
-      </span>
+      {{ grupo.value.institucion.nombre_fantasia }} -
+      Código territorio: {{ grupo.value.institucion.territorio?.cod_territorio }} /
+      Territorio: {{ grupo.value.institucion.territorio?.nombre_territorio }}
     </h4>
 
     <table class="table table-striped mt-2">
@@ -20,17 +18,13 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let usuario of grupo.value">
+        <tr *ngFor="let usuario of grupo.value.usuarios">
           <td>{{ usuario.nombres }} {{ usuario.apellidos }}</td>
           <td>{{ usuario.email }}</td>
           <td>{{ usuario.rol }}</td>
           <td>
-            <button class="btn btn-primary btn-sm me-2" (click)="editarUsuario(usuario.id)">
-              Editar
-            </button>
-            <button class="btn btn-danger btn-sm" (click)="eliminarUsuario(usuario.id)">
-              Eliminar
-            </button>
+            <button class="btn btn-primary btn-sm me-2" (click)="editarUsuario(usuario.id)">Editar</button>
+            <button class="btn btn-danger btn-sm" (click)="eliminarUsuario(usuario.id)">Eliminar</button>
           </td>
         </tr>
       </tbody>
