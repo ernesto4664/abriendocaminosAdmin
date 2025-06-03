@@ -36,6 +36,9 @@ descargarDocumentoBlob(): Observable<Blob> {
 getNnas(): Observable<any> {
   return this.http.get(`${this.apiUrl}/get-nna`);
 }
+getProfesionalesPorRegion(regionId: number): Observable<any[]> {
+  return this.http.get<any[]>(`${this.apiUrl}/por-region/${regionId}`);
+}
 
 
 }
