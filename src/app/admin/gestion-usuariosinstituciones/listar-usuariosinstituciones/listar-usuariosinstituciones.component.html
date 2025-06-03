@@ -1,8 +1,14 @@
 <div class="container mt-4 p-0">
   <h3>Usuarios Institucionales</h3>
 
-  <div *ngFor="let institucion of usuariosPorInstitucion | keyvalue">
-    <h4 class="mt-4">{{ institucion.key }}</h4> <!-- Nombre de la institución -->
+  <div *ngFor="let grupo of keyValueArray(usuariosPorInstitucion)">
+    <h4 class="mt-4">
+      {{ grupo.key }} -
+      <span *ngIf="grupo.value?.[0]?.institucion?.territorio">
+        Código territorio: {{ grupo.value[0].institucion.territorio.cod_territorio }} /
+        Territorio: {{ grupo.value[0].institucion.territorio.nombre_territorio }}
+      </span>
+    </h4>
 
     <table class="table table-striped mt-2">
       <thead class="table-dark">
@@ -14,7 +20,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let usuario of institucion.value">
+        <tr *ngFor="let usuario of grupo.value">
           <td>{{ usuario.nombres }} {{ usuario.apellidos }}</td>
           <td>{{ usuario.email }}</td>
           <td>{{ usuario.rol }}</td>

@@ -11,7 +11,7 @@ import { UsuariosInstitucionService } from '../../../services/usuarios-instituci
   styleUrl: './listar-usuariosinstituciones.component.scss'
 })
 export class ListarUsuariosinstitucionesComponent implements OnInit {
-  usuariosPorInstitucion: { [key: string]: any[] } = {}; // Agrupados por institución
+  usuariosPorInstitucion: { [key: string]: any[] } = {};
 
   private usuariosInstitucionService = inject(UsuariosInstitucionService);
   private router = inject(Router);
@@ -20,7 +20,6 @@ export class ListarUsuariosinstitucionesComponent implements OnInit {
     this.cargarUsuarios();
   }
 
-  /** 📌 Cargar y agrupar usuarios por institución */
   cargarUsuarios() {
     this.usuariosInstitucionService.getUsuariosInstitucion().subscribe({
       next: (usuarios) => {
@@ -29,25 +28,28 @@ export class ListarUsuariosinstitucionesComponent implements OnInit {
           acc[nombreInstitucion] = acc[nombreInstitucion] || [];
           acc[nombreInstitucion].push(usuario);
           return acc;
-        }, {});
+        }, {} as { [key: string]: any[] });
+
         console.log('✅ Usuarios agrupados por institución:', this.usuariosPorInstitucion);
       },
       error: (err) => console.error('❌ Error al obtener usuarios:', err)
     });
   }
 
-  /** 📌 Redirigir a la edición del usuario */
+  keyValueArray(obj: { [key: string]: any[] }): { key: string; value: any[] }[] {
+    return Object.entries(obj).map(([key, value]) => ({ key, value }));
+  }
+
   editarUsuario(id: number) {
     this.router.navigate(['/admin/gestion-usuariosinstituciones/editar', id]);
   }
 
-  /** 📌 Confirmar y eliminar usuario */
   eliminarUsuario(id: number) {
     if (confirm('⚠️ ¿Estás seguro de que deseas eliminar a este usuario? Esta acción no se puede deshacer.')) {
       this.usuariosInstitucionService.deleteUsuarioInstitucion(id).subscribe({
         next: () => {
           alert('✅ Usuario eliminado correctamente.');
-          this.cargarUsuarios(); // Recargar la lista de usuarios
+          this.cargarUsuarios();
         },
         error: (err) => {
           alert('❌ Error al eliminar usuario.');
