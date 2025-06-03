@@ -10,26 +10,29 @@
           <!-- Profesional a cargo / Institución ejecutora -->
           <div class="row g-3">
             <div class="col-md-6">
-              <label for="profesional" class="form-label">Profesional a cargo</label>
-              <mat-form-field appearance="fill" class="w-100">
-              <mat-select formControlName="profesional">
-              <mat-option *ngFor="let prof of profesionales" [value]="prof.id">
-              {{ prof.nombre }}
-              </mat-option>
-              </mat-select>
-              </mat-form-field>
-            </div>
-            <div class="col-md-6">
               <label for="institucion" class="form-label">¿A qué institución ejecutora perteneces?</label>
               <mat-form-field appearance="fill" class="w-100">
-                <mat-select formControlName="institucion">
+                <mat-select formControlName="institucion" (selectionChange)="onInstitucionSeleccionada($event.value)">
                   <mat-option value="">Seleccionar *</mat-option>
                   <mat-option *ngFor="let inst of instituciones" [value]="inst.id">
-                    {{ inst.nombre_fantasia }}
+                      {{ inst.nombre_fantasia }} - {{ inst.territorio?.nombre_territorio }} - {{ inst.territorio.linea?.nombre }}
                   </mat-option>
                 </mat-select>
               </mat-form-field>
             </div>
+            <div class="col-md-6">
+              <label for="profesional" class="form-label">Profesional a cargo</label>
+              <mat-form-field appearance="fill" class="w-100" *ngIf="profesionales?.length">
+                <mat-select formControlName="profesional">
+                  <mat-option value="">Seleccionar *</mat-option>
+                  <mat-option *ngFor="let pro of profesionales" [value]="pro.id">
+                    {{ pro.nombres }} {{ pro.apellidos }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+
           </div>
   
           <!-- Rut NNA / DV / Validar / Vías de ingreso -->
