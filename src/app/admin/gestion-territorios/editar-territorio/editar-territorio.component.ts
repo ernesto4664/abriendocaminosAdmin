@@ -29,60 +29,67 @@ export class EditarTerritorioComponent implements OnInit {
     private territoriosService: TerritoriosService
   ) {}
 
-  ngOnInit() {
-    this.territorioForm = this.fb.group({
-      nombre_territorio: [''],
-      cod_territorio: [''],
-      region_id: [[]],
-      provincia_id: [[]],
-      comuna_id: [[]],
-      plazas: [''],
-      linea_id: ['']
-    });
+ngOnInit() {
+  this.territorioForm = this.fb.group({
+    nombre_territorio: [''],
+    cod_territorio: [''],
+    region_id: [[]],
+    provincia_id: [[]],
+    comuna_id: [[]],
+    plazas: [''],
+    linea_id: ['']
+  });
 
-    this.loadLineas();
+  this.loadLineas();
 
-    const id = Number(this.route.snapshot.paramMap.get('id'));
+  const id = Number(this.route.snapshot.paramMap.get('id'));
+  if (!id) return;
 
-    if (id) {
-      this.territoriosService.getTerritorioById(id).subscribe({
-        next: (data) => {
-          console.log("📌 Territorio cargado:", data);
-          this.territorio = data;
+  this.territoriosService.getTerritorioById(id).subscribe({
+    next: (data) => {
+      console.log("📌 Territorio cargado:", data);
+      this.territorio = data;
 
-          this.territorioForm.patchValue({
-            nombre_territorio: data.nombre_territorio || '',
-            cod_territorio: data.cod_territorio || '',
-            region_id: data.region_id || [],
-            provincia_id: data.provincia_id || [],
-            comuna_id: data.comuna_id || [],
-            plazas: data.plazas || '',
-            linea_id: data.linea_id || ''
+      // Primero cargamos todas las regiones
+      this.territoriosService.getRegiones().subscribe({
+        next: (regiones) => {
+          this.regiones = regiones;
+
+          // Luego provincias basadas en regiones del territorio
+          const regionIds = (data.regiones || []).map((r: any) => r.id);
+          this.territoriosService.getProvincias(regionIds).subscribe({
+            next: (provincias) => {
+              this.provincias = provincias;
+
+              // Luego comunas basadas en provincias del territorio
+              const provinciaIds = (data.provincias || []).map((p: any) => p.id);
+              this.territoriosService.getComunas(provinciaIds).subscribe({
+                next: (comunas) => {
+                  this.comunas = comunas;
+
+                  // Finalmente, cargamos los valores en el formulario
+                  this.territorioForm.patchValue({
+                    nombre_territorio: data.nombre_territorio || '',
+                    cod_territorio: data.cod_territorio || '',
+                    region_id: regionIds,
+                    provincia_id: provinciaIds,
+                    comuna_id: (data.comunas || []).map((c: any) => c.id),
+                    plazas: data.plazas || '',
+                    linea_id: data.linea?.id || ''
+                  });
+                },
+                error: (err) => console.error("❌ Error obteniendo comunas:", err)
+              });
+            },
+            error: (err) => console.error("❌ Error obteniendo provincias:", err)
           });
-
-          this.territoriosService.getRegiones().subscribe({
-            next: (regiones) => this.regiones = regiones,
-            error: (err) => console.error("❌ Error obteniendo regiones:", err)
-          });
-
-          if (data.region_id.length > 0) {
-            this.territoriosService.getProvincias(data.region_id).subscribe({
-              next: (provincias) => this.provincias = provincias,
-              error: (err) => console.error("❌ Error obteniendo provincias:", err)
-            });
-          }
-
-          if (data.provincia_id.length > 0) {
-            this.territoriosService.getComunas(data.provincia_id).subscribe({
-              next: (comunas) => this.comunas = comunas,
-              error: (err) => console.error("❌ Error obteniendo comunas:", err)
-            });
-          }
         },
-        error: (err) => console.error("❌ Error cargando territorio:", err)
+        error: (err) => console.error("❌ Error obteniendo regiones:", err)
       });
-    }
-  }
+    },
+    error: (err) => console.error("❌ Error cargando territorio:", err)
+  });
+}
 
     /** 📌 Cargar todas las líneas de intervención */
     loadLineas() {

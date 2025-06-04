@@ -97,7 +97,7 @@
                 <mat-label>Seleccionar Institución</mat-label>
                 <mat-select formControlName="institucion_id">
                 <mat-option *ngFor="let institucion of instituciones" [value]="institucion.id">
-                    {{ institucion.nombre_fantasia }}
+                    {{ institucion.nombre_fantasia }} -<p><strong>Código territorio:</strong> {{ institucion.territorio?.cod_territorio }}</p>
                 </mat-option>
                 </mat-select>
             </mat-form-field>
