@@ -9,6 +9,8 @@ import { environment } from '../../environments/environment';
 export class RespuestasService {
   private apiUrl = `${environment.apiBaseUrl}/respuestas`;
 
+  private apiUrl2 = `${environment.apiBaseUrl}`;
+
  // private apiUrlR = `http://127.0.0.1:8000/api/v1`;
   private http = inject(HttpClient);
 
@@ -16,16 +18,16 @@ export class RespuestasService {
 
   
   getRespuesta(): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/respuestas`);
+    return this.http.get<any>(`${this.apiUrl2}/respuestas`);
 }
 
   /** 📌 Obtener respuestas por evaluación */
   getRespuestasPorEvaluacion(evaluacionId: number): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/respuestas/por-evaluacion/${evaluacionId}`);
+    return this.http.get<any>(`${this.apiUrl2}/respuestas/por-evaluacion/${evaluacionId}`);
   }
 
   getEvaluacionCompleta(evaluacionId: number): Observable<any> {
-    return this.http.get(`${this.apiUrl}/evaluaciones/${evaluacionId}/completa`);
+    return this.http.get(`${this.apiUrl2}/evaluaciones/${evaluacionId}/completa`);
   }
   
   /** 📌 Crear nueva respuesta */
@@ -42,7 +44,7 @@ export class RespuestasService {
   
   /** 📌 Método en el servicio para eliminar una respuesta */
   eliminarRespuesta(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/respuestas/${id}`);
+    return this.http.delete(`${this.apiUrl}/${id}`);
   }
 
   guardarRespuestas(requestBody: any): Observable<any> {
@@ -51,26 +53,26 @@ export class RespuestasService {
   }
 
   getRespuestaById(id: string): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/respuestas/${id}`);
+    return this.http.get<any>(`${this.apiUrl}/${id}`);
   }
   
   actualizarRespuesta(id: number, data: any): Observable<any> {
-    return this.http.put<any>(`${this.apiUrl}/respuestas/${id}`, data);
+    return this.http.put<any>(`${this.apiUrl}/${id}`, data);
   }
 
   actualizarRespuestas(data: any): Observable<any> {
-    return this.http.put(`${this.apiUrl}/respuestas-multiple`, data);
+    return this.http.put(`${this.apiUrl2}/respuestas-multiple`, data);
   }
     
   eliminarRespuestasPorPregunta(preguntaId: number): Observable<any> {
     return this.http.delete(
-      `${this.apiUrl}/respuestas/pregunta/${preguntaId}`
+      `${this.apiUrl2}/respuestas/pregunta/${preguntaId}`
     );
   }
 
     existeDetalle(evaluacionId: number): Observable<boolean> {
     return this.http
-      .get<{ tiene: boolean }>(`${this.apiUrl}/ponderaciones/existe-detalle/${evaluacionId}`)
+      .get<{ tiene: boolean }>(`${this.apiUrl2}/ponderaciones/existe-detalle/${evaluacionId}`)
       .pipe(
         map(res => res.tiene)
       );
@@ -78,25 +80,25 @@ export class RespuestasService {
 
     limpiarDetalle(evaluacionId: number): Observable<void> {
     return this.http.delete<void>(
-      `${this.apiUrl}/ponderaciones/${evaluacionId}`
+      `${this.apiUrl2}/ponderaciones/${evaluacionId}`
     );
   }
 
     eliminarDetalle(detalleId: number): Observable<void> {
     return this.http.delete<void>(
-      `${this.apiUrl}/ponderaciones/detalle/${detalleId}`
+      `${this.apiUrl2}/ponderaciones/detalle/${detalleId}`
     );
   }
 
   limpiarPreguntaCompleta(preguntaId: number, evaluacionId: number, tipo: string): Observable<any> {
-    return this.http.request('delete', `${this.apiUrl}/respuestas/pregunta/${preguntaId}/evaluacion/${evaluacionId}`, {
+    return this.http.request('delete', `${this.apiUrl2}/respuestas/pregunta/${preguntaId}/evaluacion/${evaluacionId}`, {
       body: { tipo } // ✅ ya no "nuevo_tipo"
     });
   }
 
   limpiarPreguntaConTipo(preguntaId: number, evaluacionId: number, tipo: string): Observable<any> {
     return this.http.post(
-      `${this.apiUrl}/respuestas/pregunta/${preguntaId}/evaluacion/${evaluacionId}/limpiar`,
+      `${this.apiUrl2}/respuestas/pregunta/${preguntaId}/evaluacion/${evaluacionId}/limpiar`,
       { tipo }
     );
   }
