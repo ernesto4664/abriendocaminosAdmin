@@ -17,6 +17,8 @@ import { Profesional } from '../../../models/profesional.model';
 import { InstitucionesEjecutorasService } from '../../../services/institucionesejecutoras.service';
 import { environment } from '../../../../environments/environment';
 import { tap } from 'rxjs/operators';
+import { Router } from '@angular/router';
+
 
 @Component({
   selector: 'app-registro-nna',
@@ -44,7 +46,8 @@ export class RegistroNnaComponent implements OnInit {
     private fb: FormBuilder,
     private nnaService: NnaService,
     private institucionService: InstitucionesEjecutorasService,
-    private usuariosInstitucionService: UsuariosInstitucionService
+    private usuariosInstitucionService: UsuariosInstitucionService, 
+    private router: Router
     
   ) {}
 
@@ -52,6 +55,7 @@ export class RegistroNnaComponent implements OnInit {
     this.nnaForm = this.fb.group({
       profesional: ['', Validators.required],
       institucion: ['', Validators.required],
+      territorio_id: [''],
       rutNna: ['', Validators.required],
       dvNna: ['', Validators.required],
       viasIngreso: ['', Validators.required],
@@ -133,9 +137,12 @@ this.institucionService.getInstituciones()
     if (this.nnaForm.invalid) return;
 
     const formData = new FormData();
+    
 
     formData.append('profesional', this.nnaForm.value.profesional);
     formData.append('institucion', this.nnaForm.value.institucion);
+    formData.append('territorio_id', this.nnaForm.value.territorio_id);
+    formData.append('territorio_id', this.nnaForm.value.territorio_id);
     formData.append('rut', this.nnaForm.value.rutNna);
     formData.append('dv', this.nnaForm.value.dvNna);
     formData.append('nombres', this.nnaForm.value.nombresNna);
@@ -160,6 +167,7 @@ this.institucionService.getInstituciones()
     this.nnaService.registrarNna(formData).subscribe({
       next: (res) => {
         console.log('✅ Registro exitoso', res);
+        this.router.navigate(['/admin/registro/registro-nna']);
       },
       error: (err) => {
         console.error('❌ Error al registrar NNA', err);
@@ -174,6 +182,16 @@ onInstitucionSeleccionada(instId: number) {
   const institucion = this.instituciones.find(inst => inst.id === instId);
   console.log('Institución encontrada:', institucion);
 
+  // Asigna el territorio_id directamente al form
+  if (institucion?.territorio_id) {
+    this.nnaForm.get('territorio_id')?.setValue(institucion.territorio_id);
+    console.log('Territorio asignado al form:', institucion.territorio_id);
+  } else {
+    this.nnaForm.get('territorio_id')?.setValue('');
+    console.warn('⚠️ Institución sin territorio_id.');
+  }
+
+  // Luego obtienes los profesionales como ya hacías
   let regionId: number | undefined;
 
   if (Array.isArray(institucion?.region_id) && institucion.region_id.length > 0) {
@@ -183,8 +201,6 @@ onInstitucionSeleccionada(instId: number) {
   } else if (institucion?.regiones?.length) {
     regionId = institucion.regiones[0].id;
   }
-
-  console.log('Región ID:', regionId);
 
   if (regionId) {
     this.nnaService.getProfesionalesPorRegion(regionId).subscribe({
@@ -196,10 +212,9 @@ onInstitucionSeleccionada(instId: number) {
         console.error('Error al obtener profesionales:', err);
       }
     });
-  } else {
-    console.warn('No se encontró un region_id válido para la institución seleccionada.');
   }
 }
+
 
 
 }

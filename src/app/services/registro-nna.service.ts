@@ -13,9 +13,12 @@ export class NnaService {
 
   constructor(private http: HttpClient) {}
 
-  registrarNna(data: any): Observable<any> {
-    return this.http.post<any>(this.apiUrl, data);
-  }
+registrarNna(data: FormData): Observable<any> {
+for (const pair of (data as any).entries()) {
+  console.log(`${pair[0]}:`, pair[1]);
+}
+  return this.http.post<any>(this.apiUrl, data);
+}
 
   subirDocumento(file: File): Observable<any> {
     const formData = new FormData();
