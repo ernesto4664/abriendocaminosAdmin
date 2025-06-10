@@ -44,11 +44,19 @@ export class DashboardComponent implements OnInit {
     },
     {
       title: 'Planes de intervención',
-      variant: 'danger',
+      variant: 'success',
       primaryLabel: 'Todos los planes',
       primaryUrl: '/planes',
       secondaryLabel: 'Crear nuevo',
       secondaryUrl: '/planes/crear'
+    },
+    {
+      title: 'ejecución de instrumentos',
+      variant: 'danger',
+      primaryLabel: 'Todos los planes',
+      primaryUrl: '/admin/app-ejecucion-instrumentos',
+      secondaryLabel: 'Ejecutar plan',
+      secondaryUrl: '/admin/ejecucion-instrumentos'
     }
   ];
   

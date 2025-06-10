@@ -55,6 +55,9 @@ import { EditarDocumentoComponent } from './admin/documentos/editar/editar.compo
 import { ListarDocumentosComponent } from './admin/documentos/listar/listar.component';
 import { Login_UserinstitucionComponent } from './login_userinstitucion/login_userinstitucion.component';
 import { AuthGuard } from './auth.guard'; // Asegúrate de importar tu guard
+import { EjecucionInstrumentosComponent } from './admin/ejecucion-instrumentos/ejecucion-instrumentos.component';
+import { DetalleEjecucionInstrumentoComponent } from './admin/ejecucion-instrumentos/detalle-ejecucion-instrumento/detalle-ejecucion-instrumento.component';
+import { RealizarEvaluacionComponent } from './admin/ejecucion-instrumentos/realizar-evaluacion/realizar-evaluacion.component';
 
 
 export const routes: Routes = [
@@ -117,9 +120,15 @@ export const routes: Routes = [
       { path: 'admin/documentos/add', component: CargarDocumentoComponent },
       { path: 'admin/documentos/listar', component: ListarDocumentosComponent },
       { path: 'admin/documentos/editar/:id', component: EditarDocumentoComponent },
-      
-      
-      
+
+      { path: 'admin/ejecucion-instrumentos', component: EjecucionInstrumentosComponent },
+      { path: 'admin/ejecucion-instrumentos/detalle/:id', component: DetalleEjecucionInstrumentoComponent },
+
+      {
+  path: 'admin/ejecucion-instrumentos/realizar-evaluacion/:id/:nnaId',
+  component: RealizarEvaluacionComponent
+}
+
     ]
   }
 ];
