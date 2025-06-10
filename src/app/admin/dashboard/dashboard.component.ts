@@ -30,9 +30,9 @@ export class DashboardComponent implements OnInit {
       title: 'NNA registrados',
       variant: 'success',
       primaryLabel: 'Todos los NNA',
-      primaryUrl: '/nna',
+      primaryUrl: '/admin/todoslosnnaregistrados',
       secondaryLabel: 'Registrar nuevo',
-      secondaryUrl: '/nna/crear'
+      secondaryUrl: '/admin/registro/registro-nna'
     },
     {
       title: 'Usuarios',

@@ -3,6 +3,8 @@ import { LayoutComponent } from './components/layout/layout.component';
 import { DashboardComponent } from './admin/dashboard/dashboard.component';
 import { MiperfilComponent } from './admin/miperfil/miperfil.component';
 
+import { TodoslosnnaRegistradosComponent } from './admin/todoslosnnaregistrados/todoslosnnaregistrados.component';
+
 import { GestionTerritoriosComponent } from './admin/gestion-territorios/gestion-territorios.component';
 import { CrearTerritorioComponent } from './admin/gestion-territorios/crear-territorio/crear-territorio.component';
 import { EditarTerritorioComponent } from './admin/gestion-territorios/editar-territorio/editar-territorio.component';
@@ -67,6 +69,7 @@ export const routes: Routes = [
     children: [
       { path: 'admin', component: DashboardComponent },
       { path: 'admin/miperfil', component: MiperfilComponent },
+      { path: 'admin/todoslosnnaregistrados', component: TodoslosnnaRegistradosComponent },
       { path: 'admin/gestion-territorios', component: GestionTerritoriosComponent },
       { path: 'admin/gestion-territorios/crear', component: CrearTerritorioComponent },
       { path: 'admin/gestion-territorios/editar/:id', component: EditarTerritorioComponent },
