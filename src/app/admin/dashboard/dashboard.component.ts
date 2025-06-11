@@ -22,9 +22,9 @@ export class DashboardComponent implements OnInit {
       title: 'Institución ejecutoras',
       variant: 'primary',
       primaryLabel: 'Todas las instituciones',
-      primaryUrl: '/instituciones',
+      primaryUrl: '/admin/gestion-institucionesejecutoras/listar',
       secondaryLabel: 'Crear nueva',
-      secondaryUrl: '/instituciones/crear'
+      secondaryUrl: '/admin/gestion-institucionesejecutoras/crear'
     },
     {
       title: 'NNA registrados',

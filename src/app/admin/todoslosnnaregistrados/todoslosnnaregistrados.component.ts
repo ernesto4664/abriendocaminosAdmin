@@ -5,11 +5,17 @@ import { MatIconModule } from '@angular/material/icon';
 import { Chart } from 'chart.js/auto';
 import { Router } from '@angular/router';
 
+// servicios nuevos
+import { TerritoriosService } from './../../services/territorios.service';
+import { InstitucionesEjecutorasService } from './../../services/institucionesejecutoras.service';
+
 interface Usuario {
   nombre: string;
   rut: string;
   profesional: string;
   institucion: string;
+  institucion_id: number;
+  region_id: number;
   status: 'En progreso' | 'Finalizado' | 'Sin terminar';
 }
 
@@ -36,23 +42,64 @@ export class TodoslosnnaRegistradosComponent implements OnInit, AfterViewInit {
   sinTerminarCount = 0;
   today = new Date();
 
-  constructor(private fb: FormBuilder,
-    private router: Router    // ← Inyecta aquí el Route
+  // Listas para filtros
+  regiones: any[] = [];
+  instituciones: any[] = [];
+  profesionales: string[] = [];
+
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+    private territoriosSvc: TerritoriosService,
+    private instsSvc: InstitucionesEjecutorasService
   ) {}
 
   ngOnInit() {
-    this.searchForm = this.fb.group({ nombre: [''], rut: [''] });
+    // 1) Inicializa el formulario
+    this.searchForm = this.fb.group({
+      nombre: [''],
+      rut: [''],
+      region_id: [''],
+      institucion_id: [''],
+      profesional: ['']
+    });
 
-    // Datos de ejemplo
-    this.usuarios = Array.from({ length: 20 }).map((_, i) => ({
-      nombre: 'María Del Carmen Hernandez Vivas',
-      rut: '00000000-00',
-      profesional: 'María H.',
-      institucion: 'Nombre de ejemplo',
-      status: i % 3 === 0 ? 'Finalizado' : (i % 3 === 1 ? 'Sin terminar' : 'En progreso')
-    }));
+    // 2) Carga las regiones para el filtro
+    this.territoriosSvc.getRegiones().subscribe({
+      next: regiones => this.regiones = regiones,
+      error: err => console.error('❌ Error al cargar regiones:', err)
+    });
 
-    this.applyFilter();
+    // 3) Carga las instituciones y extrae los profesionales únicos
+    this.instsSvc.getInstituciones().subscribe({
+      next: instituciones => {
+        this.instituciones = instituciones;
+
+        // Creamos un Set<string> con los nombres de profesional
+        const set = new Set<string>(
+          instituciones.map((inst: any) => inst.profesional as string)
+        );
+
+        // TS sabe que Array.from(set) es string[]
+        this.profesionales = Array.from(set);
+
+        // Después de tener filtros listos, carga los datos de NNA
+        // Aquí simulo datos de ejemplo; en tu caso vendrán de un servicio
+        this.usuarios = Array.from({ length: 20 }).map((_, i) => ({
+          nombre: 'Usuario ' + (i+1),
+          rut: `0000000${i}-0`,
+          profesional: this.profesionales[i % this.profesionales.length] || '',
+          institucion: this.instituciones[i % this.instituciones.length]?.nombre_fantasia || '',
+          institucion_id: this.instituciones[i % this.instituciones.length]?.id || 0,
+          region_id: this.instituciones[i % this.instituciones.length]?.territorio?.region_id?.[0] || 0,
+          status: i % 3 === 0 ? 'Finalizado' : (i % 3 === 1 ? 'Sin terminar' : 'En progreso')
+        }));
+
+        // Aplica el filtro inicial
+        this.applyFilter();
+      },
+      error: err => console.error('❌ Error al cargar instituciones:', err)
+    });
   }
 
   ngAfterViewInit() {
@@ -60,15 +107,21 @@ export class TodoslosnnaRegistradosComponent implements OnInit, AfterViewInit {
   }
 
   applyFilter() {
-    const { nombre, rut } = this.searchForm.value;
+    const { nombre, rut, region_id, institucion_id, profesional } = this.searchForm.value;
+
     this.filtered = this.usuarios.filter(u =>
       u.nombre.toLowerCase().includes(nombre.toLowerCase()) &&
-      u.rut.includes(rut)
+      u.rut.includes(rut) &&
+      (!region_id || u.region_id === +region_id) &&
+      (!institucion_id || u.institucion_id === +institucion_id) &&
+      (!profesional || u.profesional === profesional)
     );
+
     this.total = this.filtered.length;
-    this.inProgressCount = this.filtered.filter(u => u.status==='En progreso').length;
-    this.finalCount      = this.filtered.filter(u => u.status==='Finalizado').length;
-    this.sinTerminarCount= this.filtered.filter(u => u.status==='Sin terminar').length;
+    this.inProgressCount  = this.filtered.filter(u => u.status==='En progreso').length;
+    this.finalCount       = this.filtered.filter(u => u.status==='Finalizado').length;
+    this.sinTerminarCount = this.filtered.filter(u => u.status==='Sin terminar').length;
+
     this.setupPagination();
   }
 
@@ -79,58 +132,20 @@ export class TodoslosnnaRegistradosComponent implements OnInit, AfterViewInit {
 
   setupPagination() {
     const pageCount = Math.ceil(this.filtered.length / this.pageSize);
-    this.pages = Array.from({length: pageCount}, (_, i) => i+1);
+    this.pages = Array.from({ length: pageCount }, (_, i) => i+1);
     this.setPage(this.page);
   }
 
   setPage(p: number) {
-    if (p < 1 || p > this.pages.length) return;
+    if (p<1||p>this.pages.length) return;
     this.page = p;
     const start = (p-1)*this.pageSize;
-    this.pagedUsers = this.filtered.slice(start, start + this.pageSize);
+    this.pagedUsers = this.filtered.slice(start, start+this.pageSize);
   }
 
   onIngresar(u: Usuario) {
-    // Si quieres pasar el id en la URL:
     this.router.navigate(['/admin/usuarios-registrados/detalle']);
-    
-    // Si tu ruta no espera params:
-    // this.router.navigate(['/admin/usuarios-registrados/detalle']);
   }
 
-  initChart() {
-    const ctx = this.statusChartRef.nativeElement.getContext('2d')!;
-    new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'],
-        datasets: [
-          {
-            label: 'En progreso',
-            data: [1,2,1,3,2,3,4,4,3,2,3,4],
-            borderColor: '#0d6efd',
-            fill: false
-          },
-          {
-            label: 'Finalizado',
-            data: [4,3,2,2,3,2,3,2,1,2,1,2],
-            borderColor: '#198754',
-            fill: false
-          },
-          {
-            label: 'Sin terminar',
-            data: [0,1,1,1,1,1,1,1,1,1,1,1],
-            borderColor: '#dc3545',
-            fill: false
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: { position: 'top' }
-        }
-      }
-    });
-  }
+  initChart() { /* tu lógica Chart.js */ }
 }

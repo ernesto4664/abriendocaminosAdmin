@@ -1,19 +1,48 @@
 <div class="container my-4">
 
-    <!-- Barra de Búsqueda -->
-    <form [formGroup]="searchForm" (ngSubmit)="onSearch()" class="row g-2 mb-4 align-items-end">
-      <div class="col-md-6">
-        <input formControlName="nombre" class="form-control" placeholder="Ingresar nombre NNA">
-      </div>
-      <div class="col-md-4">
-        <input formControlName="rut" class="form-control" placeholder="Ingresar Rut">
-      </div>
-      <div class="col-md-2">
-        <button class="btn btn-primary w-100" type="submit">
-          Buscar <mat-icon>search</mat-icon>
-        </button>
-      </div>
-    </form>
+  <!-- Barra de Búsqueda Extendida -->
+  <form [formGroup]="searchForm" (ngSubmit)="onSearch()" class="row g-2 mb-4 align-items-end">
+
+    <div class="col-md-4">
+      <input formControlName="nombre" class="form-control" placeholder="Ingresar nombre NNA">
+    </div>
+
+    <div class="col-md-3">
+      <input formControlName="rut" class="form-control" placeholder="Ingresar Rut">
+    </div>
+
+    <!-- Nuevo filtro Región -->
+    <div class="col-md-2">
+      <select formControlName="region_id" class="form-select">
+        <option value="">Todas las regiones</option>
+        <option *ngFor="let r of regiones" [value]="r.id">{{ r.nombre }}</option>
+      </select>
+    </div>
+
+    <!-- Nuevo filtro Establecimiento -->
+    <div class="col-md-2">
+      <select formControlName="institucion_id" class="form-select">
+        <option value="">Todas las instituciones</option>
+        <option *ngFor="let e of instituciones" [value]="e.id">
+          {{ e.nombre_fantasia }}
+        </option>
+      </select>
+    </div>
+
+    <!-- Nuevo filtro Profesional -->
+    <div class="col-md-1">
+      <select formControlName="profesional" class="form-select">
+        <option value="">Todos</option>
+        <option *ngFor="let p of profesionales" [value]="p">{{ p }}</option>
+      </select>
+    </div>
+
+    <div class="col-md-12 text-end">
+      <button class="btn btn-primary" type="submit">
+        Buscar <mat-icon>search</mat-icon>
+      </button>
+    </div>
+  </form>
   
     <!-- Estadísticas y Tabla -->
     <div class="card mb-4">

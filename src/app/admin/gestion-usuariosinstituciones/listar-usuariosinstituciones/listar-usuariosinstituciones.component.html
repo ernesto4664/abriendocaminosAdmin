@@ -1,30 +1,71 @@
 <div class="container mt-4 p-0">
   <h3>Usuarios Institucionales</h3>
 
-  <div class="form-control mb-4" *ngFor="let grupo of usuariosPorInstitucion | keyvalue">
-    <h4 class="mt-4">
-      {{ grupo.value.institucion.nombre_fantasia }} -
-      Código territorio: {{ grupo.value.institucion.territorio?.cod_territorio }} /
-      Territorio: {{ grupo.value.institucion.territorio?.nombre_territorio }}
-    </h4>
+  <!-- 1) Listado normal agrupado -->
+  <div *ngFor="let g of grupos" class="card mb-4">
+    <div class="card-header">
+      {{ g.institucion.nombre_fantasia }} –
+      Código territorio: {{ g.institucion.territorio?.cod_territorio }} /
+      {{ g.institucion.territorio?.nombre_territorio }}
+    </div>
+    <table class="table mb-0">
+      <thead class="table-dark">
+        <tr><th>Nombre</th><th>Email</th><th>Rol</th><th>Acciones</th></tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let u of g.usuarios">
+          <td>{{ u.nombres }} {{ u.apellidos }}</td>
+          <td>{{ u.email }}</td>
+          <td>{{ u.rol }}</td>
+          <td>
+            <button class="btn btn-sm btn-primary me-2" (click)="editarUsuario(u.id)">Editar</button>
+            <button class="btn btn-sm btn-danger" (click)="eliminarUsuario(u.id)">Eliminar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
-    <table class="table table-striped mt-2">
+  <!-- 2) Bloque Seremi aparte -->
+  <div *ngIf="seremiUser" class="card mb-4">
+    <div class="card-header">
+      Seremi: {{ seremiUser.nombres }} {{ seremiUser.apellidos }}
+    </div>
+    <table class="table mb-0">
       <thead class="table-dark">
         <tr>
-          <th>Nombre</th>
-          <th>Email</th>
-          <th>Rol</th>
-          <th>Acciones</th>
+          <th>Nombre</th><th>Email</th><th>Rol</th><th>Acciones</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let usuario of grupo.value.usuarios">
-          <td>{{ usuario.nombres }} {{ usuario.apellidos }}</td>
-          <td>{{ usuario.email }}</td>
-          <td>{{ usuario.rol }}</td>
+        <tr>
+          <td>{{ seremiUser.nombres }} {{ seremiUser.apellidos }}</td>
+          <td>{{ seremiUser.email }}</td>
+          <td>SEREMI</td>
           <td>
-            <button class="btn btn-primary btn-sm me-2" (click)="editarUsuario(usuario.id)">Editar</button>
-            <button class="btn btn-danger btn-sm" (click)="eliminarUsuario(usuario.id)">Eliminar</button>
+            <button class="btn btn-sm btn-primary me-2" (click)="editarUsuario(seremiUser.id)">Editar</button>
+            <button class="btn btn-sm btn-danger" (click)="eliminarUsuario(seremiUser.id)">Eliminar</button>
+          </td>
+        </tr>
+        <!-- Botón para desplegar establecimientos -->
+        <tr>
+          <td colspan="4" class="text-center">
+            <button class="btn btn-outline-info mt-2" (click)="toggleEstablecimientos()">
+              {{ mostrarEstablecimientos ? 'Ocultar' : 'Mostrar' }} Establecimientos a Cargo
+            </button>
+          </td>
+        </tr>
+        <!-- Lista colapsable de establecimientos -->
+        <tr *ngIf="mostrarEstablecimientos">
+          <td colspan="4">
+            <ul class="list-group">
+              <li *ngFor="let est of seremiUser.institucionesPivot" class="list-group-item">
+                {{ est.nombre_fantasia }}
+              </li>
+              <li *ngIf="!seremiUser.institucionesPivot?.length" class="list-group-item text-muted">
+                No tienes establecimientos asignados.
+              </li>
+            </ul>
           </td>
         </tr>
       </tbody>
