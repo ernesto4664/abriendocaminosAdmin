@@ -55,7 +55,7 @@ export class RegistroNnaComponent implements OnInit {
     this.nnaForm = this.fb.group({
       profesional: ['', Validators.required],
       institucion: ['', Validators.required],
-      territorio_id: [''],
+      cod_territorio: [''],
       rutNna: ['', Validators.required],
       dvNna: ['', Validators.required],
       viasIngreso: ['', Validators.required],
@@ -141,8 +141,7 @@ this.institucionService.getInstituciones()
 
     formData.append('profesional', this.nnaForm.value.profesional);
     formData.append('institucion', this.nnaForm.value.institucion);
-    formData.append('territorio_id', this.nnaForm.value.territorio_id);
-    formData.append('territorio_id', this.nnaForm.value.territorio_id);
+    formData.append('cod_territorio', this.nnaForm.value.cod_territorio);
     formData.append('rut', this.nnaForm.value.rutNna);
     formData.append('dv', this.nnaForm.value.dvNna);
     formData.append('nombres', this.nnaForm.value.nombresNna);
@@ -167,7 +166,8 @@ this.institucionService.getInstituciones()
     this.nnaService.registrarNna(formData).subscribe({
       next: (res) => {
         console.log('✅ Registro exitoso', res);
-        this.router.navigate(['/admin/registro/registro-nna']);
+          alert('✅ Registro exitoso'); // para comprobar
+        this.router.navigate(['/admin/']);
       },
       error: (err) => {
         console.error('❌ Error al registrar NNA', err);
@@ -194,10 +194,10 @@ onInstitucionSeleccionada(instId: number) {
   // Luego obtienes los profesionales como ya hacías
   let regionId: number | undefined;
 
-  if (Array.isArray(institucion?.region_id) && institucion.region_id.length > 0) {
-    regionId = institucion.region_id[0];
-  } else if (institucion?.territorio?.region_id) {
-    regionId = institucion.territorio.region_id;
+  if (Array.isArray(institucion?.cod_territorio) && institucion.cod_territorio.length > 0) {
+    regionId = institucion.cod_territorio[0];
+  } else if (institucion?.territorio?.cod_territorio) {
+    regionId = institucion.territorio.cod_territorio;
   } else if (institucion?.regiones?.length) {
     regionId = institucion.regiones[0].id;
   }

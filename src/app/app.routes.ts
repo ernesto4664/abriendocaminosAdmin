@@ -60,6 +60,7 @@ import { AuthGuard } from './auth.guard'; // Asegúrate de importar tu guard
 export const routes: Routes = [
   
   { path: 'login', component: Login_UserinstitucionComponent },
+  
   {
     canActivate: [AuthGuard], // Aplica el guard al layout principal
     path: '',
@@ -117,6 +118,8 @@ export const routes: Routes = [
       { path: 'admin/documentos/add', component: CargarDocumentoComponent },
       { path: 'admin/documentos/listar', component: ListarDocumentosComponent },
       { path: 'admin/documentos/editar/:id', component: EditarDocumentoComponent },
+
+
       
       
       
