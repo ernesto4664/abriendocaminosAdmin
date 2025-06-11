@@ -3,6 +3,8 @@ import { LayoutComponent } from './components/layout/layout.component';
 import { DashboardComponent } from './admin/dashboard/dashboard.component';
 import { MiperfilComponent } from './admin/miperfil/miperfil.component';
 
+import { TodoslosnnaRegistradosComponent } from './admin/todoslosnnaregistrados/todoslosnnaregistrados.component';
+
 import { GestionTerritoriosComponent } from './admin/gestion-territorios/gestion-territorios.component';
 import { CrearTerritorioComponent } from './admin/gestion-territorios/crear-territorio/crear-territorio.component';
 import { EditarTerritorioComponent } from './admin/gestion-territorios/editar-territorio/editar-territorio.component';
@@ -55,6 +57,9 @@ import { EditarDocumentoComponent } from './admin/documentos/editar/editar.compo
 import { ListarDocumentosComponent } from './admin/documentos/listar/listar.component';
 import { Login_UserinstitucionComponent } from './login_userinstitucion/login_userinstitucion.component';
 import { AuthGuard } from './auth.guard'; // Asegúrate de importar tu guard
+import { EjecucionInstrumentosComponent } from './admin/ejecucion-instrumentos/ejecucion-instrumentos.component';
+import { DetalleEjecucionInstrumentoComponent } from './admin/ejecucion-instrumentos/detalle-ejecucion-instrumento/detalle-ejecucion-instrumento.component';
+import { RealizarEvaluacionComponent } from './admin/ejecucion-instrumentos/realizar-evaluacion/realizar-evaluacion.component';
 
 
 export const routes: Routes = [
@@ -68,6 +73,7 @@ export const routes: Routes = [
     children: [
       { path: 'admin', component: DashboardComponent },
       { path: 'admin/miperfil', component: MiperfilComponent },
+      { path: 'admin/todoslosnnaregistrados', component: TodoslosnnaRegistradosComponent },
       { path: 'admin/gestion-territorios', component: GestionTerritoriosComponent },
       { path: 'admin/gestion-territorios/crear', component: CrearTerritorioComponent },
       { path: 'admin/gestion-territorios/editar/:id', component: EditarTerritorioComponent },
@@ -123,6 +129,14 @@ export const routes: Routes = [
       
       
       
+      { path: 'admin/ejecucion-instrumentos', component: EjecucionInstrumentosComponent },
+      { path: 'admin/ejecucion-instrumentos/detalle/:id', component: DetalleEjecucionInstrumentoComponent },
+
+      {
+  path: 'admin/ejecucion-instrumentos/realizar-evaluacion/:id/:nnaId',
+  component: RealizarEvaluacionComponent
+}
+ 
     ]
   }
 ];

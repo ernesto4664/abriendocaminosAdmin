@@ -5,9 +5,9 @@
       <div class="card card-top-{{card.variant}} h-100">
         <div class="card-body text-center d-flex flex-column justify-content-between">
           <h5 class="card-title">{{ card.title }}</h5>
-          
-        
-            <button class="btn btn-primary w-100 mb-3" [routerLink]="card.primaryUrl">
+
+
+            <button *ngIf="card.title !== 'ejecución de instrumentos'" class="btn btn-primary w-100 mb-3" [routerLink]="card.primaryUrl">
               {{ card.primaryLabel }} <i class="bi bi-plus-circle ms-1"></i>
               <mat-icon class="icon">add_circle_outline</mat-icon>
             </button>

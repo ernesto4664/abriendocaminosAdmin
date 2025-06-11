@@ -55,7 +55,7 @@ export class RegistroNnaComponent implements OnInit {
     this.nnaForm = this.fb.group({
       profesional: ['', Validators.required],
       institucion: ['', Validators.required],
-      cod_territorio: [''],
+      territorio_id: [''],
       rutNna: ['', Validators.required],
       dvNna: ['', Validators.required],
       viasIngreso: ['', Validators.required],
@@ -141,7 +141,8 @@ this.institucionService.getInstituciones()
 
     formData.append('profesional', this.nnaForm.value.profesional);
     formData.append('institucion', this.nnaForm.value.institucion);
-    formData.append('cod_territorio', this.nnaForm.value.cod_territorio);
+    formData.append('territorio_id', this.nnaForm.value.territorio_id);
+    formData.append('territorio_id', this.nnaForm.value.territorio_id);
     formData.append('rut', this.nnaForm.value.rutNna);
     formData.append('dv', this.nnaForm.value.dvNna);
     formData.append('nombres', this.nnaForm.value.nombresNna);
@@ -177,43 +178,28 @@ this.institucionService.getInstituciones()
     console.log('Formulario enviado', formData);
   }
 onInstitucionSeleccionada(instId: number) {
-  console.log('Institución seleccionada ID:', instId);
-
   const institucion = this.instituciones.find(inst => inst.id === instId);
-  console.log('Institución encontrada:', institucion);
 
-  // Asigna el territorio_id directamente al form
+  // Actualiza territorio_id del formulario si existe
   if (institucion?.territorio_id) {
     this.nnaForm.get('territorio_id')?.setValue(institucion.territorio_id);
-    console.log('Territorio asignado al form:', institucion.territorio_id);
   } else {
     this.nnaForm.get('territorio_id')?.setValue('');
-    console.warn('⚠️ Institución sin territorio_id.');
   }
 
-  // Luego obtienes los profesionales como ya hacías
-  let regionId: number | undefined;
-
-  if (Array.isArray(institucion?.cod_territorio) && institucion.cod_territorio.length > 0) {
-    regionId = institucion.cod_territorio[0];
-  } else if (institucion?.territorio?.cod_territorio) {
-    regionId = institucion.territorio.cod_territorio;
-  } else if (institucion?.regiones?.length) {
-    regionId = institucion.regiones[0].id;
-  }
-
-  if (regionId) {
-    this.nnaService.getProfesionalesPorRegion(regionId).subscribe({
+  // Obtener profesionales por ID de institución
+  if (instId) {
+    this.nnaService.getProfesionalesPorInstitucion(instId).subscribe({
       next: (res) => {
         this.profesionales = res;
-        console.log('Profesionales:', this.profesionales);
       },
       error: (err) => {
-        console.error('Error al obtener profesionales:', err);
+        console.error('Error al obtener profesionales por institución:', err);
       }
     });
   }
 }
+
 
 
 

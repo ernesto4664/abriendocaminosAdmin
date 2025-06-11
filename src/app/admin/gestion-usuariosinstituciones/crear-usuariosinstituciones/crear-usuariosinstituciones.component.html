@@ -1,128 +1,140 @@
 <div class="container mt-4 p-0">
-    <div class="card">
-        <div class="card-header text-white">
-            <h3 class="titulo">Crear Usuario de Institución</h3>
-        </div>
-
-        <div class="card-body">
-            <form [formGroup]="usuarioForm" (ngSubmit)="onSubmit()" name="usuarioForm">
-                
-                <!-- Nombres -->
-                <div class="form-group">
-                    <label for="nombres" class="form-label">Nombres</label>
-                    <input id="nombres" type="text" formControlName="nombres" class="form-control" placeholder="Ingresar nombres">
-                </div>
-
-                <!-- Apellidos -->
-                <div class="form-group mt-3">
-                    <label for="apellidos" class="form-label">Apellidos</label>
-                    <input id="apellidos" type="text" formControlName="apellidos" class="form-control" placeholder="Ingresar apellidos">
-                </div>
-
-                <!-- RUT -->
-                <div class="form-group mt-3">
-                <label for="rut" class="form-label">RUT</label>
-                <input id="rut" type="text" formControlName="rut" class="form-control" placeholder="Ingresar RUT">
-                <small class="form-text text-muted">
-                    Ingresar sin puntos y con guion final. Ejemplo: 12345678-9
-                </small>
-                </div>
-
-                <!-- Sexo -->
-                <mat-form-field class="w-100 mt-3" appearance="outline">
-                    <mat-label>Seleccionar Sexo</mat-label>
-                    <mat-select formControlName="sexo">
-                        <mat-option value="M">Masculino</mat-option>
-                        <mat-option value="F">Femenino</mat-option>
-                    </mat-select>
-                </mat-form-field>
-
-                <!-- Fecha de Nacimiento -->
-                <div class="form-group mt-3">
-                    <label for="fecha_nacimiento" class="form-label">Fecha de Nacimiento</label>
-                    <input id="fecha_nacimiento" type="date" formControlName="fecha_nacimiento" class="form-control">
-                </div>
-
-                <!-- Profesión / Cargo -->
-                <div class="form-group mt-3">
-                    <label for="profesion" class="form-label">Profesión / Cargo</label>
-                    <textarea id="profesion" formControlName="profesion" class="form-control" rows="2" placeholder="Ingresar profesión o cargo"></textarea>
-                </div>
-
-                <!-- Email -->
-                <div class="form-group mt-3">
-                    <label for="email" class="form-label">Correo Electrónico</label>
-                    <input id="email" type="email" formControlName="email" class="form-control" placeholder="Ingresar correo electrónico">
-                </div>
-
-                <!-- Rol (por defecto Profesional) -->
-                <mat-form-field class="w-100 mt-3" appearance="outline">
-                    <mat-label>Seleccionar Rol</mat-label>
-                    <mat-select formControlName="rol">
-                        <mat-option *ngFor="let r of roles" [value]="r">{{ r }}</mat-option>
-                    </mat-select>
-                </mat-form-field>
-
-                <!-- Selección de Región -->
-                <mat-form-field class="w-100 mt-3" appearance="outline">
-                    <mat-label>Seleccionar Región</mat-label>
-                    <mat-select formControlName="region_id" (selectionChange)="onRegionChange($event)">
-                        <mat-option *ngFor="let region of regiones" [value]="region.id">
-                            {{ region.nombre }}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-
-                <!-- Selección de Provincia -->
-                <mat-form-field class="w-100 mt-3" appearance="outline">
-                    <mat-label>Seleccionar Provincia</mat-label>
-                    <mat-select formControlName="provincia_id" (selectionChange)="onProvinciaChange($event)">
-                        <mat-option *ngFor="let provincia of provincias" [value]="provincia.id">
-                            {{ provincia.nombre }}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-
-                <!-- Selección de Comuna -->
-                <mat-form-field class="w-100 mt-3" appearance="outline">
-                    <mat-label>Seleccionar Comuna</mat-label>
-                    <mat-select formControlName="comuna_id">
-                        <mat-option *ngFor="let comuna of comunas" [value]="comuna.id">
-                            {{ comuna.nombre }}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-
-                <!-- Seleccionar Institución -->
-                <mat-form-field class="w-100 mt-3" appearance="outline">
-                    <mat-label>Seleccionar Institución</mat-label>
-                    <mat-select formControlName="institucion_id">
-                    <mat-option *ngFor="let institucion of instituciones" [value]="institucion.id">
-                        {{ institucion.nombre_fantasia }} -<p><strong>Código territorio:</strong> {{ institucion.territorio?.cod_territorio }}</p>
-                    </mat-option>
-                    </mat-select>
-                </mat-form-field>
-  
-                <!-- Contraseña + botón generar -->
-                <div class="form-group mt-3">
-                <label for="password" class="form-label">Contraseña</label>
-                <div class="input-group">
-                    <input id="password" type="text" formControlName="password" class="form-control" placeholder="Ingresar contraseña">
-                    <button mat-mini-fab color="primary" type="button" (click)="generarContrasena()" class="ml-2">
-                    <mat-icon>autorenew</mat-icon>
-                    </button>
-                </div>
-                <small class="form-text text-muted">Haz clic en el ícono para generar una contraseña segura</small>
-                </div>
-
-                <!-- Botón de Guardar -->
-                <div class="button-container">
-                <button type="submit" mat-raised-button color="primary">
-                    <mat-icon class="icon">add_circle_outline</mat-icon>
-                    Guardar
-                </button>
-                </div>
-            </form>
-        </div>
+  <div class="card">
+    <div class="card-header text-white">
+      <h3 class="titulo">Crear Usuario de Institución</h3>
     </div>
+
+    <div class="card-body">
+      <form [formGroup]="usuarioForm" (ngSubmit)="onSubmit()" name="usuarioForm">
+
+        <!-- Nombres -->
+        <div class="form-group">
+          <label for="nombres" class="form-label">Nombres</label>
+          <input id="nombres" type="text" formControlName="nombres" class="form-control" placeholder="Ingresar nombres">
+        </div>
+
+        <!-- Apellidos -->
+        <div class="form-group mt-3">
+          <label for="apellidos" class="form-label">Apellidos</label>
+          <input id="apellidos" type="text" formControlName="apellidos" class="form-control" placeholder="Ingresar apellidos">
+        </div>
+
+        <!-- RUT -->
+        <div class="form-group mt-3">
+          <label for="rut" class="form-label">RUT</label>
+          <input id="rut" type="text" formControlName="rut" class="form-control" placeholder="Ingresar RUT">
+          <small class="form-text text-muted">
+            Ingresar sin puntos y con guion final. Ejemplo: 12345678-9
+          </small>
+        </div>
+
+        <!-- Sexo -->
+        <mat-form-field class="w-100 mt-3" appearance="outline">
+          <mat-label>Seleccionar Sexo</mat-label>
+          <mat-select formControlName="sexo">
+            <mat-option value="M">Masculino</mat-option>
+            <mat-option value="F">Femenino</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- Fecha de Nacimiento -->
+        <div class="form-group mt-3">
+          <label for="fecha_nacimiento" class="form-label">Fecha de Nacimiento</label>
+          <input id="fecha_nacimiento" type="date" formControlName="fecha_nacimiento" class="form-control">
+        </div>
+
+        <!-- Profesión / Cargo -->
+        <div class="form-group mt-3">
+          <label for="profesion" class="form-label">Profesión / Cargo</label>
+          <textarea id="profesion" formControlName="profesion" class="form-control" rows="2" placeholder="Ingresar profesión o cargo"></textarea>
+        </div>
+
+        <!-- Email -->
+        <div class="form-group mt-3">
+          <label for="email" class="form-label">Correo Electrónico</label>
+          <input id="email" type="email" formControlName="email" class="form-control" placeholder="Ingresar correo electrónico">
+        </div>
+
+        <!-- Rol -->
+        <mat-form-field class="w-100 mt-3" appearance="outline">
+          <mat-label>Seleccionar Rol</mat-label>
+          <mat-select formControlName="rol" (selectionChange)="onRolChange()">
+            <mat-option *ngFor="let r of roles" [value]="r">{{ r }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- Selección de Región -->
+        <mat-form-field class="w-100 mt-3" appearance="outline">
+          <mat-label>Seleccionar Región</mat-label>
+          <mat-select formControlName="region_id" (selectionChange)="onRegionChange($event)">
+            <mat-option *ngFor="let region of regiones" [value]="region.id">
+              {{ region.nombre }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- Selección de Provincia -->
+        <mat-form-field class="w-100 mt-3" appearance="outline">
+          <mat-label>Seleccionar Provincia</mat-label>
+          <mat-select
+            formControlName="provincia_id"
+            (selectionChange)="onProvinciaChange($event)"
+            [disabled]="isSeremi"
+          >
+            <mat-option *ngFor="let provincia of provincias" [value]="provincia.id">
+              {{ provincia.nombre }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- Selección de Comuna -->
+        <mat-form-field class="w-100 mt-3" appearance="outline">
+          <mat-label>Seleccionar Comuna</mat-label>
+          <mat-select
+            formControlName="comuna_id"
+            [disabled]="isSeremi"
+          >
+            <mat-option *ngFor="let comuna of comunas" [value]="comuna.id">
+              {{ comuna.nombre }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- Seleccionar Institución -->
+        <mat-form-field class="w-100 mt-3" appearance="outline">
+          <mat-label>Seleccionar Institución</mat-label>
+          <mat-select
+            formControlName="institucion_id"
+            [disabled]="isSeremi"
+          >
+            <mat-option *ngFor="let institucion of institucionesFiltradas" [value]="institucion.id">
+              {{ institucion.nombre_fantasia }}
+              <br>
+              <small><strong>Código territorio:</strong> {{ institucion.territorio?.cod_territorio }}</small>
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- Contraseña + botón generar -->
+        <div class="form-group mt-3">
+          <label for="password" class="form-label">Contraseña</label>
+          <div class="input-group">
+            <input id="password" type="text" formControlName="password" class="form-control" placeholder="Ingresar contraseña">
+            <button mat-mini-fab color="primary" type="button" (click)="generarContrasena()" class="ml-2">
+              <mat-icon>autorenew</mat-icon>
+            </button>
+          </div>
+          <small class="form-text text-muted">Haz clic en el ícono para generar una contraseña segura</small>
+        </div>
+
+        <!-- Botón de Guardar -->
+        <div class="button-container mt-4">
+          <button type="submit" mat-raised-button color="primary">
+            <mat-icon class="icon">add_circle_outline</mat-icon>
+            Guardar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>

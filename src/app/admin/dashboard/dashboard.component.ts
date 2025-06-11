@@ -22,17 +22,17 @@ export class DashboardComponent implements OnInit {
       title: 'Institución ejecutoras',
       variant: 'primary',
       primaryLabel: 'Todas las instituciones',
-      primaryUrl: '/instituciones',
+      primaryUrl: '/admin/gestion-institucionesejecutoras/listar',
       secondaryLabel: 'Crear nueva',
-      secondaryUrl: '/instituciones/crear'
+      secondaryUrl: '/admin/gestion-institucionesejecutoras/crear'
     },
     {
       title: 'NNA registrados',
       variant: 'success',
       primaryLabel: 'Todos los NNA',
-      primaryUrl: '/nna',
+      primaryUrl: '/admin/todoslosnnaregistrados',
       secondaryLabel: 'Registrar nuevo',
-      secondaryUrl: '/nna/crear'
+      secondaryUrl: '/admin/registro/registro-nna'
     },
     {
       title: 'Usuarios',
@@ -44,11 +44,19 @@ export class DashboardComponent implements OnInit {
     },
     {
       title: 'Planes de intervención',
-      variant: 'danger',
+      variant: 'success',
       primaryLabel: 'Todos los planes',
       primaryUrl: '/planes',
       secondaryLabel: 'Crear nuevo',
       secondaryUrl: '/planes/crear'
+    },
+    {
+      title: 'ejecución de instrumentos',
+      variant: 'danger',
+      primaryLabel: 'Todos los planes',
+      primaryUrl: '/admin/app-ejecucion-instrumentos',
+      secondaryLabel: 'Ejecutar plan',
+      secondaryUrl: '/admin/ejecucion-instrumentos'
     }
   ];
   

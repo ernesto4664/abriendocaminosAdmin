@@ -43,5 +43,7 @@ getProfesionalesPorRegion(regionId: number): Observable<any[]> {
   return this.http.get<any[]>(`${this.apiUrl}/por-region/${regionId}`);
 }
 
-
+getProfesionalesPorInstitucion(institucionId: number) {
+  return this.http.get<any[]>(`${this.apiUrl}/profesionales/institucion/${institucionId}`);
+}
 }

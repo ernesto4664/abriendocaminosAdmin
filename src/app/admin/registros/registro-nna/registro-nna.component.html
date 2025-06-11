@@ -9,7 +9,7 @@
   
           <!-- Profesional a cargo / Institución ejecutora -->
           <div class="row g-3">
-            <div class="col-md-6">
+            <div class="col-md-9">
               <label for="institucion" class="form-label">¿A qué institución ejecutora perteneces?</label>
               <mat-form-field appearance="fill" class="w-100">
                 <mat-select formControlName="institucion" (selectionChange)="onInstitucionSeleccionada($event.value)">
@@ -20,7 +20,7 @@
                 </mat-select>
               </mat-form-field>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-3">
               <label for="profesional" class="form-label">Profesional a cargo</label>
               <mat-form-field appearance="fill" class="w-100" *ngIf="profesionales?.length">
                 <mat-select formControlName="profesional">
@@ -204,7 +204,7 @@
 
         <!-- Botón Guardar -->
         <div class="button-container mt-4" style="text-align: -webkit-right;">
-          <input type="text" formControlName="cod_territorio">
+          <input type="text" formControlName="territorio_id">
 
           <button type="submit"
                   class="btn btn-success"

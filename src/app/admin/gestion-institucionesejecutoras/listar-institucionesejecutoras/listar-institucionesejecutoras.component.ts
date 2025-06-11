@@ -36,7 +36,13 @@ export class ListarInstitucionesejecutorasComponent implements OnInit {
   cargarInstituciones() {
     this.institucionService.getInstituciones().subscribe({
       next: (data) => {
-        console.log("📌 Instituciones Ejecutoras cargadas:", data);
+        // 1) Ordenar todo por código de territorio al recibir
+        data.sort((a: any, b: any) => {
+          const ca = a.territorio?.cod_territorio ?? 0;
+          const cb = b.territorio?.cod_territorio ?? 0;
+          return ca - cb;
+        });
+
         this.instituciones = data;
         this.aplicarFiltros();
       },
