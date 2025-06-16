@@ -99,5 +99,12 @@ export class EjecucionInstrumentosService {
   return this.http.post(`${this.apiUrl}/api/evaluaciones/respuestas-parciales`, payload);
 }
 
+getEstadoEvaluacionesNna(nnaId: number) {
+    return this.http.get<any>(`${this.apiUrl}/api/evaluaciones/estado-nna/${nnaId}`);
+  }
+
+  getRespuestas(nnaId: number, evaluacionId: number) {
+  return this.http.get<any[]>(`${this.apiUrl}/api/evaluaciones/${nnaId}/${evaluacionId}/respuestas`);
+}
 
 }

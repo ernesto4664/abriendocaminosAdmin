@@ -86,8 +86,11 @@ export class RealizarEvaluacionComponent implements OnInit {
       });
 
       this.nna = { id: nnaId };
+      this.cargarRespuestasExistentes(); // 👈 Agregado aquí
       this.cargando = false;
     });
+
+    
   }
 
   private normalizaOpciones(p: Pregunta): void {
@@ -95,36 +98,36 @@ export class RealizarEvaluacionComponent implements OnInit {
       switch (p.tipo?.tipo) {
         case 'si_no':
           p.opciones = [
-            { id: -1, label: 'Sí', valor: null },
-            { id: -2, label: 'No', valor: null }
+            { id: 1, label: 'Sí', valor: 1 },
+            { id: 2, label: 'No', valor: 2 }
           ];
           break;
 
         case 'si_no_noestoyseguro':
           p.opciones = [
-            { id: -1, label: 'Sí', valor: null },
-            { id: -2, label: 'No', valor: null },
-            { id: -3, label: 'No estoy seguro', valor: null }
+            { id: 1, label: 'Sí', valor: 1 },
+            { id: 2, label: 'No', valor: 2 },
+            { id: 3, label: 'No estoy seguro', valor: 3 }
           ];
           break;
 
         case '5emojis':
           p.opciones = [
-            { id: -1, label: '😞', valor: 1 },
-            { id: -2, label: '🙁', valor: 2 },
-            { id: -3, label: '😐', valor: 3 },
-            { id: -4, label: '🙂', valor: 4 },
-            { id: -5, label: '😀', valor: 5 }
+            { id: 1, label: '😞', valor: 1 },
+            { id: 2, label: '🙁', valor: 2 },
+            { id: 3, label: '😐', valor: 3 },
+            { id: 4, label: '🙂', valor: 4 },
+            { id: 5, label: '😀', valor: 5 }
           ];
           break;
 
         case 'likert':
           p.opciones = [
-            { id: -1, label: 'Muy en desacuerdo', valor: 1 },
-            { id: -2, label: 'En desacuerdo', valor: 2 },
-            { id: -3, label: 'Neutral', valor: 3 },
-            { id: -4, label: 'De acuerdo', valor: 4 },
-            { id: -5, label: 'Muy de acuerdo', valor: 5 }
+            { id: 1, label: 'Muy en desacuerdo', valor: 1 },
+            { id: 2, label: 'En desacuerdo', valor: 2 },
+            { id: 3, label: 'Neutral', valor: 3 },
+            { id: 4, label: 'De acuerdo', valor: 4 },
+            { id: 5, label: 'Muy de acuerdo', valor: 5 }
           ];
           break;
 
@@ -155,8 +158,8 @@ guardarRespuestas(): void {
         };
       })
   };
-
-  this.http.post('/api/evaluaciones/respuestas-parciales', payload).subscribe({
+ 
+  this.ejecucionService.guardarRespuestaParcial(payload).subscribe({
     next: () => {
       alert('Respuestas guardadas correctamente');
     },
@@ -170,29 +173,99 @@ guardarRespuestas(): void {
 guardarRespuestaParcial(p: Pregunta): void {
   if (!this.nna?.id || !this.evaluacion?.id) return;
 
-  const esTextoLibre = !p.opciones?.length;
-  const esIdValido = !esTextoLibre && p.respuesta_usuario > 0;
+  // Determinar el valor como string
+  let respuestaStr: string = "";
+
+  switch (p.tipo?.tipo) {
+    case 'si_no':
+      respuestaStr = (p.respuesta_usuario == 1) ? 'SI' : 'NO';
+      break;
+    case 'si_no_noestoyseguro':
+      if (p.respuesta_usuario == 2) respuestaStr = 'SI';
+      else if (p.respuesta_usuario == 1) respuestaStr = 'NO';
+      else if (p.respuesta_usuario == 3) respuestaStr = 'No estoy seguro';
+      break;
+    case 'likert':
+    case 'opcion_personalizada':
+      // Busca el label de la opción seleccionada
+      const opcion = p.opciones?.find(o => o.id == p.respuesta_usuario);
+      respuestaStr = opcion ? opcion.label : '';
+      break;
+    case '5emojis':
+      // Puedes asignar un label según el valor numérico o el emoji
+      const emojis = ['😞', '🙁', '😐', '🙂', '😀'];
+      respuestaStr = emojis[(p.respuesta_usuario || 1) - 1] || '';
+      break;
+    case 'barra_satisfaccion':
+    case 'numero':
+      respuestaStr = p.respuesta_usuario !== undefined && p.respuesta_usuario !== null ? p.respuesta_usuario.toString() : '';
+      break;
+    case 'texto':
+    default:
+      respuestaStr = p.respuesta_usuario ? p.respuesta_usuario.toString() : '';
+      break;
+  }
 
   const payload = {
     nna_id: this.nna.id,
     evaluacion_id: this.evaluacion.id,
-    respuestas: [{
-      pregunta_id: p.id,
-      tipo: p.tipo?.tipo || 'texto',
-      respuesta_opcion_id: esIdValido ? p.respuesta_usuario : null,
-      respuesta_texto: esTextoLibre ? p.respuesta_usuario : null,
-      subpregunta_id: null
-    }]
+    respuestas: [
+      {
+        pregunta_id: p.id,
+        tipo: p.tipo?.tipo || 'texto',
+        respuesta: respuestaStr,
+        subpregunta_id: null
+      }
+    ]
   };
 
   this.ejecucionService.guardarRespuestaParcial(payload).subscribe({
-    next: () => console.log(`Respuesta de la pregunta ${p.id} guardada.`),
-    error: err => console.error(`Error al guardar respuesta parcial de pregunta ${p.id}`, err)
+    next: () => console.log(`✅ Respuesta de la pregunta ${p.id} guardada.`),
+    error: err => console.error(`❌ Error al guardar respuesta parcial de pregunta ${p.id}`, err)
+  });
+}
+
+cargarRespuestasExistentes(): void {
+  this.ejecucionService.getRespuestas(this.nna.id, this.evaluacion.id).subscribe((respuestas: any[]) => {
+    console.log('📥 Respuestas obtenidas del backend:', respuestas);
+
+    this.preguntas.forEach(p => {
+  const respuesta = respuestas.find(r => r.pregunta_id === p.id);
+  if (respuesta) {
+    if (p.tipo?.tipo === 'si_no') {
+      // Convertimos respuesta textual a número
+      if (respuesta.respuesta === 'SI') p.respuesta_usuario = 1;
+      else if (respuesta.respuesta === 'NO') p.respuesta_usuario = 0;
+    } else if (p.tipo?.tipo === 'si_no_noestoyseguro') {
+      if (respuesta.respuesta === 'SI') p.respuesta_usuario = 2;
+      else if (respuesta.respuesta === 'NO') p.respuesta_usuario = 1;
+      else if (respuesta.respuesta === 'NO_ESTOY_SEGURO') p.respuesta_usuario = 3;
+    } else if (['likert', 'opcion_personalizada', '5emojis', 'barra_satisfaccion', 'numero'].includes(p.tipo?.tipo)) {
+      p.respuesta_usuario = Number(respuesta.respuesta);
+    } else {
+      p.respuesta_usuario = respuesta.respuesta;
+    }
+
+    console.log(`✅ Pregunta ${p.id} actualizada con:`, p.respuesta_usuario);
+  } else {
+    console.warn(`⚠️ Pregunta con ID ${p.id} no encontrada en el formulario.`);
+  }
+});
   });
 }
 
 
+
+
+
   volver(): void {
-    this.router.navigate(['../'], { relativeTo: this.route });
+    if (this.evaluacion?.id) {
+      this.router.navigate([
+        '/admin/ejecucion-instrumentos/detalle',
+        this.evaluacion.id
+      ]);
+    } else {
+      this.router.navigate(['/admin/ejecucion-instrumentos']);
+    }
   }
 }

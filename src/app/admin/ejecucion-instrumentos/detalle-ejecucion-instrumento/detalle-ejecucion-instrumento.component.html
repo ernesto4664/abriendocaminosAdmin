@@ -11,119 +11,133 @@
         </button>
         <h5 class="mb-0 fw-bold" style="color: #404040;">Detalle de NNA</h5>
       </div>
-      <span class="badge bg-danger text-white px-3 py-2 fs-6 rounded-pill shadow-sm" style="font-weight: 600; letter-spacing: 1px;">
-        <mat-icon class="me-1" style="vertical-align: middle;">warning</mat-icon>
-        Pendiente
+      <span
+        class="badge px-3 py-2 fs-6 rounded-pill shadow-sm"
+        [ngClass]="{
+          'bg-danger text-white': estadoEvaluaciones === 'pendiente',
+          'bg-warning text-dark': estadoEvaluaciones === 'en_proceso',
+          'bg-success text-white': estadoEvaluaciones === 'finalizado'
+        }"
+        style="font-weight: 600; letter-spacing: 1px;"
+      >
+        <mat-icon class="me-1" style="vertical-align: middle;">
+          {{ estadoEvaluaciones === 'pendiente' ? 'warning' : (estadoEvaluaciones === 'en_proceso' ? 'hourglass_empty' : 'check_circle') }}
+        </mat-icon>
+        {{ estadoEvaluaciones === 'pendiente' ? 'Pendiente' : (estadoEvaluaciones === 'en_proceso' ? 'En proceso' : 'Finalizado') }}
       </span>
     </div>
     <div class="card-body">
       <div class="row g-4">
-        <!-- Columna izquierda: Datos NNA -->
-        <div class="col-md-6">
+        <!-- Columna 1: Datos NNA -->
+        <div class="col-md-4">
           <h6 class="mb-3 text-primary fw-bold">Datos del NNA</h6>
           <dl class="row mb-0">
-            <dt class="col-sm-5">Nombres:</dt>
-            <dd class="col-sm-7">{{ nna.nombres }}</dd>
-            <dt class="col-sm-5">Apellidos:</dt>
-            <dd class="col-sm-7">{{ nna.apellidos }}</dd>
-            <dt class="col-sm-5">Rut:</dt>
-            <dd class="col-sm-7">{{ nna.rut }}<span *ngIf="nna.dv">-{{ nna.dv }}</span></dd>
-            <dt class="col-sm-5">Edad:</dt>
-            <dd class="col-sm-7">{{ nna.edad }} años</dd>
-            <dt class="col-sm-5">Sexo:</dt>
-            <dd class="col-sm-7">{{ nna.sexo === 'M' ? 'Masculino' : 'Femenino' }}</dd>
-            <dt class="col-sm-5">Nacionalidad:</dt>
-            <dd class="col-sm-7">{{ nna.nacionalidad }}</dd>
-            <dt class="col-sm-5">Vías de ingreso:</dt>
-            <dd class="col-sm-7">{{ nna.vias_ingreso || '-' }}</dd>
-            <dt class="col-sm-5">Parentesco ASPL:</dt>
-            <dd class="col-sm-7">{{ nna.parentesco_aspl || '-' }}</dd>
-            <dt class="col-sm-5">Parentesco CP:</dt>
-            <dd class="col-sm-7">{{ nna.parentesco_cp || '-' }}</dd>
-            <dt class="col-sm-5">Participa en programa:</dt>
-            <dd class="col-sm-7">{{ nna.participa_programa == 1 ? 'Sí' : 'No' }}</dd>
-            <dt class="col-sm-5">Motivo no participa:</dt>
-            <dd class="col-sm-7">{{ nna.motivo_no_participa || '-' }}</dd>
-            <dt class="col-sm-5">Documento firmado:</dt>
-            <dd class="col-sm-7">
+            <dt class="col-sm-6">Nombres:</dt>
+            <dd class="col-sm-6">{{ nna.nombres }}</dd>
+            <dt class="col-sm-6">Apellidos:</dt>
+            <dd class="col-sm-6">{{ nna.apellidos }}</dd>
+            <dt class="col-sm-6">Rut:</dt>
+            <dd class="col-sm-6">{{ nna.rut }}<span *ngIf="nna.dv">-{{ nna.dv }}</span></dd>
+            <dt class="col-sm-6">Edad:</dt>
+            <dd class="col-sm-6">{{ nna.edad }} años</dd>
+            <dt class="col-sm-6">Sexo:</dt>
+            <dd class="col-sm-6">{{ nna.sexo === 'M' ? 'Masculino' : 'Femenino' }}</dd>
+            <dt class="col-sm-6">Nacionalidad:</dt>
+            <dd class="col-sm-6">{{ nna.nacionalidad }}</dd>
+            <dt class="col-sm-6">Vías de ingreso:</dt>
+            <dd class="col-sm-6">{{ nna.vias_ingreso || '-' }}</dd>
+            <dt class="col-sm-6">Parentesco ASPL:</dt>
+            <dd class="col-sm-6">{{ nna.parentesco_aspl || '-' }}</dd>
+            <dt class="col-sm-6">Parentesco CP:</dt>
+            <dd class="col-sm-6">{{ nna.parentesco_cp || '-' }}</dd>
+            <dt class="col-sm-6">Participa en programa:</dt>
+            <dd class="col-sm-6">{{ nna.participa_programa == 1 ? 'Sí' : 'No' }}</dd>
+            <dt class="col-sm-6">Motivo no participa:</dt>
+            <dd class="col-sm-6">{{ nna.motivo_no_participa || '-' }}</dd>
+            <dt class="col-sm-6">Documento firmado:</dt>
+            <dd class="col-sm-6">
               <a *ngIf="nna.documento_firmado" [href]="nna.documento_firmado" target="_blank" class="text-decoration-none documento">
                 <mat-icon class="icon">attach_file</mat-icon> Ver documento
               </a>
               <span *ngIf="!nna.documento_firmado">-</span>
             </dd>
-            <dt class="col-sm-5">Fecha de creación:</dt>
-            <dd class="col-sm-7">{{ nna.created_at | date:'dd/MM/yyyy HH:mm' }}</dd>
-            <dt class="col-sm-5">Última actualización:</dt>
-            <dd class="col-sm-7">{{ nna.updated_at | date:'dd/MM/yyyy HH:mm' }}</dd>
+            <dt class="col-sm-6">Fecha de creación:</dt>
+            <dd class="col-sm-6">{{ nna.created_at | date:'dd/MM/yyyy HH:mm' }}</dd>
+            <dt class="col-sm-6">Última actualización:</dt>
+            <dd class="col-sm-6">{{ nna.updated_at | date:'dd/MM/yyyy HH:mm' }}</dd>
           </dl>
         </div>
-        <!-- Columna derecha: Profesional, Institución y Cuidador -->
-        <div class="col-md-6">
-          <div class="mb-4">
-            <h6 class="mb-2 text-primary fw-bold">Profesional a cargo</h6>
-            <dl class="row mb-0">
-              <dt class="col-sm-5">Nombres:</dt>
-              <dd class="col-sm-7">{{ nna.profesional_nombres || '-' }}</dd>
-              <dt class="col-sm-5">Apellidos:</dt>
-              <dd class="col-sm-7">{{ nna.profesional_apellidos || '-' }}</dd>
-              <dt class="col-sm-5">RUT:</dt>
-              <dd class="col-sm-7">{{ nna.profesional_rut || '-' }}</dd>
-              <dt class="col-sm-5">Email:</dt>
-              <dd class="col-sm-7">{{ nna.profesional_email || '-' }}</dd>
-            </dl>
-          </div>
-          <div class="mb-4">
-            <h6 class="mb-2 text-primary fw-bold">Institución ejecutora</h6>
-            <dl class="row mb-0">
-              <dt class="col-sm-5">Nombre:</dt>
-              <dd class="col-sm-7">{{ nna.institucion_nombre || '-' }}</dd>
-              <dt class="col-sm-5">RUT:</dt>
-              <dd class="col-sm-7">{{ nna.institucion_rut || '-' }}</dd>
-              <dt class="col-sm-5">Email:</dt>
-              <dd class="col-sm-7">{{ nna.institucion_email || '-' }}</dd>
-            </dl>
-          </div>
-          <div *ngIf="nna.cuidador">
-            <h6 class="mb-2 text-primary fw-bold">Cuidador principal</h6>
-            <dl class="row mb-0">
-              <dt class="col-sm-5">Nombres:</dt>
-              <dd class="col-sm-7">{{ nna.cuidador.nombres || '-' }}</dd>
-              <dt class="col-sm-5">Apellidos:</dt>
-              <dd class="col-sm-7">{{ nna.cuidador.apellidos || '-' }}</dd>
-              <dt class="col-sm-5">RUT:</dt>
-              <dd class="col-sm-7">{{ nna.cuidador.rut }}<span *ngIf="nna.cuidador.dv">-{{ nna.cuidador.dv }}</span></dd>
-              <dt class="col-sm-5">Sexo:</dt>
-              <dd class="col-sm-7">{{ nna.cuidador.sexo === 'M' ? 'Masculino' : 'Femenino' }}</dd>
-              <dt class="col-sm-5">Edad:</dt>
-              <dd class="col-sm-7">{{ nna.cuidador.edad }} años</dd>
-              <dt class="col-sm-5">Nacionalidad:</dt>
-              <dd class="col-sm-7">{{ nna.cuidador.nacionalidad || '-' }}</dd>
-              <dt class="col-sm-5">Parentesco ASPL:</dt>
-              <dd class="col-sm-7">{{ nna.cuidador.parentesco_aspl || '-' }}</dd>
-              <dt class="col-sm-5">Parentesco NNA:</dt>
-              <dd class="col-sm-7">{{ nna.cuidador.parentesco_nna || '-' }}</dd>
-              <dt class="col-sm-5">Participa en programa:</dt>
-              <dd class="col-sm-7">{{ nna.cuidador.participa_programa == 1 ? 'Sí' : 'No' }}</dd>
-              <dt class="col-sm-5">Motivo no participa:</dt>
-              <dd class="col-sm-7">{{ nna.cuidador.motivo_no_participa || '-' }}</dd>
-              <dt class="col-sm-5">Documento firmado:</dt>
-              <dd class="col-sm-7">
-                <span *ngIf="nna.cuidador.documento_firmado">{{ nna.cuidador.documento_firmado }}</span>
-                <span *ngIf="!nna.cuidador.documento_firmado">-</span>
-              </dd>
-              <dt class="col-sm-5">Fecha de creación:</dt>
-              <dd class="col-sm-7">{{ nna.cuidador.created_at | date:'dd/MM/yyyy HH:mm' }}</dd>
-              <dt class="col-sm-5">Última actualización:</dt>
-              <dd class="col-sm-7">{{ nna.cuidador.updated_at | date:'dd/MM/yyyy HH:mm' }}</dd>
-            </dl>
-          </div>
+        <!-- Columna 2: Profesional a cargo -->
+        <div class="col-md-4">
+          <h6 class="mb-3 text-primary fw-bold">Profesional a cargo</h6>
+          <dl class="row mb-0">
+            <dt class="col-sm-6">Nombres:</dt>
+            <dd class="col-sm-6">{{ nna.profesional_nombres || '-' }}</dd>
+            <dt class="col-sm-6">Apellidos:</dt>
+            <dd class="col-sm-6">{{ nna.profesional_apellidos || '-' }}</dd>
+            <dt class="col-sm-6">RUT:</dt>
+            <dd class="col-sm-6">{{ nna.profesional_rut || '-' }}</dd>
+            <dt class="col-sm-6">Email:</dt>
+            <dd class="col-sm-6">{{ nna.profesional_email || '-' }}</dd>
+            <dt class="col-sm-6">Institución:</dt>
+            <dd class="col-sm-6">{{ nna.institucion_nombre || '-' }}</dd>
+            <dt class="col-sm-6">Institución RUT:</dt>
+            <dd class="col-sm-6">{{ nna.institucion_rut || '-' }}</dd>
+            <dt class="col-sm-6">Institución Email:</dt>
+            <dd class="col-sm-6">{{ nna.institucion_email || '-' }}</dd>
+          </dl>
+        </div>
+        <!-- Columna 3: Cuidador principal -->
+        <div class="col-md-4" *ngIf="nna.cuidador">
+          <h6 class="mb-3 text-primary fw-bold">Cuidador principal</h6>
+          <dl class="row mb-0">
+            <dt class="col-sm-6">Nombres:</dt>
+            <dd class="col-sm-6">{{ nna.cuidador.nombres || '-' }}</dd>
+            <dt class="col-sm-6">Apellidos:</dt>
+            <dd class="col-sm-6">{{ nna.cuidador.apellidos || '-' }}</dd>
+            <dt class="col-sm-6">RUT:</dt>
+            <dd class="col-sm-6">{{ nna.cuidador.rut }}<span *ngIf="nna.cuidador.dv">-{{ nna.cuidador.dv }}</span></dd>
+            <dt class="col-sm-6">Sexo:</dt>
+            <dd class="col-sm-6">{{ nna.cuidador.sexo === 'M' ? 'Masculino' : 'Femenino' }}</dd>
+            <dt class="col-sm-6">Edad:</dt>
+            <dd class="col-sm-6">{{ nna.cuidador.edad }} años</dd>
+            <dt class="col-sm-6">Nacionalidad:</dt>
+            <dd class="col-sm-6">{{ nna.cuidador.nacionalidad || '-' }}</dd>
+            <dt class="col-sm-6">Parentesco ASPL:</dt>
+            <dd class="col-sm-6">{{ nna.cuidador.parentesco_aspl || '-' }}</dd>
+            <dt class="col-sm-6">Parentesco NNA:</dt>
+            <dd class="col-sm-6">{{ nna.cuidador.parentesco_nna || '-' }}</dd>
+            <dt class="col-sm-6">Participa en programa:</dt>
+            <dd class="col-sm-6">{{ nna.cuidador.participa_programa == 1 ? 'Sí' : 'No' }}</dd>
+            <dt class="col-sm-6">Motivo no participa:</dt>
+            <dd class="col-sm-6">{{ nna.cuidador.motivo_no_participa || '-' }}</dd>
+            <dt class="col-sm-6">Documento firmado:</dt>
+            <dd class="col-sm-6">
+              <a *ngIf="nna.cuidador.documento_firmado" [href]="nna.cuidador.documento_firmado" target="_blank" class="text-decoration-none documento">
+              <mat-icon class="icon">attach_file</mat-icon> Ver documento
+              </a>
+              <span *ngIf="!nna.cuidador.documento_firmado">-</span>
+            </dd>
+            <dt class="col-sm-6">Fecha de creación:</dt>
+            <dd class="col-sm-6">{{ nna.cuidador.created_at | date:'dd/MM/yyyy HH:mm' }}</dd>
+            <dt class="col-sm-6">Última actualización:</dt>
+            <dd class="col-sm-6">{{ nna.cuidador.updated_at | date:'dd/MM/yyyy HH:mm' }}</dd>
+          </dl>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Sección llamativa para Evaluaciones Vigentes -->
-  <div class="card mt-4 border-primary shadow" *ngIf="evaluaciones.length">
+  <!-- Botón Continuar si hay evaluación en proceso -->
+  <div *ngIf="estadoEvaluaciones === 'en_proceso' && evaluacionEnProceso" class="mt-3 text-center">
+    <button class="btn btn-warning" (click)="realizarEvaluacion(evaluacionEnProceso.evaluacion_id)">
+      <mat-icon class="me-1">play_arrow</mat-icon>
+      Continuar evaluación en proceso
+    </button>
+  </div>
+
+  <!-- Sección Evaluaciones Vigentes solo si NO hay evaluación en proceso -->
+  <div class="card mt-4 border-primary shadow" *ngIf="evaluaciones.length && estadoEvaluaciones !== 'en_proceso'">
     <div class="card-header bg-primary text-white d-flex align-items-center">
       <mat-icon class="me-2">assignment</mat-icon>
       <h6 class="mb-0">Evaluaciones vigentes</h6>
